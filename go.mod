@@ -1,6 +1,6 @@
 go 1.15
 
-module github.com/tendermint/liquidity
+module github.com/gravity-devs/liquidity
 
 require (
 	github.com/cosmos/cosmos-sdk v0.42.5

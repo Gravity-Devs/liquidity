@@ -7,7 +7,7 @@ import (
 	abcitypes "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	lapp "github.com/tendermint/liquidity/app"
+	lapp "github.com/gravity-devs/liquidity/app"
 )
 
 func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {

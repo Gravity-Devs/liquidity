@@ -6,7 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/query"
 
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCLiquidityPool() {

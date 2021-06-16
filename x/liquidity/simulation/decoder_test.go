@@ -8,8 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/kv"
 	"github.com/stretchr/testify/require"
 
-	"github.com/tendermint/liquidity/x/liquidity/simulation"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/x/liquidity/simulation"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 func TestDecodeLiquidityStore(t *testing.T) {

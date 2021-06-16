@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	lapp "github.com/tendermint/liquidity/app"
-	"github.com/tendermint/liquidity/x/liquidity/keeper"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	lapp "github.com/gravity-devs/liquidity/app"
+	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 type KeeperTestSuite struct {

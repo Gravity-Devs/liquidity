@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/tendermint/liquidity/app"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/app"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 // Although written in msg_server_test.go, it is approached at the keeper level rather than at the msgServer level

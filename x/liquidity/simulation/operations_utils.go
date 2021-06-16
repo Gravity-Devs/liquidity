@@ -9,13 +9,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/tendermint/liquidity/x/liquidity/keeper"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 var (
 	// create simulated accounts due to gas usage overflow issue.
-	// Read this issue: https://github.com/tendermint/liquidity/issues/349
+	// Read this issue: https://github.com/gravity-devs/liquidity/issues/349
 	randomAccounts []simtypes.Account
 )
 

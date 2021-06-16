@@ -88,13 +88,13 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	liquidityparams "github.com/tendermint/liquidity/app/params"
-	"github.com/tendermint/liquidity/x/liquidity"
-	liquiditykeeper "github.com/tendermint/liquidity/x/liquidity/keeper"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	liquidityparams "github.com/gravity-devs/liquidity/app/params"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	// unnamed import of statik for swagger UI support
-	_ "github.com/tendermint/liquidity/client/docs/statik"
+	_ "github.com/gravity-devs/liquidity/client/docs/statik"
 )
 
 const appName = "LiquidityApp"

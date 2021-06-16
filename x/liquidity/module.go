@@ -19,10 +19,10 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/tendermint/liquidity/x/liquidity/client/cli"
-	"github.com/tendermint/liquidity/x/liquidity/keeper"
-	"github.com/tendermint/liquidity/x/liquidity/simulation"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/x/liquidity/client/cli"
+	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/x/liquidity/simulation"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 var (

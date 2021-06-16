@@ -23,9 +23,9 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/tendermint/liquidity/x/liquidity"
-	"github.com/tendermint/liquidity/x/liquidity/keeper"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in

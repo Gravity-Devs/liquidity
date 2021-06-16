@@ -31,8 +31,8 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	liquidity "github.com/tendermint/liquidity/app"
-	"github.com/tendermint/liquidity/app/params"
+	liquidity "github.com/gravity-devs/liquidity/app"
+	"github.com/gravity-devs/liquidity/app/params"
 )
 
 func NewRootCmd() (*cobra.Command, params.EncodingConfig) {

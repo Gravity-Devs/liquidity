@@ -843,7 +843,7 @@ paths:
 
 
                         See:
-                        https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                        https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
                   description: >-
                     DepositMsgState defines the state of deposit message that
                     contains state information as it is processed in the next
@@ -1072,7 +1072,7 @@ paths:
 
 
                       See:
-                      https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                      https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
                 description: >-
                   DepositMsgState defines the state of deposit message that
                   contains state information as it is processed in the next
@@ -1360,9 +1360,9 @@ paths:
 
 
                         See:
-                        https://github.com/tendermint/liquidity/tree/develop/doc
+                        https://github.com/gravity-devs/liquidity/tree/develop/doc
 
-                        https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                        https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
                   description: >-
                     SwapMsgState defines the state of the swap message that
                     contains state information as the message is processed in
@@ -1708,9 +1708,9 @@ paths:
 
 
                       See:
-                      https://github.com/tendermint/liquidity/tree/develop/doc
+                      https://github.com/gravity-devs/liquidity/tree/develop/doc
 
-                      https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                      https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
                 description: >-
                   SwapMsgState defines the state of the swap message that
                   contains state information as the message is processed in the
@@ -1877,7 +1877,7 @@ paths:
 
 
                         See:
-                        https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                        https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
                   description: >-
                     WithdrawMsgState defines the state of the withdraw message
                     that contains state information as the message is processed
@@ -2102,7 +2102,7 @@ paths:
 
 
                       See:
-                      https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                      https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
                 description: >-
                   WithdrawMsgState defines the state of the withdraw message
                   that contains state information as the message is processed in
@@ -2364,7 +2364,7 @@ definitions:
 
 
           See:
-          https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+          https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
     description: >-
       DepositMsgState defines the state of deposit message that contains state
       information as it is processed in the next batch or batches.
@@ -2421,7 +2421,7 @@ definitions:
 
 
       See:
-      https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+      https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
   tendermint.liquidity.v1beta1.MsgSwapWithinBatch:
     type: object
     properties:
@@ -2515,9 +2515,9 @@ definitions:
       Only the default `swap_type_id` 1 is supported.
 
 
-      See: https://github.com/tendermint/liquidity/tree/develop/doc
+      See: https://github.com/gravity-devs/liquidity/tree/develop/doc
 
-      https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+      https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
   tendermint.liquidity.v1beta1.MsgWithdrawWithinBatch:
     type: object
     properties:
@@ -2565,7 +2565,7 @@ definitions:
 
 
       See:
-      https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+      https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
   tendermint.liquidity.v1beta1.Params:
     type: object
     properties:
@@ -3145,7 +3145,7 @@ definitions:
 
 
               See:
-              https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+              https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
         description: >-
           DepositMsgState defines the state of deposit message that contains
           state information as it is processed in the next batch or batches.
@@ -3241,7 +3241,7 @@ definitions:
 
 
                 See:
-                https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
           description: >-
             DepositMsgState defines the state of deposit message that contains
             state information as it is processed in the next batch or batches.
@@ -3468,9 +3468,9 @@ definitions:
               Only the default `swap_type_id` 1 is supported.
 
 
-              See: https://github.com/tendermint/liquidity/tree/develop/doc
+              See: https://github.com/gravity-devs/liquidity/tree/develop/doc
 
-              https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+              https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
         description: >-
           SwapMsgState defines the state of the swap message that contains state
           information as the message is processed in the next batch or batches.
@@ -3678,9 +3678,9 @@ definitions:
                 Only the default `swap_type_id` 1 is supported.
 
 
-                See: https://github.com/tendermint/liquidity/tree/develop/doc
+                See: https://github.com/gravity-devs/liquidity/tree/develop/doc
 
-                https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
           description: >-
             SwapMsgState defines the state of the swap message that contains
             state information as the message is processed in the next batch or
@@ -3792,7 +3792,7 @@ definitions:
 
 
               See:
-              https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+              https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
         description: >-
           WithdrawMsgState defines the state of the withdraw message that
           contains state information as the message is processed in the next
@@ -3885,7 +3885,7 @@ definitions:
 
 
                 See:
-                https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+                https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
           description: >-
             WithdrawMsgState defines the state of the withdraw message that
             contains state information as the message is processed in the next
@@ -4099,9 +4099,9 @@ definitions:
           Only the default `swap_type_id` 1 is supported.
 
 
-          See: https://github.com/tendermint/liquidity/tree/develop/doc
+          See: https://github.com/gravity-devs/liquidity/tree/develop/doc
 
-          https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+          https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
     description: >-
       SwapMsgState defines the state of the swap message that contains state
       information as the message is processed in the next batch or batches.
@@ -4184,7 +4184,7 @@ definitions:
 
 
           See:
-          https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+          https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
     description: >-
       WithdrawMsgState defines the state of the withdraw message that contains
       state information as the message is processed in the next batch or

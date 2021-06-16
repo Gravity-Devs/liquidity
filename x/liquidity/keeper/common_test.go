@@ -8,9 +8,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
-	"github.com/tendermint/liquidity/app"
-	"github.com/tendermint/liquidity/x/liquidity"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/app"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 // createTestInput Returns a simapp with custom LiquidityKeeper

@@ -26,11 +26,11 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltest "github.com/cosmos/cosmos-sdk/x/genutil/client/testutil"
 
-	lapp "github.com/tendermint/liquidity/app"
-	"github.com/tendermint/liquidity/x/liquidity"
-	"github.com/tendermint/liquidity/x/liquidity/client/cli"
-	liquiditytestutil "github.com/tendermint/liquidity/x/liquidity/client/testutil"
-	liquiditytypes "github.com/tendermint/liquidity/x/liquidity/types"
+	lapp "github.com/gravity-devs/liquidity/app"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	"github.com/gravity-devs/liquidity/x/liquidity/client/cli"
+	liquiditytestutil "github.com/gravity-devs/liquidity/x/liquidity/client/testutil"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 	tmjson "github.com/tendermint/tendermint/libs/json"

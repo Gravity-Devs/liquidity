@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "cosmos_proto/coin.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/tendermint/liquidity/x/liquidity/types";
+option go_package = "github.com/gravity-devs/liquidity/x/liquidity/types";
 
 // Msg defines the liquidity Msg service.
 service Msg {
@@ -25,7 +25,7 @@ service Msg {
 
 // MsgCreatePool defines an sdk.Msg type that supports submitting a create liquidity pool tx.
 //
-// See: https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+// See: https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
 message MsgCreatePool {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
@@ -64,7 +64,7 @@ message MsgCreatePoolResponse {}
 // This request is stacked in the batch of the liquidity pool, is not processed 
 // immediately, and is processed in the `endblock` at the same time as other requests.
 //
-// See: https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+// See: https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
 message MsgDepositWithinBatch {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
@@ -105,7 +105,7 @@ message MsgDepositWithinBatchResponse {}
 // This request is stacked in the batch of the liquidity pool, is not processed 
 // immediately, and is processed in the `endblock` at the same time as other requests.
 //
-// See: https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+// See: https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
 message MsgWithdrawWithinBatch {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
@@ -143,8 +143,8 @@ message MsgWithdrawWithinBatchResponse {}
 // You must request the same fields as the pool.
 // Only the default `swap_type_id` 1 is supported.
 //
-// See: https://github.com/tendermint/liquidity/tree/develop/doc
-// https://github.com/tendermint/liquidity/blob/develop/x/liquidity/spec/04_messages.md
+// See: https://github.com/gravity-devs/liquidity/tree/develop/doc
+// https://github.com/gravity-devs/liquidity/blob/develop/x/liquidity/spec/04_messages.md
 message MsgSwapWithinBatch {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;

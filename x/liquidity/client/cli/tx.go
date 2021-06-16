@@ -15,7 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 // GetTxCmd returns a root CLI command handler for all x/liquidity transaction commands.
@@ -260,7 +260,7 @@ The order price is the exchange ratio of X/Y, where X is the amount of the first
 Increasing order price reduces the possibility for your request to be processed and results in buying uatom at a lower price than the pool price.
 
 For explicit calculations, The swap fee rate must be the value that set as liquidity parameter in the current network.
-The only supported swap-type is 1. For the detailed swap algorithm, see https://github.com/tendermint/liquidity
+The only supported swap-type is 1. For the detailed swap algorithm, see https://github.com/gravity-devs/liquidity
 
 [pool-id]: The pool id of the liquidity pool 
 [swap-type]: The swap type of the swap message. The only supported swap type is 1 (instant swap).

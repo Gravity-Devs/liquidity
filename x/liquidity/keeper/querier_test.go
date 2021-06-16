@@ -11,9 +11,9 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/tendermint/liquidity/app"
-	"github.com/tendermint/liquidity/x/liquidity/keeper"
-	"github.com/tendermint/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/app"
+	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/x/liquidity/types"
 )
 
 const custom = "custom"
