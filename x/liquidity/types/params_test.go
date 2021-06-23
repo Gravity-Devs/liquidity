@@ -21,18 +21,19 @@ func TestParams(t *testing.T) {
 
 	paramsStr := `pool_types:
 - id: 1
-  name: DefaultPoolType
+  name: StandardLiquidityPool
   min_reserve_coin_num: 2
   max_reserve_coin_num: 2
-  description: ""
+  description: Standard liquidity pool with pool price function X/Y, ESPM constraint,
+    and two kinds of reserve coins
 min_init_deposit_amount: "1000000"
 init_pool_coin_mint_amount: "1000000"
 max_reserve_coin_amount: "0"
 pool_creation_fee:
 - denom: stake
-  amount: "100000000"
+  amount: "40000000"
 swap_fee_rate: "0.003000000000000000"
-withdraw_fee_rate: "0.003000000000000000"
+withdraw_fee_rate: "0.000000000000000000"
 max_order_amount_ratio: "0.100000000000000000"
 unit_batch_height: 1
 circuit_breaker_enabled: false
@@ -227,8 +228,7 @@ func TestParams_Validate(t *testing.T) {
 			params := types.DefaultParams()
 			tc.configure(&params)
 			err := params.Validate()
-			require.Error(t, err)
-			require.Equal(t, tc.errString, err.Error())
+			require.EqualError(t, err, tc.errString)
 			var err2 error
 			for _, p := range params.ParamSetPairs() {
 				err := p.ValidatorFn(reflect.ValueOf(p.Value).Elem().Interface())
@@ -237,8 +237,7 @@ func TestParams_Validate(t *testing.T) {
 					break
 				}
 			}
-			require.Error(t, err2)
-			require.Equal(t, tc.errString, err2.Error())
+			require.EqualError(t, err2, tc.errString)
 		})
 	}
 }
