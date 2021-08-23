@@ -84,6 +84,6 @@ func ValidateReserveCoinLimit(maxReserveCoinAmount sdk.Int, depositCoins sdk.Coi
 
 func GetOfferCoinFee(offerCoin sdk.Coin, swapFeeRate sdk.Dec) sdk.Coin {
 	// apply half-ratio swap fee rate
-	// see https://github.com/gravity-devs/liquidity/issues/41 for details
+	// see https://github.com/tendermint/liquidity/issues/41 for details
 	return sdk.NewCoin(offerCoin.Denom, offerCoin.Amount.ToDec().Mul(swapFeeRate.QuoInt64(2)).TruncateInt()) // offerCoin.Amount * (swapFeeRate/2)
 }
