@@ -15,7 +15,7 @@ import (
 
 var (
 	// create simulated accounts due to gas usage overflow issue.
-	// Read this issue: https://github.com/gravity-devs/liquidity/issues/349
+	// Read this issue: https://github.com/tendermint/liquidity/issues/349
 	randomAccounts []simtypes.Account
 )
 
