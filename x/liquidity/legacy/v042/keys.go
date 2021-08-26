@@ -1,5 +1,5 @@
 // Package v042 is copy-pasted from:
-// https://github.com/gravity-devs/liquidity/blob/v1.2.9/x/liquidity/types/keys.go
+// https://github.com/tendermint/liquidity/blob/v1.2.9/x/liquidity/types/keys.go
 package v042
 
 import (
