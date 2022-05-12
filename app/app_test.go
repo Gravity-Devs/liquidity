@@ -2,9 +2,10 @@ package app
 
 import (
 	"encoding/json"
-	"os"
 	"testing"
 
+	authmiddleware "github.com/cosmos/cosmos-sdk/x/auth/middleware"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -20,7 +21,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/capability"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	"github.com/cosmos/cosmos-sdk/x/distribution"
@@ -38,10 +38,18 @@ import (
 )
 
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
-	encCfg := MakeEncodingConfig()
+	encCfg := MakeTestEncodingConfig()
 	db := dbm.NewMemDB()
-	app := NewLiquidityApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
-
+	logger, _ := log.NewDefaultLogger("plain", "info", false)
+	app := NewSimappWithCustomOptions(t, false, SetupOptions{
+		Logger:             logger,
+		DB:                 db,
+		InvCheckPeriod:     0,
+		EncConfig:          encCfg,
+		HomePath:           DefaultNodeHome,
+		SkipUpgradeHeights: map[int64]bool{},
+		AppOpts:            EmptyAppOptions{},
+	})
 	for acc := range maccPerms {
 		require.True(
 			t,
@@ -50,22 +58,11 @@ func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 		)
 	}
 
-	genesisState := NewDefaultGenesisState()
-	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
-	require.NoError(t, err)
-
-	// Initialize the chain
-	app.InitChain(
-		abci.RequestInitChain{
-			Validators:    []abci.ValidatorUpdate{},
-			AppStateBytes: stateBytes,
-		},
-	)
 	app.Commit()
 
 	// Making a new app object with the db, so that initchain hasn't been called
-	app2 := NewLiquidityApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
-	_, err = app2.ExportAppStateAndValidators(false, []string{})
+	app2 := NewLiquidityApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	_, err := app2.ExportAppStateAndValidators(false, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }
 
@@ -76,16 +73,17 @@ func TestGetMaccPerms(t *testing.T) {
 
 func TestRunMigrations(t *testing.T) {
 	db := dbm.NewMemDB()
-	encCfg := MakeEncodingConfig()
-	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
+	encCfg := MakeTestEncodingConfig()
+	logger, _ := log.NewDefaultLogger("plain", "info", false)
 	app := NewLiquidityApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 
 	// Create a new baseapp and configurator for the purpose of this test.
-	bApp := baseapp.NewBaseApp(appName, logger, db, encCfg.TxConfig.TxDecoder())
+	bApp := baseapp.NewBaseApp(appName, logger, db)
 	bApp.SetCommitMultiStoreTracer(nil)
 	bApp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
+	msr := authmiddleware.NewMsgServiceRouter(encCfg.InterfaceRegistry)
 	app.BaseApp = bApp
-	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(app.appCodec, msr, app.GRPCQueryRouter())
 
 	// We register all modules on the Configurator, except x/bank. x/bank will
 	// serve as the test subject on which we run the migration tests.
@@ -107,7 +105,7 @@ func TestRunMigrations(t *testing.T) {
 	testCases := []struct {
 		name         string
 		moduleName   string
-		forVersion   uint64
+		fromVersion  uint64
 		expRegErr    bool // errors while registering migration
 		expRegErrMsg string
 		expRunErr    bool // errors while running migration
@@ -125,12 +123,17 @@ func TestRunMigrations(t *testing.T) {
 			false, "", true, "no migrations found for module bank: not found", 0,
 		},
 		{
-			"can register and run migration handler for x/bank",
+			"can register 1->2 migration handler for x/bank, cannot run migration",
 			"bank", 1,
+			false, "", true, "no migration found for module bank from version 2 to version 3: not found", 0,
+		},
+		{
+			"can register 2->3 migration handler for x/bank, can run migration",
+			"bank", 2,
 			false, "", false, "", 1,
 		},
 		{
-			"cannot register migration handler for same module & forVersion",
+			"cannot register migration handler for same module & fromVersion",
 			"bank", 1,
 			true, "another migration for module bank and version 1 already exists: internal logic error", false, "", 0,
 		},
@@ -147,8 +150,8 @@ func TestRunMigrations(t *testing.T) {
 			called := 0
 
 			if tc.moduleName != "" {
-				// Register migration for module from version `forVersion` to `forVersion+1`.
-				err = app.configurator.RegisterMigration(tc.moduleName, tc.forVersion, func(sdk.Context) error {
+				// Register migration for module from version `fromVersion` to `fromVersion+1`.
+				err = app.configurator.RegisterMigration(tc.moduleName, tc.fromVersion, func(sdk.Context) error {
 					called++
 
 					return nil
@@ -200,8 +203,8 @@ func TestRunMigrations(t *testing.T) {
 
 func TestInitGenesisOnMigration(t *testing.T) {
 	db := dbm.NewMemDB()
-	encCfg := MakeEncodingConfig()
-	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
+	encCfg := MakeTestEncodingConfig()
+	logger := log.NewNopLogger()
 	app := NewLiquidityApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 	ctx := app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()})
 
@@ -244,20 +247,18 @@ func TestInitGenesisOnMigration(t *testing.T) {
 }
 
 func TestUpgradeStateOnGenesis(t *testing.T) {
-	encCfg := MakeEncodingConfig()
+	encCfg := MakeTestEncodingConfig()
 	db := dbm.NewMemDB()
-	app := NewLiquidityApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
-	genesisState := NewDefaultGenesisState()
-	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
-	require.NoError(t, err)
-
-	// Initialize the chain
-	app.InitChain(
-		abci.RequestInitChain{
-			Validators:    []abci.ValidatorUpdate{},
-			AppStateBytes: stateBytes,
-		},
-	)
+	logger, _ := log.NewDefaultLogger("plain", "info", false)
+	app := NewSimappWithCustomOptions(t, false, SetupOptions{
+		Logger:             logger,
+		DB:                 db,
+		InvCheckPeriod:     0,
+		EncConfig:          encCfg,
+		HomePath:           DefaultNodeHome,
+		SkipUpgradeHeights: map[int64]bool{},
+		AppOpts:            EmptyAppOptions{},
+	})
 
 	// make sure the upgrade keeper has version map in state
 	ctx := app.NewContext(false, tmproto.Header{})

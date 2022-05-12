@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -14,7 +15,7 @@ import (
 // Keeper of the liquidity store
 type Keeper struct {
 	cdc           codec.BinaryCodec
-	storeKey      sdk.StoreKey
+	storeKey      storetypes.StoreKey
 	bankKeeper    types.BankKeeper
 	accountKeeper types.AccountKeeper
 	distrKeeper   types.DistributionKeeper
@@ -25,7 +26,7 @@ type Keeper struct {
 // - creating new ModuleAccounts for each pool ReserveAccount
 // - sending to and from ModuleAccounts
 // - minting, burning PoolCoins
-func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramstypes.Subspace, bankKeeper types.BankKeeper, accountKeeper types.AccountKeeper, distrKeeper types.DistributionKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, paramSpace paramstypes.Subspace, bankKeeper types.BankKeeper, accountKeeper types.AccountKeeper, distrKeeper types.DistributionKeeper) Keeper {
 	// ensure liquidity module account is set
 	if addr := accountKeeper.GetModuleAddress(types.ModuleName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))

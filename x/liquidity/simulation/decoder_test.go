@@ -24,7 +24,7 @@ var (
 )
 
 func TestDecodeLiquidityStore(t *testing.T) {
-	cdc := simapp.MakeTestEncodingConfig().Marshaler
+	cdc := simapp.MakeTestEncodingConfig().Codec
 	dec := simulation.NewDecodeStore(cdc)
 
 	pool := types.Pool{

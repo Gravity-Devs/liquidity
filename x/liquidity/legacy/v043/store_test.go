@@ -28,7 +28,7 @@ func TestStoreMigration(t *testing.T) {
 	_, _, reserveAcc2 := testdata.KeyTestPubAddr()
 
 	// Use dummy value for all keys.
-	value := encCfg.Marshaler.MustMarshal(&gogotypes.UInt64Value{Value: 1})
+	value := encCfg.Codec.MustMarshal(&gogotypes.UInt64Value{Value: 1})
 
 	testCases := []struct {
 		name   string

@@ -39,7 +39,7 @@ func NewAppConstructor(encodingCfg params.EncodingConfig, db *dbm.MemDB) network
 	return func(val network.Validator) servertypes.Application {
 		return liquidityapp.NewLiquidityApp(
 			val.Ctx.Logger, db, nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
-			liquidityapp.MakeEncodingConfig(),
+			liquidityapp.MakeTestEncodingConfig(),
 			simapp.EmptyAppOptions{},
 			baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),

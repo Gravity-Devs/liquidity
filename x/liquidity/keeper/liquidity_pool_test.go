@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/gravity-devs/liquidity/app"
@@ -129,16 +128,15 @@ func TestPoolCreationFee(t *testing.T) {
 	// Set PoolCreationFee for success
 	params.PoolCreationFee = types.DefaultPoolCreationFee
 	simapp.LiquidityKeeper.SetParams(ctx, params)
-	feePoolAcc := simapp.AccountKeeper.GetModuleAddress(distrtypes.ModuleName)
-	feePoolBalance := simapp.BankKeeper.GetAllBalances(ctx, feePoolAcc)
+	communityPool := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
 	msg = types.NewMsgCreatePool(addrs[0], poolTypeID, depositBalance)
 	_, err = simapp.LiquidityKeeper.CreatePool(ctx, msg)
 	require.NoError(t, err)
 
 	// Verify PoolCreationFee pay successfully
-	feePoolBalance = feePoolBalance.Add(params.PoolCreationFee...)
-	require.Equal(t, params.PoolCreationFee, feePoolBalance)
-	require.Equal(t, feePoolBalance, simapp.BankKeeper.GetAllBalances(ctx, feePoolAcc))
+	communityPoolAfter := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+	collectedFee := communityPoolAfter.Sub(communityPool).AmountOf(sdk.DefaultBondDenom).TruncateInt()
+	require.Equal(t, params.PoolCreationFee.AmountOf(sdk.DefaultBondDenom), collectedFee)
 }
 
 func TestExecuteDeposit(t *testing.T) {

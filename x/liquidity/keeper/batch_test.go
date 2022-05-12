@@ -1,11 +1,11 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/gravity-devs/liquidity/app"
@@ -131,8 +131,8 @@ func TestCreateDepositWithdrawWithinBatch(t *testing.T) {
 	depositBalanceAB := sdk.NewCoins(depositA, depositB)
 	require.Equal(t, deposit, depositBalance)
 	require.Equal(t, depositAB, depositBalanceAB)
-	feePoolAcc := simapp.AccountKeeper.GetModuleAddress(distrtypes.ModuleName)
-	feePoolBalance := simapp.BankKeeper.GetAllBalances(ctx, feePoolAcc)
+	communityPool := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+	fmt.Println(communityPool)
 
 	// Success case, create Liquidity pool
 	poolTypeID := types.DefaultPoolTypeID
@@ -141,8 +141,8 @@ func TestCreateDepositWithdrawWithinBatch(t *testing.T) {
 	require.NoError(t, err)
 
 	// Verify PoolCreationFee pay successfully
-	feePoolBalance = feePoolBalance.Add(params.PoolCreationFee...)
-	require.Equal(t, params.PoolCreationFee, feePoolBalance)
+	communityPoolAfter := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+	require.Equal(t, params.PoolCreationFee.AmountOf(sdk.DefaultBondDenom), communityPoolAfter.Sub(communityPool).AmountOf(sdk.DefaultBondDenom).TruncateInt())
 
 	// Fail case, reset deposit balance for pool already exists case
 	app.SaveAccount(simapp, ctx, addrs[0], deposit)
@@ -163,8 +163,9 @@ func TestCreateDepositWithdrawWithinBatch(t *testing.T) {
 	require.NoError(t, err)
 
 	// Verify PoolCreationFee pay successfully
-	feePoolBalance = simapp.BankKeeper.GetAllBalances(ctx, feePoolAcc)
-	require.Equal(t, params.PoolCreationFee.Add(params.PoolCreationFee...), feePoolBalance)
+	communityPoolAfter2 := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+	require.Equal(t, params.PoolCreationFee.Add(params.PoolCreationFee...).AmountOf(sdk.DefaultBondDenom),
+		communityPoolAfter2.Sub(communityPool).AmountOf(sdk.DefaultBondDenom).TruncateInt())
 
 	// verify created liquidity pool
 	pools := simapp.LiquidityKeeper.GetAllPools(ctx)
