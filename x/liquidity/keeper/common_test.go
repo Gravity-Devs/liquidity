@@ -43,15 +43,6 @@ func createLiquidity(t *testing.T, ctx sdk.Context, simapp *app.LiquidityApp) (
 
 	liquidity.EndBlocker(ctx, simapp.LiquidityKeeper)
 
-	price, _ := sdk.NewDecFromStr("1.1")
-	priceY, _ := sdk.NewDecFromStr("1.2")
-	xOfferCoins := []sdk.Coin{sdk.NewCoin(denomX, sdk.NewInt(10000))}
-	yOfferCoins := []sdk.Coin{sdk.NewCoin(denomY, sdk.NewInt(5000))}
-	xOrderPrices := []sdk.Dec{price}
-	yOrderPrices := []sdk.Dec{priceY}
-	xOrderAddrs := addrs[1:2]
-	yOrderAddrs := addrs[2:3]
-
 	// next block
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
 	liquidity.BeginBlocker(ctx, simapp.LiquidityKeeper)
@@ -64,11 +55,6 @@ func createLiquidity(t *testing.T, ctx sdk.Context, simapp *app.LiquidityApp) (
 	app.TestWithdrawPool(t, simapp, ctx, sdk.NewInt(500), addrs[1:2], poolID, false)
 	app.TestWithdrawPool(t, simapp, ctx, sdk.NewInt(50), addrs[2:3], poolID, false)
 	app.TestWithdrawPool(t, simapp, ctx, sdk.NewInt(500), addrs[2:3], poolID, false)
-
-	app.TestSwapPool(t, simapp, ctx, xOfferCoins, xOrderPrices, xOrderAddrs, poolID, false)
-	app.TestSwapPool(t, simapp, ctx, xOfferCoins, xOrderPrices, xOrderAddrs, poolID, false)
-	app.TestSwapPool(t, simapp, ctx, xOfferCoins, xOrderPrices, xOrderAddrs, poolID, false)
-	app.TestSwapPool(t, simapp, ctx, yOfferCoins, yOrderPrices, yOrderAddrs, poolID, false)
 
 	pools := simapp.LiquidityKeeper.GetAllPools(ctx)
 	batches := simapp.LiquidityKeeper.GetAllPoolBatches(ctx)

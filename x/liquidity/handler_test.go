@@ -237,8 +237,9 @@ func TestMsgServerGetLiquidityPoolMetadata(t *testing.T) {
 
 func TestMsgServerSwap(t *testing.T) {
 	simapp, ctx := app.CreateTestInput()
-	simapp.LiquidityKeeper.SetParams(ctx, types.DefaultParams())
-	params := simapp.LiquidityKeeper.GetParams(ctx)
+	params := types.DefaultParams()
+	params.CircuitBreakerEnabled = true
+	simapp.LiquidityKeeper.SetParams(ctx, params)
 	// init test app and context
 
 	// define test denom X, Y for Liquidity Pool
@@ -280,17 +281,17 @@ func TestMsgServerSwap(t *testing.T) {
 
 	handler := liquidity.NewHandler(simapp.LiquidityKeeper)
 	_, err := handler(ctx, msg1[0])
-	require.NoError(t, err)
+	require.ErrorIs(t, err, types.ErrCircuitBreakerEnabled)
 	_, err = handler(ctx, msg1[1])
-	require.NoError(t, err)
+	require.ErrorIs(t, err, types.ErrCircuitBreakerEnabled)
 	_, err = handler(ctx, msg1[2])
-	require.NoError(t, err)
+	require.ErrorIs(t, err, types.ErrCircuitBreakerEnabled)
 	_, err = handler(ctx, msg4[0])
-	require.NoError(t, err)
+	require.ErrorIs(t, err, types.ErrCircuitBreakerEnabled)
 	batch, found := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
 	require.True(t, found)
 	notProcessedMsgs := simapp.LiquidityKeeper.GetAllNotProcessedPoolBatchSwapMsgStates(ctx, batch)
 	msgs := simapp.LiquidityKeeper.GetAllPoolBatchSwapMsgStatesAsPointer(ctx, batch)
-	require.Equal(t, 4, len(msgs))
-	require.Equal(t, 4, len(notProcessedMsgs))
+	require.Equal(t, 0, len(msgs))
+	require.Equal(t, 0, len(notProcessedMsgs))
 }

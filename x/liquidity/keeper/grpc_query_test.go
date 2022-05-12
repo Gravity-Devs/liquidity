@@ -447,17 +447,6 @@ func (suite *KeeperTestSuite) TestGRPCQueryBatchSwapMsgs() {
 			func() {
 				req = &types.QueryPoolBatchSwapMsgsRequest{
 					PoolId:     suite.batches[0].PoolId,
-					Pagination: &query.PageRequest{Limit: 1, CountTotal: true}}
-			},
-			true,
-			1,
-			true,
-		},
-		{
-			"valid request",
-			func() {
-				req = &types.QueryPoolBatchSwapMsgsRequest{
-					PoolId:     suite.batches[0].PoolId,
 					Pagination: &query.PageRequest{Limit: 10, CountTotal: true}}
 			},
 			true,
