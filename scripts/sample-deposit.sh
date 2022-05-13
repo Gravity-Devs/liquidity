@@ -54,6 +54,7 @@ $BINARY tx liquidity deposit 1 100000stake,200000token \
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user1 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 
@@ -81,6 +82,7 @@ $BINARY tx liquidity deposit 2 100000stake,200000atom \
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user2 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 
