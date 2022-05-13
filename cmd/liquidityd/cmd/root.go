@@ -32,13 +32,12 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	tmcfg "github.com/tendermint/tendermint/config"
 
-	"github.com/gravity-devs/liquidity/app"
 	liquidity "github.com/gravity-devs/liquidity/app"
 	"github.com/gravity-devs/liquidity/app/params"
 )
 
 func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
-	encodingConfig := app.MakeTestEncodingConfig()
+	encodingConfig := liquidity.MakeTestEncodingConfig()
 	initClientCtx := client.Context{}.
 		WithCodec(encodingConfig.Codec).
 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).

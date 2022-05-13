@@ -125,6 +125,7 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			true, nil, 0,
 		},
@@ -137,6 +138,7 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			true, nil, 0,
 		},
@@ -149,6 +151,7 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			true, nil, 0,
 		},
@@ -161,6 +164,7 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			false, &sdk.TxResponse{}, 9,
 		},
@@ -173,6 +177,7 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},
@@ -186,7 +191,6 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 			clientCtx := val.ClientCtx
 
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
-
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -212,6 +216,7 @@ func (s *IntegrationTestSuite) TestNewDepositWithinBatchCmd() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -234,6 +239,7 @@ func (s *IntegrationTestSuite) TestNewDepositWithinBatchCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			true, nil, 0,
 		},
@@ -246,6 +252,7 @@ func (s *IntegrationTestSuite) TestNewDepositWithinBatchCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			true, nil, 0,
 		},
@@ -258,6 +265,7 @@ func (s *IntegrationTestSuite) TestNewDepositWithinBatchCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},
@@ -319,6 +327,7 @@ func (s *IntegrationTestSuite) TestNewWithdrawWithinBatchCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			true, nil, 0,
 		},
@@ -331,6 +340,7 @@ func (s *IntegrationTestSuite) TestNewWithdrawWithinBatchCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			false, &sdk.TxResponse{}, 29,
 		},
@@ -343,6 +353,7 @@ func (s *IntegrationTestSuite) TestNewWithdrawWithinBatchCmd() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},
@@ -382,6 +393,7 @@ func (s *IntegrationTestSuite) TestNewSwapWithinBatchCmd() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -498,6 +510,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryLiquidityPool() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -618,6 +631,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryLiquidityPools() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -676,6 +690,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryLiquidityPoolBatch() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -744,6 +759,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchDepositMsg() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -801,7 +817,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchDepositMsg() {
 			clientCtx := val.ClientCtx
 
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
-
+			fmt.Println(err)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -829,6 +845,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchDepositMsgs() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -914,6 +931,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchWithdrawMsg() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -1001,6 +1019,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchWithdrawMsgs() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(100_000_000)), sdk.NewCoin(denomY, sdk.NewInt(100_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -1088,6 +1107,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(X, Y).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
 
@@ -1105,6 +1125,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		denomX,
 		fmt.Sprintf("%.3f", 0.019),
 		fmt.Sprintf("%.3f", 0.003),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	var txRes sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
@@ -1163,6 +1184,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		denomX,
 		fmt.Sprintf("%.3f", 0.019),
 		fmt.Sprintf("%.3f", 0.003),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
@@ -1175,6 +1197,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(X, Y).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
@@ -1187,6 +1210,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		val.Address.String(),
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(10_000_000)), sdk.NewCoin(denomY, sdk.NewInt(10_000_000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
@@ -1200,6 +1224,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		val.Address.String(),
 		fmt.Sprintf("%d", uint32(1)),
 		sdk.NewCoins(sdk.NewCoin(poolCoinDenom, sdk.NewInt(500000))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
@@ -1210,6 +1235,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		val.Address.String(),
 		fmt.Sprintf("%d", uint32(1)),
 		sdk.NewCoins(sdk.NewCoin(poolCoinDenom, sdk.NewInt(499999))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
@@ -1221,6 +1247,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		val.Address.String(),
 		fmt.Sprintf("%d", uint32(1)),
 		sdk.NewCoins(sdk.NewCoin(poolCoinDenom, sdk.NewInt(1))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
@@ -1232,6 +1259,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		val.Address.String(),
 		fmt.Sprintf("%d", uint32(1)),
 		sdk.NewCoins(sdk.NewCoin(poolCoinDenom, sdk.NewInt(1))).String(),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))

@@ -61,6 +61,7 @@ func MsgCreatePoolExec(clientCtx client.Context, from, poolID, depositCoins stri
 		poolID,
 		depositCoins,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -76,6 +77,7 @@ func MsgDepositWithinBatchExec(clientCtx client.Context, from, poolID, depositCo
 		poolID,
 		depositCoins,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -91,6 +93,7 @@ func MsgWithdrawWithinBatchExec(clientCtx client.Context, from, poolID, poolCoin
 		poolID,
 		poolCoin,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -110,6 +113,7 @@ func MsgSwapWithinBatchExec(clientCtx client.Context, from, poolID, swapTypeID,
 		orderPrice,
 		swapFeeRate,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -123,6 +127,7 @@ func MsgParamChangeProposalExec(clientCtx client.Context, from string, file stri
 	args := append([]string{
 		file,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	paramChangeCmd := paramscli.NewSubmitParamChangeProposalTxCmd()
@@ -137,6 +142,7 @@ func MsgVote(clientCtx client.Context, from, id, vote string, extraArgs ...strin
 		id,
 		vote,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, extraArgs...)

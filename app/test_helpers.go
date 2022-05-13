@@ -80,7 +80,6 @@ func setup(withGenesis bool, invCheckPeriod uint) (*LiquidityApp, GenesisState) 
 
 // Setup initializes a new LiquidityApp. A Nop logger is set in LiquidityApp.
 func Setup(isCheckTx bool) *LiquidityApp {
-	app, _ := setup(!isCheckTx, 5)
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey(context.TODO())
 	// create validator set with single validator
@@ -95,7 +94,7 @@ func Setup(isCheckTx bool) *LiquidityApp {
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100000000000000))),
 	}
 
-	app = SetupWithGenesisValSet(valSet, []authtypes.GenesisAccount{acc}, balance)
+	app := SetupWithGenesisValSet(valSet, []authtypes.GenesisAccount{acc}, balance)
 
 	return app
 }
