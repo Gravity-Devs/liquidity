@@ -17,8 +17,8 @@ import (
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	paramscli "github.com/cosmos/cosmos-sdk/x/params/client/cli"
 
-	liquidityapp "github.com/gravity-devs/liquidity/app"
-	liquiditycli "github.com/gravity-devs/liquidity/x/liquidity/client/cli"
+	liquidityapp "github.com/gravity-devs/liquidity/v2/app"
+	liquiditycli "github.com/gravity-devs/liquidity/v2/x/liquidity/client/cli"
 
 	dbm "github.com/tendermint/tm-db"
 )

@@ -9,7 +9,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // Keeper of the liquidity store

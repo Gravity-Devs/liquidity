@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

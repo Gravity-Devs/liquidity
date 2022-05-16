@@ -8,7 +8,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 func (k Keeper) ValidateMsgCreatePool(ctx sdk.Context, msg *types.MsgCreatePool) error {

@@ -32,8 +32,8 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	tmcfg "github.com/tendermint/tendermint/config"
 
-	liquidity "github.com/gravity-devs/liquidity/app"
-	"github.com/gravity-devs/liquidity/app/params"
+	liquidity "github.com/gravity-devs/liquidity/v2/app"
+	"github.com/gravity-devs/liquidity/v2/app/params"
 )
 
 func NewRootCmd() (*cobra.Command, params.EncodingConfig) {

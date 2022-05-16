@@ -35,7 +35,7 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	liquiditytypes "github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // Get flags every time the simulator is run

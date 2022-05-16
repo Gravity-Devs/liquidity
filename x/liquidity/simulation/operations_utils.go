@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 var (

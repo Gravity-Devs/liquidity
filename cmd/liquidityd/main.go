@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	liquidity "github.com/gravity-devs/liquidity/app"
-	"github.com/gravity-devs/liquidity/cmd/liquidityd/cmd"
+	liquidity "github.com/gravity-devs/liquidity/v2/app"
+	"github.com/gravity-devs/liquidity/v2/cmd/liquidityd/cmd"
 )
 
 func main() {

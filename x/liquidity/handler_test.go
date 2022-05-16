@@ -9,9 +9,9 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/app"
-	"github.com/gravity-devs/liquidity/x/liquidity"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/app"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 func TestBadMsg(t *testing.T) {

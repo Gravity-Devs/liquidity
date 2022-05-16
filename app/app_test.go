@@ -34,7 +34,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 
-	"github.com/gravity-devs/liquidity/x/liquidity"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity"
 )
 
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {

@@ -8,8 +8,8 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/app"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/app"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 func TestParams(t *testing.T) {

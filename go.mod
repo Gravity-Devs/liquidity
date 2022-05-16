@@ -1,6 +1,6 @@
 go 1.17
 
-module github.com/gravity-devs/liquidity
+module github.com/gravity-devs/liquidity/v2
 
 require (
 	github.com/cosmos/cosmos-sdk v0.46.0-beta2

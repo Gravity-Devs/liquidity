@@ -11,8 +11,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/kv"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/simulation"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/simulation"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 var (

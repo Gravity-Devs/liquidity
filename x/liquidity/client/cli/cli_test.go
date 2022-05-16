@@ -32,11 +32,11 @@ import (
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	paramscutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 
-	lapp "github.com/gravity-devs/liquidity/app"
-	"github.com/gravity-devs/liquidity/x/liquidity"
-	"github.com/gravity-devs/liquidity/x/liquidity/client/cli"
-	liquiditytestutil "github.com/gravity-devs/liquidity/x/liquidity/client/testutil"
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+	lapp "github.com/gravity-devs/liquidity/v2/app"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/client/cli"
+	liquiditytestutil "github.com/gravity-devs/liquidity/v2/x/liquidity/client/testutil"
+	liquiditytypes "github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 	tmjson "github.com/tendermint/tendermint/libs/json"

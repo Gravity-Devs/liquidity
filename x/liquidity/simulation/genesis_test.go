@@ -12,8 +12,8 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/simulation"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/simulation"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // TestRandomizedGenState tests the normal scenario of applying RandomizedGenState.

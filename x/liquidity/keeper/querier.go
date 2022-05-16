@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // NewQuerier creates a querier for liquidity REST endpoints

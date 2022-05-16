@@ -4,7 +4,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	v042liquidity "github.com/gravity-devs/liquidity/x/liquidity/legacy/v042"
+	v042liquidity "github.com/gravity-devs/liquidity/v2/x/liquidity/legacy/v042"
 )
 
 // MigrateStore performs in-place store migrations from v0.42 to v0.43. The

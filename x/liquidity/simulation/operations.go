@@ -10,9 +10,9 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	liquidityparams "github.com/gravity-devs/liquidity/app/params"
-	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	liquidityparams "github.com/gravity-devs/liquidity/v2/app/params"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // Simulation operation weights constants.
