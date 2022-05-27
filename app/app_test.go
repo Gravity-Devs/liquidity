@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	authmiddleware "github.com/cosmos/cosmos-sdk/x/auth/middleware"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
@@ -81,7 +80,7 @@ func TestRunMigrations(t *testing.T) {
 	bApp := baseapp.NewBaseApp(appName, logger, db)
 	bApp.SetCommitMultiStoreTracer(nil)
 	bApp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
-	msr := authmiddleware.NewMsgServiceRouter(encCfg.InterfaceRegistry)
+	msr := app.BaseApp.NewMsgServiceRouter(encCfg.InterfaceRegistry)
 	app.BaseApp = bApp
 	app.configurator = module.NewConfigurator(app.appCodec, msr, app.GRPCQueryRouter())
 

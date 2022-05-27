@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/tendermint/tendermint/crypto"
@@ -58,7 +59,7 @@ func GetReserveAcc(poolCoinDenom string, len32 bool) (sdk.AccAddress, error) {
 		// The rules are temporarily added for testing on 32-length bytes addresses of ADR-28 and are subject to change.
 		return sdk.AccAddress(address.Module(ModuleName, []byte(poolCoinDenom))), nil
 	}
-	return sdk.AccAddressFromHex(poolCoinDenom[:40])
+	return sdk.AccAddressFromHexUnsafe(poolCoinDenom[:40])
 }
 
 // GetCoinsTotalAmount returns total amount of all coins in sdk.Coins.
@@ -88,7 +89,7 @@ func GetOfferCoinFee(offerCoin sdk.Coin, swapFeeRate sdk.Dec) sdk.Coin {
 	}
 	// apply half-ratio swap fee rate and ceiling
 	// see https://github.com/tendermint/liquidity/issues/41 for details
-	return sdk.NewCoin(offerCoin.Denom, offerCoin.Amount.ToDec().Mul(swapFeeRate.QuoInt64(2)).Ceil().TruncateInt()) // Ceil(offerCoin.Amount * (swapFeeRate/2))
+	return sdk.NewCoin(offerCoin.Denom, math.Dec(offerCoin.Amount.Mul(swapFeeRate.QuoInt64(2)).Ceil().TruncateInt())) // Ceil(offerCoin.Amount * (swapFeeRate/2)) NOTE: I COULD HAVE MADE A BUG HERE IN THE DECIMAL CONVERSION.
 }
 
 func MustParseCoinsNormalized(coinStr string) sdk.Coins {
