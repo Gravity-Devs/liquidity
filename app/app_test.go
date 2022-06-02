@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	authmiddleware "github.com/cosmos/cosmos-sdk/x/auth/middleware"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
@@ -78,12 +77,11 @@ func TestRunMigrations(t *testing.T) {
 	app := NewLiquidityApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 
 	// Create a new baseapp and configurator for the purpose of this test.
-	bApp := baseapp.NewBaseApp(appName, logger, db)
+	bApp := baseapp.NewBaseApp(appName, logger, db, encCfg.TxConfig.TxDecoder())
 	bApp.SetCommitMultiStoreTracer(nil)
 	bApp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
-	msr := authmiddleware.NewMsgServiceRouter(encCfg.InterfaceRegistry)
 	app.BaseApp = bApp
-	app.configurator = module.NewConfigurator(app.appCodec, msr, app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(app.appCodec, bApp.MsgServiceRouter(), app.GRPCQueryRouter())
 
 	// We register all modules on the Configurator, except x/bank. x/bank will
 	// serve as the test subject on which we run the migration tests.
