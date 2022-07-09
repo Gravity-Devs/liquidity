@@ -149,7 +149,7 @@ func SimulateMsgCreatePool(ak types.AccountKeeper, bk types.BankKeeper, k keeper
 		}
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
-		tx, err := helpers.GenTx(
+		tx, err := helpers.GenSignedMockTx(
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
@@ -225,7 +225,7 @@ func SimulateMsgDepositWithinBatch(ak types.AccountKeeper, bk types.BankKeeper, 
 		msg := types.NewMsgDepositWithinBatch(depositor, pool.Id, depositCoins)
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
-		tx, err := helpers.GenTx(
+		tx, err := helpers.GenSignedMockTx(
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
@@ -292,7 +292,7 @@ func SimulateMsgWithdrawWithinBatch(ak types.AccountKeeper, bk types.BankKeeper,
 		}
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
-		tx, err := helpers.GenTx(
+		tx, err := helpers.GenSignedMockTx(
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
@@ -362,7 +362,7 @@ func SimulateMsgSwapWithinBatch(ak types.AccountKeeper, bk types.BankKeeper, k k
 		}
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
-		tx, err := helpers.GenTx(
+		tx, err := helpers.GenSignedMockTx(
 			txGen,
 			[]sdk.Msg{msg},
 			fees,

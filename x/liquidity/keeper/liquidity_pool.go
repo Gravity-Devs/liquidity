@@ -245,23 +245,23 @@ func (k Keeper) ExecuteDeposit(ctx sdk.Context, msg types.DepositMsgState, batch
 	depositCoinA := depositCoins[0]
 	depositCoinB := depositCoins[1]
 
-	poolCoinTotalSupply := k.GetPoolCoinTotalSupply(ctx, pool).ToDec()
-	if err := types.CheckOverflowWithDec(poolCoinTotalSupply, depositCoinA.Amount.ToDec()); err != nil {
+	poolCoinTotalSupply := sdk.NewDecFromInt(k.GetPoolCoinTotalSupply(ctx, pool))
+	if err := types.CheckOverflowWithDec(poolCoinTotalSupply, sdk.NewDecFromInt(depositCoinA.Amount)); err != nil {
 		return err
 	}
-	if err := types.CheckOverflowWithDec(poolCoinTotalSupply, depositCoinB.Amount.ToDec()); err != nil {
+	if err := types.CheckOverflowWithDec(poolCoinTotalSupply, sdk.NewDecFromInt(depositCoinB.Amount)); err != nil {
 		return err
 	}
 	poolCoinMintAmt := sdk.MinDec(
-		poolCoinTotalSupply.MulTruncate(depositCoinA.Amount.ToDec()).QuoTruncate(lastReserveCoinA.Amount.ToDec()),
-		poolCoinTotalSupply.MulTruncate(depositCoinB.Amount.ToDec()).QuoTruncate(lastReserveCoinB.Amount.ToDec()),
+		poolCoinTotalSupply.MulTruncate(sdk.NewDecFromInt(depositCoinA.Amount)).QuoTruncate(sdk.NewDecFromInt(lastReserveCoinA.Amount)),
+		poolCoinTotalSupply.MulTruncate(sdk.NewDecFromInt(depositCoinB.Amount)).QuoTruncate(sdk.NewDecFromInt(lastReserveCoinB.Amount)),
 	)
 	mintRate := poolCoinMintAmt.TruncateDec().QuoTruncate(poolCoinTotalSupply)
 	acceptedCoins := sdk.NewCoins(
-		sdk.NewCoin(depositCoins[0].Denom, lastReserveCoinA.Amount.ToDec().Mul(mintRate).TruncateInt()),
-		sdk.NewCoin(depositCoins[1].Denom, lastReserveCoinB.Amount.ToDec().Mul(mintRate).TruncateInt()),
+		sdk.NewCoin(depositCoins[0].Denom, sdk.NewDecFromInt(lastReserveCoinA.Amount).Mul(mintRate).TruncateInt()),
+		sdk.NewCoin(depositCoins[1].Denom, sdk.NewDecFromInt(lastReserveCoinB.Amount).Mul(mintRate).TruncateInt()),
 	)
-	refundedCoins := depositCoins.Sub(acceptedCoins)
+	refundedCoins := depositCoins.Sub(acceptedCoins...)
 	refundedCoinA := sdk.NewCoin(depositCoinA.Denom, refundedCoins.AmountOf(depositCoinA.Denom))
 	refundedCoinB := sdk.NewCoin(depositCoinB.Denom, refundedCoins.AmountOf(depositCoinB.Denom))
 
@@ -387,12 +387,12 @@ func (k Keeper) ExecuteWithdrawal(ctx sdk.Context, msg types.WithdrawMsgState, b
 			if err := types.CheckOverflow(reserveCoin.Amount, msg.Msg.PoolCoin.Amount); err != nil {
 				return err
 			}
-			if err := types.CheckOverflow(reserveCoin.Amount.Mul(msg.Msg.PoolCoin.Amount).ToDec().TruncateInt(), poolCoinTotalSupply); err != nil {
+			if err := types.CheckOverflow(sdk.NewDecFromInt(reserveCoin.Amount.Mul(msg.Msg.PoolCoin.Amount)).TruncateInt(), poolCoinTotalSupply); err != nil {
 				return err
 			}
 			// WithdrawAmount = ReserveAmount * PoolCoinAmount * WithdrawFeeProportion / TotalSupply
-			withdrawAmtWithFee := reserveCoin.Amount.Mul(msg.Msg.PoolCoin.Amount).ToDec().TruncateInt().Quo(poolCoinTotalSupply)
-			withdrawAmt := reserveCoin.Amount.Mul(msg.Msg.PoolCoin.Amount).ToDec().MulTruncate(withdrawProportion).TruncateInt().Quo(poolCoinTotalSupply)
+			withdrawAmtWithFee := sdk.NewDecFromInt(reserveCoin.Amount.Mul(msg.Msg.PoolCoin.Amount)).TruncateInt().Quo(poolCoinTotalSupply)
+			withdrawAmt := sdk.NewDecFromInt(reserveCoin.Amount.Mul(msg.Msg.PoolCoin.Amount)).MulTruncate(withdrawProportion).TruncateInt().Quo(poolCoinTotalSupply)
 			withdrawCoins = append(withdrawCoins, sdk.NewCoin(reserveCoin.Denom, withdrawAmt))
 			withdrawFeeCoins = append(withdrawFeeCoins, sdk.NewCoin(reserveCoin.Denom, withdrawAmtWithFee.Sub(withdrawAmt)))
 		}

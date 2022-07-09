@@ -88,9 +88,9 @@ func MintingPoolCoinsInvariant(poolCoinTotalSupply, mintPoolCoin, depositCoinA, 
 		depositCoinB = depositCoinB.Sub(refundedCoinB)
 	}
 
-	poolCoinRatio := mintPoolCoin.ToDec().QuoInt(poolCoinTotalSupply)
-	depositCoinARatio := depositCoinA.ToDec().QuoInt(lastReserveCoinA)
-	depositCoinBRatio := depositCoinB.ToDec().QuoInt(lastReserveCoinB)
+	poolCoinRatio := sdk.NewDecFromInt(mintPoolCoin).QuoInt(poolCoinTotalSupply)
+	depositCoinARatio := sdk.NewDecFromInt(depositCoinA).QuoInt(lastReserveCoinA)
+	depositCoinBRatio := sdk.NewDecFromInt(depositCoinB).QuoInt(lastReserveCoinB)
 	expectedMintPoolCoinAmtBasedA := depositCoinARatio.MulInt(poolCoinTotalSupply).TruncateInt()
 	expectedMintPoolCoinAmtBasedB := depositCoinBRatio.MulInt(poolCoinTotalSupply).TruncateInt()
 
@@ -106,8 +106,8 @@ func MintingPoolCoinsInvariant(poolCoinTotalSupply, mintPoolCoin, depositCoinA, 
 	}
 
 	if mintPoolCoin.GTE(coinAmountThreshold) &&
-		(sdk.MaxInt(mintPoolCoin, expectedMintPoolCoinAmtBasedA).Sub(sdk.MinInt(mintPoolCoin, expectedMintPoolCoinAmtBasedA)).ToDec().QuoInt(mintPoolCoin).GT(errorRateThreshold) ||
-			sdk.MaxInt(mintPoolCoin, expectedMintPoolCoinAmtBasedB).Sub(sdk.MinInt(mintPoolCoin, expectedMintPoolCoinAmtBasedA)).ToDec().QuoInt(mintPoolCoin).GT(errorRateThreshold)) {
+		(sdk.NewDecFromInt(sdk.MaxInt(mintPoolCoin, expectedMintPoolCoinAmtBasedA).Sub(sdk.MinInt(mintPoolCoin, expectedMintPoolCoinAmtBasedA))).QuoInt(mintPoolCoin).GT(errorRateThreshold) ||
+			sdk.NewDecFromInt(sdk.MaxInt(mintPoolCoin, expectedMintPoolCoinAmtBasedB).Sub(sdk.MinInt(mintPoolCoin, expectedMintPoolCoinAmtBasedA))).QuoInt(mintPoolCoin).GT(errorRateThreshold)) {
 		panic("invariant check fails due to incorrect amount of pool coins")
 	}
 }
@@ -117,9 +117,9 @@ func DepositInvariant(lastReserveCoinA, lastReserveCoinB, depositCoinA, depositC
 	depositCoinA = depositCoinA.Sub(refundedCoinA)
 	depositCoinB = depositCoinB.Sub(refundedCoinB)
 
-	depositCoinRatio := depositCoinA.ToDec().Quo(depositCoinB.ToDec())
-	lastReserveRatio := lastReserveCoinA.ToDec().Quo(lastReserveCoinB.ToDec())
-	afterReserveRatio := afterReserveCoinA.ToDec().Quo(afterReserveCoinB.ToDec())
+	depositCoinRatio := sdk.NewDecFromInt(depositCoinA).Quo(sdk.NewDecFromInt(depositCoinB))
+	lastReserveRatio := sdk.NewDecFromInt(lastReserveCoinA).Quo(sdk.NewDecFromInt(lastReserveCoinB))
+	afterReserveRatio := sdk.NewDecFromInt(afterReserveCoinA).Quo(sdk.NewDecFromInt(afterReserveCoinB))
 
 	// AfterDepositReserveCoinA = LastReserveCoinA + AfterRefundedDepositCoinA
 	// AfterDepositReserveCoinB = LastReserveCoinB + AfterRefundedDepositCoinA
@@ -143,13 +143,13 @@ func DepositInvariant(lastReserveCoinA, lastReserveCoinB, depositCoinA, depositC
 
 // BurningPoolCoinsInvariant checks the correct burning amount of pool coins.
 func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, lastPoolCoinSupply sdk.Int, withdrawFeeCoins sdk.Coins) {
-	burningPoolCoinRatio := burnedPoolCoin.ToDec().Quo(lastPoolCoinSupply.ToDec())
+	burningPoolCoinRatio := sdk.NewDecFromInt(burnedPoolCoin).Quo(sdk.NewDecFromInt(lastPoolCoinSupply))
 	if burningPoolCoinRatio.Equal(sdk.OneDec()) {
 		return
 	}
 
-	withdrawCoinARatio := withdrawCoinA.Add(withdrawFeeCoins[0].Amount).ToDec().Quo(reserveCoinA.ToDec())
-	withdrawCoinBRatio := withdrawCoinB.Add(withdrawFeeCoins[1].Amount).ToDec().Quo(reserveCoinB.ToDec())
+	withdrawCoinARatio := sdk.NewDecFromInt(withdrawCoinA.Add(withdrawFeeCoins[0].Amount)).Quo(sdk.NewDecFromInt(reserveCoinA))
+	withdrawCoinBRatio := sdk.NewDecFromInt(withdrawCoinB.Add(withdrawFeeCoins[1].Amount)).Quo(sdk.NewDecFromInt(reserveCoinB))
 
 	// BurnedPoolCoinAmount / LastPoolCoinSupply >= (WithdrawCoinA+WithdrawFeeCoinA) / LastReserveCoinA
 	// BurnedPoolCoinAmount / LastPoolCoinSupply >= (WithdrawCoinB+WithdrawFeeCoinB) / LastReserveCoinB
@@ -157,12 +157,12 @@ func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, res
 		panic("invariant check fails due to incorrect ratio of burning pool coins")
 	}
 
-	expectedBurningPoolCoinBasedA := lastPoolCoinSupply.ToDec().MulTruncate(withdrawCoinARatio).TruncateInt()
-	expectedBurningPoolCoinBasedB := lastPoolCoinSupply.ToDec().MulTruncate(withdrawCoinBRatio).TruncateInt()
+	expectedBurningPoolCoinBasedA := sdk.NewDecFromInt(lastPoolCoinSupply).MulTruncate(withdrawCoinARatio).TruncateInt()
+	expectedBurningPoolCoinBasedB := sdk.NewDecFromInt(lastPoolCoinSupply).MulTruncate(withdrawCoinBRatio).TruncateInt()
 
 	if burnedPoolCoin.GTE(coinAmountThreshold) &&
-		(sdk.MaxInt(burnedPoolCoin, expectedBurningPoolCoinBasedA).Sub(sdk.MinInt(burnedPoolCoin, expectedBurningPoolCoinBasedA)).ToDec().QuoInt(burnedPoolCoin).GT(errorRateThreshold) ||
-			sdk.MaxInt(burnedPoolCoin, expectedBurningPoolCoinBasedB).Sub(sdk.MinInt(burnedPoolCoin, expectedBurningPoolCoinBasedB)).ToDec().QuoInt(burnedPoolCoin).GT(errorRateThreshold)) {
+		(sdk.NewDecFromInt(sdk.MaxInt(burnedPoolCoin, expectedBurningPoolCoinBasedA).Sub(sdk.MinInt(burnedPoolCoin, expectedBurningPoolCoinBasedA))).QuoInt(burnedPoolCoin).GT(errorRateThreshold) ||
+			sdk.NewDecFromInt(sdk.MaxInt(burnedPoolCoin, expectedBurningPoolCoinBasedB).Sub(sdk.MinInt(burnedPoolCoin, expectedBurningPoolCoinBasedB))).QuoInt(burnedPoolCoin).GT(errorRateThreshold)) {
 		panic("invariant check fails due to incorrect amount of burning pool coins")
 	}
 }
@@ -188,11 +188,11 @@ func WithdrawReserveCoinsInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, r
 
 // WithdrawAmountInvariant checks the correct ratio of withdraw coin amounts.
 func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, burnedPoolCoin, poolCoinSupply sdk.Int, withdrawFeeRate sdk.Dec) {
-	ratio := burnedPoolCoin.ToDec().Quo(poolCoinSupply.ToDec()).Mul(sdk.OneDec().Sub(withdrawFeeRate))
-	idealWithdrawCoinA := reserveCoinA.ToDec().Mul(ratio)
-	idealWithdrawCoinB := reserveCoinB.ToDec().Mul(ratio)
-	diffA := idealWithdrawCoinA.Sub(withdrawCoinA.ToDec()).Abs()
-	diffB := idealWithdrawCoinB.Sub(withdrawCoinB.ToDec()).Abs()
+	ratio := sdk.NewDecFromInt(burnedPoolCoin).Quo(sdk.NewDecFromInt(poolCoinSupply)).Mul(sdk.OneDec().Sub(withdrawFeeRate))
+	idealWithdrawCoinA := sdk.NewDecFromInt(reserveCoinA).Mul(ratio)
+	idealWithdrawCoinB := sdk.NewDecFromInt(reserveCoinB).Mul(ratio)
+	diffA := idealWithdrawCoinA.Sub(sdk.NewDecFromInt(withdrawCoinA)).Abs()
+	diffB := idealWithdrawCoinB.Sub(sdk.NewDecFromInt(withdrawCoinB)).Abs()
 	if !burnedPoolCoin.Equal(poolCoinSupply) {
 		if diffA.GTE(sdk.OneDec()) {
 			panic(fmt.Sprintf("withdraw coin amount %v differs too much from %v", withdrawCoinA, idealWithdrawCoinA))
@@ -210,8 +210,8 @@ func ImmutablePoolPriceAfterWithdrawInvariant(reserveCoinA, reserveCoinB, withdr
 		reserveCoinA = reserveCoinA.Sub(withdrawCoinA)
 		reserveCoinB = reserveCoinB.Sub(withdrawCoinB)
 
-		reserveCoinRatio := reserveCoinA.ToDec().Quo(reserveCoinB.ToDec())
-		afterReserveCoinRatio := afterReserveCoinA.ToDec().Quo(afterReserveCoinB.ToDec())
+		reserveCoinRatio := sdk.NewDecFromInt(reserveCoinA).Quo(sdk.NewDecFromInt(reserveCoinB))
+		afterReserveCoinRatio := sdk.NewDecFromInt(afterReserveCoinA).Quo(sdk.NewDecFromInt(afterReserveCoinB))
 
 		// LastReserveCoinA / LastReserveCoinB = AfterWithdrawReserveCoinA / AfterWithdrawReserveCoinB
 		if reserveCoinA.GTE(coinAmountThreshold) && reserveCoinB.GTE(coinAmountThreshold) &&
