@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"os"
 	"testing"
 
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -39,7 +40,7 @@ import (
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	db := dbm.NewMemDB()
-	logger, _ := log.NewLogger("plain", "info", false)
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimappWithCustomOptions(t, false, SetupOptions{
 		Logger:             logger,
 		DB:                 db,
@@ -73,16 +74,15 @@ func TestGetMaccPerms(t *testing.T) {
 func TestRunMigrations(t *testing.T) {
 	db := dbm.NewMemDB()
 	encCfg := MakeTestEncodingConfig()
-	logger, _ := log.NewDefaultLogger("plain", "info", false)
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewLiquidityApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 
 	// Create a new baseapp and configurator for the purpose of this test.
-	bApp := baseapp.NewBaseApp(appName, logger, db)
+	bApp := baseapp.NewBaseApp(appName, logger, db, encCfg.TxConfig.TxDecoder())
 	bApp.SetCommitMultiStoreTracer(nil)
 	bApp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
-	msr := app.BaseApp.NewMsgServiceRouter(encCfg.InterfaceRegistry)
 	app.BaseApp = bApp
-	app.configurator = module.NewConfigurator(app.appCodec, msr, app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(app.appCodec, bApp.MsgServiceRouter(), app.GRPCQueryRouter())
 
 	// We register all modules on the Configurator, except x/bank. x/bank will
 	// serve as the test subject on which we run the migration tests.
@@ -248,7 +248,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 func TestUpgradeStateOnGenesis(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	db := dbm.NewMemDB()
-	logger, _ := log.NewDefaultLogger("plain", "info", false)
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimappWithCustomOptions(t, false, SetupOptions{
 		Logger:             logger,
 		DB:                 db,
