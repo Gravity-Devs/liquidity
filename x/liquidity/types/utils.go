@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/tendermint/tendermint/crypto"
@@ -89,7 +90,8 @@ func GetOfferCoinFee(offerCoin sdk.Coin, swapFeeRate sdk.Dec) sdk.Coin {
 	}
 	// apply half-ratio swap fee rate and ceiling
 	// see https://github.com/tendermint/liquidity/issues/41 for details
-	return sdk.NewCoin(offerCoin.Denom, math.Dec(offerCoin.Amount.Mul(swapFeeRate.QuoInt64(2)).Ceil().TruncateInt())) // Ceil(offerCoin.Amount * (swapFeeRate/2)) NOTE: I COULD HAVE MADE A BUG HERE IN THE DECIMAL CONVERSION.
+	// Check this please, I converted it to integer math.  -Jacob.
+	return sdk.NewCoin(offerCoin.Denom, offerCoin.Amount.Mul(math.Int(swapFeeRate.QuoInt64(2).Ceil()))) // Ceil(offerCoin.Amount * (swapFeeRate/2)) NOTE: I COULD HAVE MADE A BUG HERE IN THE DECIMAL CONVERSION.
 }
 
 func MustParseCoinsNormalized(coinStr string) sdk.Coins {
