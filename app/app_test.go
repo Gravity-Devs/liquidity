@@ -39,7 +39,7 @@ import (
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	db := dbm.NewMemDB()
-	logger, _ := log.NewDefaultLogger("plain", "info", false)
+	logger, _ := log.NewLogger("plain", "info", false)
 	app := NewSimappWithCustomOptions(t, false, SetupOptions{
 		Logger:             logger,
 		DB:                 db,

@@ -12,7 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata_pulsar"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
@@ -29,6 +28,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
@@ -163,7 +163,6 @@ type LiquidityApp struct {
 	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Codec
 	interfaceRegistry types.InterfaceRegistry
-
 
 	invCheckPeriod uint
 
