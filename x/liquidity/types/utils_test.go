@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -221,7 +222,7 @@ func TestGetOfferCoinFee(t *testing.T) {
 	testCases := []struct {
 		name               string
 		offerCoin          sdk.Coin
-		swapFeeRate        sdk.Dec
+		swapFeeRate        math.Int
 		expectOfferCoinFee sdk.Coin
 	}{
 		{
@@ -313,20 +314,20 @@ func TestCheckOverflow(t *testing.T) {
 func TestCheckOverflowWithDec(t *testing.T) {
 	testCases := []struct {
 		name      string
-		a         sdk.Dec
-		b         sdk.Dec
+		a         math.Int
+		b         math.Int
 		expectErr error
 	}{
 		{
 			name:      "valid case",
-			a:         sdk.MustNewDecFromStr("1.0"),
-			b:         sdk.MustNewDecFromStr("0.0000001"),
+			a:         sdk.NewIntFromString("1.0"),
+			b:         sdk.NewIntFromString("0.0000001"),
 			expectErr: nil,
 		},
 		{
 			name:      "overflow case",
-			a:         sdk.MustNewDecFromStr("100000000000000000000000000000000000000000000000000000000000.0").MulInt64(10),
-			b:         sdk.MustNewDecFromStr("0.000000000000000001"),
+			a:         sdk.NewIntFromString("100000000000000000000000000000000000000000000000000000000000.0").MulInt64(10),
+			b:         sdk.NewIntFromString("0.000000000000000001"),
 			expectErr: types.ErrOverflowAmount,
 		},
 	}

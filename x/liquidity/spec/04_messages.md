@@ -85,7 +85,7 @@ type MsgSwapWithinBatch struct {
     OfferCoin            sdk.Coin   // offer coin of this swap
     DemandCoinDenom      string     // denom of demand coin of this swap
     OfferCoinFee         sdk.Coin   // offer coin fee for pay fees in half offer coin
-    OrderPrice           sdk.Dec    // limit order price where the price is the exchange ratio of X/Y where X is the amount of the first coin and Y is the amount of the second coin when their denoms are sorted alphabetically
+    OrderPrice           math.Int   // limit order price where the price is the exchange ratio of X/Y where X is the amount of the first coin and Y is the amount of the second coin when their denoms are sorted alphabetically
 }
 ```
 

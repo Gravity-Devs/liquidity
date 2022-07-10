@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -265,14 +266,14 @@ func TestMsgServerSwap(t *testing.T) {
 	liquidity.BeginBlocker(ctx, simapp.LiquidityKeeper)
 
 	// Create swap msg for test purposes and put it in the batch.
-	price, _ := sdk.NewDecFromStr("1.1")
-	priceY, _ := sdk.NewDecFromStr("1.2")
+	price, _ := sdk.NewIntFromString("1.1")
+	priceY, _ := sdk.NewIntFromString("1.2")
 	xOfferCoins := []sdk.Coin{sdk.NewCoin(denomX, sdk.NewInt(10000)),
 		sdk.NewCoin(denomX, sdk.NewInt(10000)),
 		sdk.NewCoin(denomX, sdk.NewInt(10000))}
 	yOfferCoins := []sdk.Coin{sdk.NewCoin(denomY, sdk.NewInt(5000))}
-	xOrderPrices := []sdk.Dec{price, price, price}
-	yOrderPrices := []sdk.Dec{priceY}
+	xOrderPrices := []math.Int{price, price, price}
+	yOrderPrices := []math.Int{priceY}
 	xOrderAddrs := addrs[1:4]
 	yOrderAddrs := addrs[5:6]
 

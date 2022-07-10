@@ -101,31 +101,31 @@ message Params {
     // Swap fee rate for every executed swap.
     string swap_fee_rate = 6 [
         (gogoproto.moretags)   = "yaml:\"swap_fee_rate\"",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.customtype) = "cosmossdk.io/math.Int",
         (gogoproto.nullable)   = false,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
             example: "\"0.003\"",
-            format: "sdk.Dec"
+            format: "math.Int"
         }];
 
     // Reserve coin withdrawal with less proportion by withdrawFeeRate.
     string withdraw_fee_rate = 7 [
         (gogoproto.moretags)   = "yaml:\"withdraw_fee_rate\"",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.customtype) = "cosmossdk.io/math.Int",
         (gogoproto.nullable)   = false,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
             example: "\"0.003\"",
-            format: "sdk.Dec"
+            format: "math.Int"
         }];
 
     // Maximum ratio of reserve coins that can be ordered at a swap order.
     string max_order_amount_ratio = 8 [
         (gogoproto.moretags)   = "yaml:\"max_order_amount_ratio\"",
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.customtype) = "cosmossdk.io/math.Int",
         (gogoproto.nullable)   = false,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
             example: "\"0.003\"",
-            format: "sdk.Dec"
+            format: "math.Int"
         }];
 
     // The smallest unit batch height for every liquidity pool.

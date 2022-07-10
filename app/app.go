@@ -15,7 +15,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata_pulsar"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -31,7 +30,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
@@ -514,7 +512,7 @@ func NewLiquidityApp(
 	app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
 	app.setAnteHandler(encodingConfig.TxConfig, cast.ToStringSlice(appOpts.Get(server.FlagIndexEvents)))
-	app.setPostHandler()
+	//	app.setPostHandler()
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
@@ -546,10 +544,11 @@ func (app *LiquidityApp) setAnteHandler(txConfig client.TxConfig, indexEventsStr
 	app.SetAnteHandler(anteHandler)
 }
 
+/*
 func (app *LiquidityApp) setPostHandler() {
 	postHandler, err := posthandler.NewPostHandler(
 		posthandler.HandlerOptions{
-			BankKeeper: app.BankKeeper,
+			bankkeeper: app.BankKeeper,
 		},
 	)
 	if err != nil {
@@ -558,6 +557,7 @@ func (app *LiquidityApp) setPostHandler() {
 
 	app.SetPostHandler(postHandler)
 }
+*/
 
 // Name returns the name of the App
 func (app *LiquidityApp) Name() string { return app.BaseApp.Name() }

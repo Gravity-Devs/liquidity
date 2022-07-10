@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/stretchr/testify/require"
@@ -124,14 +125,14 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"NilSwapFeeRate",
 			func(params *types.Params) {
-				params.SwapFeeRate = sdk.Dec{}
+				params.SwapFeeRate = sdk.Int{}
 			},
 			"swap fee rate must not be nil",
 		},
 		{
 			"NegativeSwapFeeRate",
 			func(params *types.Params) {
-				params.SwapFeeRate = sdk.NewDec(-1)
+				params.SwapFeeRate = sdk.NewInt(-1)
 			},
 			"swap fee rate must not be negative: -1.000000000000000000",
 		},
@@ -145,14 +146,14 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"NilWithdrawFeeRate",
 			func(params *types.Params) {
-				params.WithdrawFeeRate = sdk.Dec{}
+				params.WithdrawFeeRate = math.Int{}
 			},
 			"withdraw fee rate must not be nil",
 		},
 		{
 			"NegativeWithdrawFeeRate",
 			func(params *types.Params) {
-				params.WithdrawFeeRate = sdk.NewDec(-1)
+				params.WithdrawFeeRate = math.NewInt(-1)
 			},
 			"withdraw fee rate must not be negative: -1.000000000000000000",
 		},
@@ -166,14 +167,14 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"NilMaxOrderAmountRatio",
 			func(params *types.Params) {
-				params.MaxOrderAmountRatio = sdk.Dec{}
+				params.MaxOrderAmountRatio = math.Int{}
 			},
 			"max order amount ratio must not be nil",
 		},
 		{
 			"NegativeMaxOrderAmountRatio",
 			func(params *types.Params) {
-				params.MaxOrderAmountRatio = sdk.NewDec(-1)
+				params.MaxOrderAmountRatio = math.NewInt(-1)
 			},
 			"max order amount ratio must not be negative: -1.000000000000000000",
 		},

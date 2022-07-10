@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
@@ -69,11 +70,11 @@ var (
 	coinAmountThreshold = sdk.NewInt(20)           // If a decimal error occurs at a value less than 20, the error rate is over 5%.
 )
 
-func errorRate(expected, actual sdk.Dec) sdk.Dec {
+func errorRate(expected, actual math.Int) math.Int {
 	// To prevent divide-by-zero panics, return 1.0(=100%) as the error rate
 	// when the expected value is 0.
 	if expected.IsZero() {
-		return sdk.OneDec()
+		return math.OneInt()
 	}
 	return actual.Sub(expected).Quo(expected).Abs()
 }
@@ -187,7 +188,7 @@ func WithdrawReserveCoinsInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, r
 }
 
 // WithdrawAmountInvariant checks the correct ratio of withdraw coin amounts.
-func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, burnedPoolCoin, poolCoinSupply sdk.Int, withdrawFeeRate sdk.Dec) {
+func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, burnedPoolCoin, poolCoinSupply sdk.Int, withdrawFeeRate math.Int) {
 	ratio := sdk.NewDecFromInt(burnedPoolCoin).Quo(sdk.NewDecFromInt(poolCoinSupply)).Mul(sdk.OneDec().Sub(withdrawFeeRate))
 	idealWithdrawCoinA := sdk.NewDecFromInt(reserveCoinA).Mul(ratio)
 	idealWithdrawCoinB := sdk.NewDecFromInt(reserveCoinB).Mul(ratio)

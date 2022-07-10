@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -391,7 +392,7 @@ func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY
 	currentPrice := x.Quo(y)
 
 	for len(xToY) < sizeXToY {
-		orderPrice := currentPrice.Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 991, 1009), 3))
+		orderPrice := currentPrice.Mul(GetRandRange(r, 991, 1009))
 		orderAmt := sdk.ZeroDec()
 		if r.Intn(2) == 1 {
 			orderAmt = sdk.NewDecFromInt(x).Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 1, 100), 4))
@@ -411,7 +412,7 @@ func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY
 	}
 
 	for len(yToX) < sizeYToX {
-		orderPrice := currentPrice.Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 991, 1009), 3))
+		orderPrice := currentPrice.Mul(GetRandRange(r, 991, 1009))
 		orderAmt := sdk.ZeroDec()
 		if r.Intn(2) == 1 {
 			orderAmt = sdk.NewDecFromInt(y).Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 1, 100), 4))
@@ -577,7 +578,7 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 	}
 }
 
-func GetSwapMsg(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, offerCoins []sdk.Coin, orderPrices []sdk.Dec,
+func GetSwapMsg(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, offerCoins []sdk.Coin, orderPrices []sdkmath.Int,
 	addrs []sdk.AccAddress, poolID uint64) []*types.MsgSwapWithinBatch {
 	if len(offerCoins) != len(orderPrices) || len(orderPrices) != len(addrs) {
 		require.True(t, false)

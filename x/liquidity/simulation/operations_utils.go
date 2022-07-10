@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
@@ -85,8 +86,8 @@ func randomOfferCoin(r *rand.Rand, k keeper.Keeper, ctx sdk.Context, pool types.
 }
 
 // randomOrderPrice returns random order price that is sufficient for matchable swap.
-func randomOrderPrice(r *rand.Rand) sdk.Dec {
-	return sdk.NewDecWithPrec(int64(simtypes.RandIntBetween(r, 1, 1e2)), 2)
+func randomOrderPrice(r *rand.Rand) math.Int {
+	return math.NewInt(int64(simtypes.RandIntBetween(r, 1, 1e2)))
 }
 
 // randomFees returns a random amount of bond denom fee and

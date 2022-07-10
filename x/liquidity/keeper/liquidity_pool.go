@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -460,11 +461,11 @@ func (k Keeper) ExecuteWithdrawal(ctx sdk.Context, msg types.WithdrawMsgState, b
 
 	reserveCoins = k.GetReserveCoins(ctx, pool)
 
-	var lastReserveRatio sdk.Dec
+	var lastReserveRatio math.Int
 	if reserveCoins.IsZero() {
-		lastReserveRatio = sdk.ZeroDec()
+		lastReserveRatio = math.ZeroInt()
 	} else {
-		lastReserveRatio = sdk.NewDecFromInt(reserveCoins[0].Amount).Quo(sdk.NewDecFromInt(reserveCoins[1].Amount))
+		lastReserveRatio = math.Int(reserveCoins[0].Amount).Quo(reserveCoins[1].Amount)
 	}
 
 	logger := k.Logger(ctx)

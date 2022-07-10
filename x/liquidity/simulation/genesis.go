@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
@@ -71,18 +72,18 @@ func GenPoolCreationFee(r *rand.Rand) sdk.Coins {
 }
 
 // GenSwapFeeRate randomized SwapFeeRate ranging from 0.00001 to 1
-func GenSwapFeeRate(r *rand.Rand) sdk.Dec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 1, 1e5)), 5)
+func GenSwapFeeRate(r *rand.Rand) math.Int {
+	return math.NewInt(int64(simulation.RandIntBetween(r, 1, 1e5)))
 }
 
 // GenWithdrawFeeRate randomized WithdrawFeeRate ranging from 0.00001 to 1
-func GenWithdrawFeeRate(r *rand.Rand) sdk.Dec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 1, 1e5)), 5)
+func GenWithdrawFeeRate(r *rand.Rand) sdk.Int {
+	return math.NewInt(int64(simulation.RandIntBetween(r, 1, 1e5)))
 }
 
 // GenMaxOrderAmountRatio randomized MaxOrderAmountRatio ranging from 0.00001 to 1
-func GenMaxOrderAmountRatio(r *rand.Rand) sdk.Dec {
-	return sdk.NewDecWithPrec(int64(simulation.RandIntBetween(r, 1, 1e5)), 5)
+func GenMaxOrderAmountRatio(r *rand.Rand) sdk.Int {
+	return math.NewInt(int64(simulation.RandIntBetween(r, 1, 1e5)), 5)
 }
 
 // GenUnitBatchHeight randomized UnitBatchHeight ranging from 1 to 20
@@ -122,19 +123,19 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { poolCreationFee = GenPoolCreationFee(r) },
 	)
 
-	var swapFeeRate sdk.Dec
+	var swapFeeRate sdk.Int
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, SwapFeeRate, &swapFeeRate, simState.Rand,
 		func(r *rand.Rand) { swapFeeRate = GenSwapFeeRate(r) },
 	)
 
-	var withdrawFeeRate sdk.Dec
+	var withdrawFeeRate sdk.Int
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, WithdrawFeeRate, &withdrawFeeRate, simState.Rand,
 		func(r *rand.Rand) { withdrawFeeRate = GenWithdrawFeeRate(r) },
 	)
 
-	var maxOrderAmountRatio sdk.Dec
+	var maxOrderAmountRatio sdk.Int
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, MaxOrderAmountRatio, &maxOrderAmountRatio, simState.Rand,
 		func(r *rand.Rand) { maxOrderAmountRatio = GenMaxOrderAmountRatio(r) },

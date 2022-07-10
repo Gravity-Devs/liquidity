@@ -84,7 +84,7 @@ func ValidateReserveCoinLimit(maxReserveCoinAmount sdk.Int, depositCoins sdk.Coi
 	}
 }
 
-func GetOfferCoinFee(offerCoin sdk.Coin, swapFeeRate sdk.Dec) sdk.Coin {
+func GetOfferCoinFee(offerCoin sdk.Coin, swapFeeRate math.Int) sdk.Coin {
 	if swapFeeRate.IsZero() {
 		return sdk.NewCoin(offerCoin.Denom, sdk.ZeroInt())
 	}
@@ -114,7 +114,7 @@ func CheckOverflow(a, b sdk.Int) (err error) {
 	return nil
 }
 
-func CheckOverflowWithDec(a, b sdk.Dec) (err error) {
+func CheckOverflowWithDec(a, b math.Int) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = ErrOverflowAmount
