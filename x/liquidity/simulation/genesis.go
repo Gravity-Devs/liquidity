@@ -83,7 +83,7 @@ func GenWithdrawFeeRate(r *rand.Rand) sdk.Int {
 
 // GenMaxOrderAmountRatio randomized MaxOrderAmountRatio ranging from 0.00001 to 1
 func GenMaxOrderAmountRatio(r *rand.Rand) sdk.Int {
-	return math.NewInt(int64(simulation.RandIntBetween(r, 1, 1e5)), 5)
+	return math.NewInt(int64(simulation.RandIntBetween(r, 1, 1e5)))
 }
 
 // GenUnitBatchHeight randomized UnitBatchHeight ranging from 1 to 20

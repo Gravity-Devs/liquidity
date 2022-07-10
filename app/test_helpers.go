@@ -158,7 +158,7 @@ func genesisStateWithValSet(
 			UnbondingHeight:   int64(0),
 			UnbondingTime:     time.Unix(0, 0).UTC(),
 			Commission:        stakingtypes.NewCommission(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-			MinSelfDelegation: sdk.ZeroInt(),
+			MinSelfDelegation: sdkmath.ZeroInt(),
 		}
 		validators = append(validators, validator)
 		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
@@ -393,16 +393,16 @@ func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY
 
 	for len(xToY) < sizeXToY {
 		orderPrice := currentPrice.Mul(GetRandRange(r, 991, 1009))
-		orderAmt := sdk.ZeroDec()
+		orderAmt := sdkmath.ZeroInt()
 		if r.Intn(2) == 1 {
-			orderAmt = sdk.NewDecFromInt(x).Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 1, 100), 4))
+			orderAmt = (x).Mul((GetRandRange(r, 1, 100)))
 		} else {
-			orderAmt = sdk.NewDecFromIntWithPrec(GetRandRange(r, 1000, 10000), 0)
+			orderAmt = GetRandRange(r, 1000, 10000)
 		}
-		if orderAmt.Quo(orderPrice).TruncateInt().IsZero() {
+		if orderAmt.Quo(orderPrice).IsZero() {
 			continue
 		}
-		orderCoin := sdk.NewCoin(denomX, orderAmt.Ceil().TruncateInt())
+		orderCoin := sdk.NewCoin(denomX, orderAmt)
 
 		xToY = append(xToY, &types.MsgSwapWithinBatch{
 			OfferCoin:       orderCoin,
@@ -413,16 +413,16 @@ func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY
 
 	for len(yToX) < sizeYToX {
 		orderPrice := currentPrice.Mul(GetRandRange(r, 991, 1009))
-		orderAmt := sdk.ZeroDec()
+		orderAmt := sdkmath.ZeroInt()
 		if r.Intn(2) == 1 {
-			orderAmt = sdk.NewDecFromInt(y).Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 1, 100), 4))
+			orderAmt = (y).Mul((GetRandRange(r, 1, 100)))
 		} else {
-			orderAmt = sdk.NewDecFromIntWithPrec(GetRandRange(r, 1000, 10000), 0)
+			orderAmt = GetRandRange(r, 1000, 10000)
 		}
-		if orderAmt.Mul(orderPrice).TruncateInt().IsZero() {
+		if orderAmt.Mul(orderPrice).IsZero() {
 			continue
 		}
-		orderCoin := sdk.NewCoin(denomY, orderAmt.Ceil().TruncateInt())
+		orderCoin := sdk.NewCoin(denomY, orderAmt)
 
 		yToX = append(yToX, &types.MsgSwapWithinBatch{
 			OfferCoin:       orderCoin,

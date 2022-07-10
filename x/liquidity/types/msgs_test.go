@@ -3,6 +3,8 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
@@ -151,8 +153,8 @@ func TestMsgWithdrawWithinBatch(t *testing.T) {
 func TestMsgSwapWithinBatch(t *testing.T) {
 	swapRequester := sdk.AccAddress(crypto.AddressHash([]byte("testAccount")))
 	offerCoin := sdk.NewCoin(DenomX, sdk.NewInt(1000))
-	orderPrice, err := sdk.NewDecFromStr("0.1")
-	require.NoError(t, err)
+	orderPrice, ok := math.NewIntFromString("0.1")
+	require.True(t, ok)
 
 	cases := []struct {
 		expectedErr string // empty means no error expected
@@ -172,7 +174,7 @@ func TestMsgSwapWithinBatch(t *testing.T) {
 		},
 		{
 			"invalid order price",
-			types.NewMsgSwapWithinBatch(swapRequester, DefaultPoolId, DefaultSwapTypeId, offerCoin, DenomY, sdk.ZeroDec(), types.DefaultSwapFeeRate),
+			types.NewMsgSwapWithinBatch(swapRequester, DefaultPoolId, DefaultSwapTypeId, offerCoin, DenomY, math.ZeroInt(), types.DefaultSwapFeeRate),
 		},
 		{
 			"offer amount should be over 100 micro",
@@ -368,7 +370,7 @@ func TestMsgValidateBasic(t *testing.T) {
 	})
 	t.Run("MsgSwap", func(t *testing.T) {
 		offerCoin := sdk.NewCoin(DenomX, sdk.NewInt(10000))
-		orderPrice := sdk.MustNewDecFromStr("1.0")
+		orderPrice, _ := math.NewIntFromString("1.0")
 
 		for _, tc := range []struct {
 			msg    types.MsgSwapWithinBatch
@@ -391,11 +393,11 @@ func TestMsgValidateBasic(t *testing.T) {
 				negativeAmountErrMsg,
 			},
 			{
-				types.MsgSwapWithinBatch{SwapRequesterAddress: validAddr, OfferCoin: offerCoin, OrderPrice: sdk.ZeroDec()},
+				types.MsgSwapWithinBatch{SwapRequesterAddress: validAddr, OfferCoin: offerCoin, OrderPrice: math.ZeroInt()},
 				types.ErrBadOrderPrice.Error(),
 			},
 			{
-				types.MsgSwapWithinBatch{SwapRequesterAddress: validAddr, OfferCoin: sdk.NewCoin(DenomX, sdk.OneInt()), OrderPrice: orderPrice},
+				types.MsgSwapWithinBatch{SwapRequesterAddress: validAddr, OfferCoin: sdk.NewCoin(DenomX, math.OneInt()), OrderPrice: orderPrice},
 				types.ErrLessThanMinOfferAmount.Error(),
 			},
 		} {

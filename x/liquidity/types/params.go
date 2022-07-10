@@ -50,9 +50,9 @@ var (
 	DefaultMinInitDepositAmount   = sdk.NewInt(1000000)
 	DefaultInitPoolCoinMintAmount = sdk.NewInt(1000000)
 	DefaultMaxReserveCoinAmount   = sdk.ZeroInt()
-	DefaultSwapFeeRate            = sdk.NewDecWithPrec(3, 3) // "0.003000000000000000"
-	DefaultWithdrawFeeRate        = sdk.ZeroDec()
-	DefaultMaxOrderAmountRatio    = sdk.NewDecWithPrec(1, 1) // "0.100000000000000000"
+	DefaultSwapFeeRate, _         = sdk.NewIntFromString("0.003000000000000000") // "0.003000000000000000"
+	DefaultWithdrawFeeRate        = math.ZeroInt()
+	DefaultMaxOrderAmountRatio, _ = sdk.NewIntFromString("0.100000000000000000") // "0.100000000000000000"
 	DefaultPoolCreationFee        = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(40000000)))
 	DefaultPoolType               = PoolType{
 		Id:                1,
@@ -230,7 +230,7 @@ func validateSwapFeeRate(i interface{}) error {
 		return fmt.Errorf("swap fee rate must not be negative: %s", v)
 	}
 
-	if v.GT(sdk.OneDec()) {
+	if v.GT(math.OneInt()) {
 		return fmt.Errorf("swap fee rate too large: %s", v)
 	}
 
@@ -251,7 +251,7 @@ func validateWithdrawFeeRate(i interface{}) error {
 		return fmt.Errorf("withdraw fee rate must not be negative: %s", v)
 	}
 
-	if v.GT(sdk.OneDec()) {
+	if v.GT(math.OneInt()) {
 		return fmt.Errorf("withdraw fee rate too large: %s", v)
 	}
 
@@ -272,7 +272,7 @@ func validateMaxOrderAmountRatio(i interface{}) error {
 		return fmt.Errorf("max order amount ratio must not be negative: %s", v)
 	}
 
-	if v.GT(sdk.OneDec()) {
+	if v.GT(math.OneInt()) {
 		return fmt.Errorf("max order amount ratio too large: %s", v)
 	}
 

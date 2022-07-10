@@ -270,7 +270,7 @@ func TestGetOfferCoinFee(t *testing.T) {
 		{
 			name:               "case8",
 			offerCoin:          sdk.NewCoin(testDenom, sdk.NewInt(10000)),
-			swapFeeRate:        sdk.ZeroDec(),
+			swapFeeRate:        math.ZeroInt(),
 			expectOfferCoinFee: sdk.NewCoin(testDenom, sdk.NewInt(0)),
 		},
 	}

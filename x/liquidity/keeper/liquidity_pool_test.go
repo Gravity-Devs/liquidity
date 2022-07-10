@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -258,7 +259,7 @@ func TestExecuteDepositTruncation(t *testing.T) {
 func TestDepositDecimalTruncation(t *testing.T) {
 	simapp, ctx := createTestInput()
 	params := simapp.LiquidityKeeper.GetParams(ctx)
-	params.WithdrawFeeRate = sdk.ZeroDec()
+	params.WithdrawFeeRate = math.ZeroInt()
 
 	// Suppose that atom price is $40.
 	denomA := "uatom"
@@ -305,7 +306,7 @@ func TestDepositDecimalTruncation(t *testing.T) {
 func TestDepositDecimalTruncation2(t *testing.T) {
 	simapp, ctx := createTestInput()
 	params := simapp.LiquidityKeeper.GetParams(ctx)
-	params.WithdrawFeeRate = sdk.ZeroDec()
+	params.WithdrawFeeRate = math.ZeroInt()
 
 	// Suppose that atom price is $40.
 	denomA := "uatom"
@@ -472,8 +473,8 @@ func TestExecuteWithdrawal(t *testing.T) {
 	require.Equal(t, withdrawerPoolCoinAfter.Amount, withdrawerPoolCoinBefore.Amount.QuoRaw(2))
 	withdrawerDenomABalance := simapp.BankKeeper.GetBalance(ctx, addrs[0], pool.ReserveCoinDenoms[0])
 	withdrawerDenomBBalance := simapp.BankKeeper.GetBalance(ctx, addrs[0], pool.ReserveCoinDenoms[1])
-	require.Equal(t, sdk.NewDecFromInt(deposit.AmountOf(pool.ReserveCoinDenoms[0]).QuoRaw(2)).Mul(sdk.OneDec().Sub(params.WithdrawFeeRate)).TruncateInt(), withdrawerDenomABalance.Amount)
-	require.Equal(t, sdk.NewDecFromInt(deposit.AmountOf(pool.ReserveCoinDenoms[1]).QuoRaw(2)).Mul(sdk.OneDec().Sub(params.WithdrawFeeRate)).TruncateInt(), withdrawerDenomBBalance.Amount)
+	require.Equal(t, math.Int(deposit.AmountOf(pool.ReserveCoinDenoms[0]).QuoRaw(2)).Mul(math.OneInt().Sub(params.WithdrawFeeRate)), withdrawerDenomABalance.Amount)
+	require.Equal(t, math.Int(deposit.AmountOf(pool.ReserveCoinDenoms[1]).QuoRaw(2)).Mul(math.OneInt().Sub(params.WithdrawFeeRate)), withdrawerDenomBBalance.Amount)
 
 	// Case for withdrawing all reserve coins
 	poolCoinBefore = simapp.LiquidityKeeper.GetPoolCoinTotalSupply(ctx, pool)
@@ -575,7 +576,7 @@ func TestReinitializePool(t *testing.T) {
 	simapp, ctx := createTestInput()
 	simapp.LiquidityKeeper.SetParams(ctx, types.DefaultParams())
 	params := simapp.LiquidityKeeper.GetParams(ctx)
-	params.WithdrawFeeRate = sdk.ZeroDec()
+	params.WithdrawFeeRate = math.ZeroInt()
 	simapp.LiquidityKeeper.SetParams(ctx, params)
 
 	poolTypeID := types.DefaultPoolTypeID
