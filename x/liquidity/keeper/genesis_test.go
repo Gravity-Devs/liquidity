@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -24,7 +26,7 @@ func TestGenesis(t *testing.T) {
 
 	// change swap fee rate
 	params := lk.GetParams(ctx)
-	params.SwapFeeRate = sdk.NewDecWithPrec(5, 3)
+	params.SwapFeeRate, _ = math.NewIntFromString("0.005")
 
 	// set params
 	lk.SetParams(ctx, params)

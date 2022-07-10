@@ -374,7 +374,7 @@ func NewLiquidityApp(
 	)
 
 	// RegisterUpgradeHandlers is used for registering any on-chain upgrades
-	//app.RegisterUpgradeHandlers()
+	// app.RegisterUpgradeHandlers()
 
 	// create evidence keeper with router
 	evidenceKeeper := evidencekeeper.NewKeeper(
