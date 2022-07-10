@@ -80,7 +80,7 @@ func randomWithdrawCoin(r *rand.Rand, denom string, balance sdk.Int) sdk.Coin {
 func randomOfferCoin(r *rand.Rand, k keeper.Keeper, ctx sdk.Context, pool types.Pool, denom string) sdk.Coin {
 	params := k.GetParams(ctx)
 	reserveCoinAmt := k.GetReserveCoins(ctx, pool).AmountOf(denom)
-	maximumOrderableAmt := sdk.NewDecFromInt(reserveCoinAmt).Mul(params.MaxOrderAmountRatio).TruncateInt()
+	maximumOrderableAmt := reserveCoinAmt.Mul(params.MaxOrderAmountRatio)
 	amt := int64(simtypes.RandIntBetween(r, 1, int(maximumOrderableAmt.Int64())))
 	return sdk.NewInt64Coin(denom, amt)
 }

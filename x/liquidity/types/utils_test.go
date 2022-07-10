@@ -312,6 +312,14 @@ func TestCheckOverflow(t *testing.T) {
 }
 
 func TestCheckOverflowWithDec(t *testing.T) {
+	// for valid cases
+	valida, _ := sdk.NewIntFromString("1.0")
+	validb, _ := sdk.NewIntFromString("0.0000001")
+
+	// for invalid cases
+
+	invalida, _ := math.NewIntFromString("100000000000000000000000000000000000000000000000000000000000.0")
+	invalidb, _ := math.NewIntFromString("0.000000000000000001")
 	testCases := []struct {
 		name      string
 		a         math.Int
@@ -320,14 +328,14 @@ func TestCheckOverflowWithDec(t *testing.T) {
 	}{
 		{
 			name:      "valid case",
-			a:         sdk.NewIntFromString("1.0"),
-			b:         sdk.NewIntFromString("0.0000001"),
+			a:         valida,
+			b:         validb,
 			expectErr: nil,
 		},
 		{
 			name:      "overflow case",
-			a:         sdk.NewIntFromString("100000000000000000000000000000000000000000000000000000000000.0").MulInt64(10),
-			b:         sdk.NewIntFromString("0.000000000000000001"),
+			a:         invalida,
+			b:         invalidb,
 			expectErr: types.ErrOverflowAmount,
 		},
 	}

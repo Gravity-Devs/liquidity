@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -311,13 +312,13 @@ The only supported swap-type is 1. For the detailed swap algorithm, see https://
 				return err
 			}
 
-			orderPrice, err := sdk.NewDecFromStr(args[4])
-			if err != nil {
+			orderPrice, ok := math.NewIntFromString(args[4])
+			if ok != true {
 				return err
 			}
 
-			swapFeeRate, err := sdk.NewDecFromStr(args[5])
-			if err != nil {
+			swapFeeRate, ok := math.NewIntFromString(args[5])
+			if ok != true {
 				return err
 			}
 

@@ -48,7 +48,7 @@ func TestGenesisState(t *testing.T) {
 	require.EqualError(t, params.Validate(), invalidDenomErrMsg)
 
 	params = simapp.LiquidityKeeper.GetParams(ctx)
-	params.SwapFeeRate = sdk.NewDec(-1)
+	params.SwapFeeRate = sdk.NewInt(-1)
 	negativeSwapFeeErrMsg := fmt.Sprintf("swap fee rate must not be negative: %s", params.SwapFeeRate)
 	genesisState := types.NewGenesisState(params, genesis.PoolRecords)
 	require.EqualError(t, types.ValidateGenesis(*genesisState), negativeSwapFeeErrMsg)

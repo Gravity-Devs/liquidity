@@ -91,7 +91,7 @@ func GetOfferCoinFee(offerCoin sdk.Coin, swapFeeRate math.Int) sdk.Coin {
 	// apply half-ratio swap fee rate and ceiling
 	// see https://github.com/tendermint/liquidity/issues/41 for details
 	// Check this please, I converted it to integer math.  -Jacob.
-	return sdk.NewCoin(offerCoin.Denom, offerCoin.Amount.Mul(math.Int(swapFeeRate.QuoInt64(2).Ceil()))) // Ceil(offerCoin.Amount * (swapFeeRate/2)) NOTE: I COULD HAVE MADE A BUG HERE IN THE DECIMAL CONVERSION.
+	return sdk.NewCoin(offerCoin.Denom, offerCoin.Amount.Mul(swapFeeRate)) // Ceil(offerCoin.Amount * (swapFeeRate/2)) NOTE: I COULD HAVE MADE A BUG HERE IN THE DECIMAL CONVERSION.
 }
 
 func MustParseCoinsNormalized(coinStr string) sdk.Coins {

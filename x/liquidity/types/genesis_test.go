@@ -19,7 +19,7 @@ func TestValidateGenesis(t *testing.T) {
 			"InvalidParams",
 			func(genState *types.GenesisState) {
 				params := types.DefaultParams()
-				params.SwapFeeRate = sdk.NewDec(-1)
+				params.SwapFeeRate = sdk.NewInt(-1)
 				genState.Params = params
 			},
 			"swap fee rate must not be negative: -1.000000000000000000",

@@ -139,7 +139,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"TooLargeSwapFeeRate",
 			func(params *types.Params) {
-				params.SwapFeeRate = sdk.NewDec(2)
+				params.SwapFeeRate = sdk.NewInt(2)
 			},
 			"swap fee rate too large: 2.000000000000000000",
 		},
@@ -160,7 +160,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"TooLargeWithdrawFeeRate",
 			func(params *types.Params) {
-				params.WithdrawFeeRate = sdk.NewDec(2)
+				params.WithdrawFeeRate = sdk.NewInt(2)
 			},
 			"withdraw fee rate too large: 2.000000000000000000",
 		},
@@ -181,7 +181,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"TooLargeMaxOrderAmountRatio",
 			func(params *types.Params) {
-				params.MaxOrderAmountRatio = sdk.NewDec(2)
+				params.MaxOrderAmountRatio = sdk.NewInt(2)
 			},
 			"max order amount ratio too large: 2.000000000000000000",
 		},
