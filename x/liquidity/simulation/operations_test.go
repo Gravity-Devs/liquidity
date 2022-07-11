@@ -12,10 +12,10 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	lapp "github.com/gravity-devs/liquidity/app"
-	liquidityparams "github.com/gravity-devs/liquidity/app/params"
-	"github.com/gravity-devs/liquidity/x/liquidity/simulation"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	lapp "github.com/gravity-devs/liquidity/v2/app"
+	liquidityparams "github.com/gravity-devs/liquidity/v2/app/params"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/simulation"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // TestWeightedOperations tests the weights of the operations.

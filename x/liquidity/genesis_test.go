@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/gravity-devs/liquidity/app"
-	"github.com/gravity-devs/liquidity/x/liquidity"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/app"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 func TestGenesisState(t *testing.T) {
@@ -44,15 +44,6 @@ func TestGenesisState(t *testing.T) {
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
 	liquidity.BeginBlocker(ctx, simapp.LiquidityKeeper)
 
-	price, _ := sdk.NewDecFromStr("1.1")
-	offerCoins := []sdk.Coin{sdk.NewCoin(denomX, sdk.NewInt(10000))}
-	orderPrices := []sdk.Dec{price}
-	orderAddrs := addrs[1:2]
-	_, _ = app.TestSwapPool(t, simapp, ctx, offerCoins, orderPrices, orderAddrs, poolID, false)
-	_, _ = app.TestSwapPool(t, simapp, ctx, offerCoins, orderPrices, orderAddrs, poolID, false)
-	_, _ = app.TestSwapPool(t, simapp, ctx, offerCoins, orderPrices, orderAddrs, poolID, true)
-	liquidity.BeginBlocker(ctx, simapp.LiquidityKeeper)
-	_, _ = app.TestSwapPool(t, simapp, ctx, offerCoins, orderPrices, orderAddrs, poolID, true)
 	liquidity.BeginBlocker(ctx, simapp.LiquidityKeeper)
 	liquidity.EndBlocker(ctx, simapp.LiquidityKeeper)
 

@@ -54,4 +54,4 @@ sed -i '' 's/swagger = false/swagger = true/g' $CHAIN_DIR/$CHAIN_ID/config/app.t
 # Start the gaia
 echo "Starting $CHAIN_ID in $CHAIN_DIR..."
 echo "Log file is located at $CHAIN_DIR/$CHAIN_ID.log"
-$BINARY --home $CHAIN_DIR/$CHAIN_ID start --pruning=nothing --grpc.address="0.0.0.0:$GRPC_PORT" > $CHAIN_DIR/$CHAIN_ID.log 2>&1 &
+$BINARY --home $CHAIN_DIR/$CHAIN_ID start --mode validator --pruning=nothing --grpc.address="0.0.0.0:$GRPC_PORT" > $CHAIN_DIR/$CHAIN_ID.log 2>&1 &

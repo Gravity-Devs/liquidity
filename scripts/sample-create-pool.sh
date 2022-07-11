@@ -45,6 +45,7 @@ $BINARY tx liquidity create-pool 1 100000000stake,100000000token \
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user1 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 
@@ -56,6 +57,7 @@ $BINARY tx liquidity create-pool 1 100000000stake,100000000atom \
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user2 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 

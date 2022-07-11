@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 var (
@@ -79,7 +79,7 @@ func randomWithdrawCoin(r *rand.Rand, denom string, balance sdk.Int) sdk.Coin {
 func randomOfferCoin(r *rand.Rand, k keeper.Keeper, ctx sdk.Context, pool types.Pool, denom string) sdk.Coin {
 	params := k.GetParams(ctx)
 	reserveCoinAmt := k.GetReserveCoins(ctx, pool).AmountOf(denom)
-	maximumOrderableAmt := reserveCoinAmt.ToDec().Mul(params.MaxOrderAmountRatio).TruncateInt()
+	maximumOrderableAmt := sdk.NewDecFromInt(reserveCoinAmt).Mul(params.MaxOrderAmountRatio).TruncateInt()
 	amt := int64(simtypes.RandIntBetween(r, 1, int(maximumOrderableAmt.Int64())))
 	return sdk.NewInt64Coin(denom, amt)
 }

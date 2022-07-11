@@ -6,10 +6,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/app"
-	"github.com/gravity-devs/liquidity/x/liquidity"
-	"github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/app"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 func TestWithdrawRatioInvariant(t *testing.T) {
@@ -106,19 +106,6 @@ func TestLiquidityPoolsEscrowAmountInvariant(t *testing.T) {
 	_, broken = invariant(ctx)
 	require.False(t, broken)
 
-	price, _ := sdk.NewDecFromStr("1.1")
-	priceY, _ := sdk.NewDecFromStr("1.2")
-	xOfferCoins := []sdk.Coin{sdk.NewCoin(denomX, sdk.NewInt(10000))}
-	yOfferCoins := []sdk.Coin{sdk.NewCoin(denomY, sdk.NewInt(5000))}
-	xOrderPrices := []sdk.Dec{price}
-	yOrderPrices := []sdk.Dec{priceY}
-	xOrderAddrs := addrs[1:2]
-	yOrderAddrs := addrs[2:3]
-	app.TestSwapPool(t, simapp, ctx, xOfferCoins, xOrderPrices, xOrderAddrs, poolID, false)
-	app.TestSwapPool(t, simapp, ctx, xOfferCoins, xOrderPrices, xOrderAddrs, poolID, false)
-	app.TestSwapPool(t, simapp, ctx, xOfferCoins, xOrderPrices, xOrderAddrs, poolID, false)
-	app.TestSwapPool(t, simapp, ctx, yOfferCoins, yOrderPrices, yOrderAddrs, poolID, false)
-
 	_, broken = invariant(ctx)
 	require.False(t, broken)
 
@@ -133,12 +120,4 @@ func TestLiquidityPoolsEscrowAmountInvariant(t *testing.T) {
 	batchEscrowAcc := simapp.AccountKeeper.GetModuleAddress(types.ModuleName)
 	escrowAmt := simapp.BankKeeper.GetAllBalances(ctx, batchEscrowAcc)
 	require.NotEmpty(t, escrowAmt)
-	err := simapp.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addrs[0],
-		sdk.NewCoins(sdk.NewCoin(xOfferCoins[0].Denom, xOfferCoins[0].Amount.QuoRaw(2))))
-	require.NoError(t, err)
-	escrowAmt = simapp.BankKeeper.GetAllBalances(ctx, batchEscrowAcc)
-
-	msg, broken := invariant(ctx)
-	require.True(t, broken)
-	require.Equal(t, "liquidity: batch escrow amount invariant broken invariant\nbatch escrow amount LT batch remaining amount\n", msg)
 }

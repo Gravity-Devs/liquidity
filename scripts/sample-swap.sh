@@ -54,6 +54,7 @@ $BINARY tx liquidity swap 1 1 79000stake token 0.99 0.003 \
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user1 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 
@@ -81,6 +82,7 @@ $BINARY tx liquidity swap 2 1 79000stake atom 0.99 0.003 \
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user2 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 
