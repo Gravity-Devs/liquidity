@@ -4,7 +4,6 @@ package app
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -41,8 +40,8 @@ import (
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
 // LiquidityApp testing.
-var DefaultConsensusParams = &tmproto.ConsensusParams{
-	Block: &tmproto.BlockParams{
+var DefaultConsensusParams = &abci.ConsensusParams{
+	Block: &abci.BlockParams{
 		MaxBytes: 200000,
 		MaxGas:   2000000,
 	},
@@ -81,7 +80,7 @@ func setup(withGenesis bool, invCheckPeriod uint) (*LiquidityApp, GenesisState) 
 // Setup initializes a new LiquidityApp. A Nop logger is set in LiquidityApp.
 func Setup(isCheckTx bool) *LiquidityApp {
 	privVal := mock.NewPV()
-	pubKey, _ := privVal.GetPubKey(context.TODO())
+	pubKey, _ := privVal.GetPubKey()
 	// create validator set with single validator
 	validator := tmtypes.NewValidator(pubKey, 1)
 	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{validator})
@@ -197,7 +196,7 @@ func NewSimappWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOptio
 	t.Helper()
 
 	privVal := mock.NewPV()
-	pubKey, err := privVal.GetPubKey(context.TODO())
+	pubKey, err := privVal.GetPubKey()
 	require.NoError(t, err)
 	// create validator set with single validator
 	validator := tmtypes.NewValidator(pubKey, 1)

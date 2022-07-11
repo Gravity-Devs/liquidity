@@ -12,7 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata_pulsar"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
@@ -497,7 +496,7 @@ func NewLiquidityApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.setAnteHandler(encodingConfig.TxConfig, cast.ToStringSlice(appOpts.Get(server.FlagIndexEvents)))
+	app.setAnteHandler(encodingConfig.TxConfig)
 	app.setPostHandler()
 
 	if loadLatest {
@@ -509,11 +508,7 @@ func NewLiquidityApp(
 	return app
 }
 
-func (app *LiquidityApp) setAnteHandler(txConfig client.TxConfig, indexEventsStr []string) {
-	indexEvents := map[string]struct{}{}
-	for _, e := range indexEventsStr {
-		indexEvents[e] = struct{}{}
-	}
+func (app *LiquidityApp) setAnteHandler(txConfig client.TxConfig) {
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 			AccountKeeper:   app.AccountKeeper,
@@ -532,9 +527,7 @@ func (app *LiquidityApp) setAnteHandler(txConfig client.TxConfig, indexEventsStr
 
 func (app *LiquidityApp) setPostHandler() {
 	postHandler, err := posthandler.NewPostHandler(
-		posthandler.HandlerOptions{
-			BankKeeper: app.BankKeeper,
-		},
+		posthandler.HandlerOptions{},
 	)
 	if err != nil {
 		panic(err)
