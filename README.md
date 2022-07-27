@@ -152,7 +152,7 @@ $BINARY gentx validator 1000000000stake --chain-id testing --keyring-backend tes
 $BINARY collect-gentxs
 
 # Start
-$BINARY start --mode validator
+$BINARY start
 ```
 
 ### 2.1 Broadcast transactions using CLI commands
