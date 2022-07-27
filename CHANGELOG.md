@@ -39,7 +39,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ## [Unreleased]
 
-## [v2.0.0-rc1](https://github.com/Gravity-Devs/liquidity/releases/tag/v2.0.0-rc1) - 2022.06.03
+## [v2.0.0](https://github.com/Gravity-Devs/liquidity/releases/tag/v2.0.0) - 2022.07.27
 
 ### State Machine Breaking
 * [\#15](https://github.com/Gravity-Devs/liquidity/pull/15) (sdk) Bump SDK version to [v0.46.0-rc1](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.46.0-rc1)
