@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/gravity-devs/liquidity/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
 )
 
 // DeleteAndInitPoolBatches resets batch msg states that were previously executed
@@ -33,27 +33,9 @@ func (k Keeper) DeleteAndInitPoolBatches(ctx sdk.Context) {
 				k.SetPoolBatchWithdrawMsgStatesByPointer(ctx, poolBatch.PoolId, withdrawMsgs)
 			}
 
-			height := ctx.BlockHeight()
-
-			// In the case of remaining swap msg states, those are either fractionally matched
-			// or has not yet been expired.
-			swapMsgs := k.GetAllRemainingPoolBatchSwapMsgStates(ctx, poolBatch)
-			if len(swapMsgs) > 0 {
-				for _, msg := range swapMsgs {
-					if height > msg.OrderExpiryHeight {
-						msg.ToBeDeleted = true
-					} else {
-						msg.Executed = false
-						msg.Succeeded = false
-					}
-				}
-				k.SetPoolBatchSwapMsgStatesByPointer(ctx, poolBatch.PoolId, swapMsgs)
-			}
-
 			// Delete all batch msg states that are ready to be deleted.
 			k.DeleteAllReadyPoolBatchDepositMsgStates(ctx, poolBatch)
 			k.DeleteAllReadyPoolBatchWithdrawMsgStates(ctx, poolBatch)
-			k.DeleteAllReadyPoolBatchSwapMsgStates(ctx, poolBatch)
 
 			if err := k.InitNextPoolBatch(ctx, poolBatch); err != nil {
 				panic(err)
@@ -85,10 +67,7 @@ func (k Keeper) ExecutePoolBatches(ctx sdk.Context) {
 
 	k.IterateAllPoolBatches(ctx, func(poolBatch types.PoolBatch) bool {
 		if !poolBatch.Executed && ctx.BlockHeight()%int64(params.UnitBatchHeight) == 0 {
-			executedMsgCount, err := k.SwapExecution(ctx, poolBatch)
-			if err != nil {
-				panic(err)
-			}
+			executedMsgCount := 0
 
 			k.IterateAllPoolBatchDepositMsgStates(ctx, poolBatch, func(batchMsg types.DepositMsgState) bool {
 				if batchMsg.Executed || batchMsg.ToBeDeleted || batchMsg.Succeeded {
@@ -232,57 +211,4 @@ func (k Keeper) WithdrawWithinBatch(ctx sdk.Context, msg *types.MsgWithdrawWithi
 	k.SetPoolBatchWithdrawMsgState(ctx, poolBatch.PoolId, batchPoolMsg)
 
 	return batchPoolMsg, nil
-}
-
-// In order to deal with the batch at the same time, the coins of msgs are deposited in escrow.
-func (k Keeper) SwapWithinBatch(ctx sdk.Context, msg *types.MsgSwapWithinBatch, orderExpirySpanHeight int64) (*types.SwapMsgState, error) {
-	pool, found := k.GetPool(ctx, msg.PoolId)
-	if !found {
-		return nil, types.ErrPoolNotExists
-	}
-	if k.IsDepletedPool(ctx, pool) {
-		return nil, types.ErrDepletedPool
-	}
-	if err := k.ValidateMsgSwapWithinBatch(ctx, *msg, pool); err != nil {
-		return nil, err
-	}
-	poolBatch, found := k.GetPoolBatch(ctx, msg.PoolId)
-	if !found {
-		return nil, types.ErrPoolBatchNotExists
-	}
-
-	if poolBatch.BeginHeight == 0 {
-		poolBatch.BeginHeight = ctx.BlockHeight()
-	}
-
-	currentHeight := ctx.BlockHeight()
-
-	if orderExpirySpanHeight == 0 {
-		params := k.GetParams(ctx)
-		u := int64(params.UnitBatchHeight)
-		orderExpirySpanHeight = (u - currentHeight%u) % u
-	}
-
-	batchPoolMsg := types.SwapMsgState{
-		MsgHeight:            currentHeight,
-		MsgIndex:             poolBatch.SwapMsgIndex,
-		Executed:             false,
-		Succeeded:            false,
-		ToBeDeleted:          false,
-		OrderExpiryHeight:    currentHeight + orderExpirySpanHeight,
-		ExchangedOfferCoin:   sdk.NewCoin(msg.OfferCoin.Denom, sdk.ZeroInt()),
-		RemainingOfferCoin:   msg.OfferCoin,
-		ReservedOfferCoinFee: msg.OfferCoinFee,
-		Msg:                  msg,
-	}
-
-	if err := k.HoldEscrow(ctx, msg.GetSwapRequester(), sdk.NewCoins(msg.OfferCoin.Add(msg.OfferCoinFee))); err != nil {
-		return nil, err
-	}
-
-	poolBatch.SwapMsgIndex++
-	k.SetPoolBatch(ctx, poolBatch)
-	k.SetPoolBatchSwapMsgState(ctx, poolBatch.PoolId, batchPoolMsg)
-
-	return &batchPoolMsg, nil
 }

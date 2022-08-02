@@ -5,11 +5,11 @@ package app
 import (
 	"github.com/cosmos/cosmos-sdk/std"
 
-	"github.com/gravity-devs/liquidity/app/params"
+	"github.com/gravity-devs/liquidity/v2/app/params"
 )
 
 // MakeEncodingConfig creates an EncodingConfig for testing
-func MakeEncodingConfig() params.EncodingConfig {
+func MakeTestEncodingConfig() params.EncodingConfig {
 	encodingConfig := params.MakeTestEncodingConfig()
 	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
 	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)

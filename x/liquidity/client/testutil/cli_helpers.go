@@ -6,10 +6,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	pruningtypes "github.com/cosmos/cosmos-sdk/pruning/types"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/simapp/params"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
@@ -17,8 +17,8 @@ import (
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	paramscli "github.com/cosmos/cosmos-sdk/x/params/client/cli"
 
-	liquidityapp "github.com/gravity-devs/liquidity/app"
-	liquiditycli "github.com/gravity-devs/liquidity/x/liquidity/client/cli"
+	liquidityapp "github.com/gravity-devs/liquidity/v2/app"
+	liquiditycli "github.com/gravity-devs/liquidity/v2/x/liquidity/client/cli"
 
 	dbm "github.com/tendermint/tm-db"
 )
@@ -39,9 +39,9 @@ func NewAppConstructor(encodingCfg params.EncodingConfig, db *dbm.MemDB) network
 	return func(val network.Validator) servertypes.Application {
 		return liquidityapp.NewLiquidityApp(
 			val.Ctx.Logger, db, nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
-			liquidityapp.MakeEncodingConfig(),
+			liquidityapp.MakeTestEncodingConfig(),
 			simapp.EmptyAppOptions{},
-			baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
+			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
 		)
 	}
@@ -61,6 +61,7 @@ func MsgCreatePoolExec(clientCtx client.Context, from, poolID, depositCoins stri
 		poolID,
 		depositCoins,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -76,6 +77,7 @@ func MsgDepositWithinBatchExec(clientCtx client.Context, from, poolID, depositCo
 		poolID,
 		depositCoins,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -91,6 +93,7 @@ func MsgWithdrawWithinBatchExec(clientCtx client.Context, from, poolID, poolCoin
 		poolID,
 		poolCoin,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -110,6 +113,7 @@ func MsgSwapWithinBatchExec(clientCtx client.Context, from, poolID, swapTypeID,
 		orderPrice,
 		swapFeeRate,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, commonArgs...)
@@ -123,6 +127,7 @@ func MsgParamChangeProposalExec(clientCtx client.Context, from string, file stri
 	args := append([]string{
 		file,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	paramChangeCmd := paramscli.NewSubmitParamChangeProposalTxCmd()
@@ -137,6 +142,7 @@ func MsgVote(clientCtx client.Context, from, id, vote string, extraArgs ...strin
 		id,
 		vote,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	}, commonArgs...)
 
 	args = append(args, extraArgs...)

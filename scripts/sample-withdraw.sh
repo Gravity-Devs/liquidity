@@ -54,6 +54,7 @@ $BINARY tx liquidity withdraw 1 1000poolE4D2617BFE03E1146F6BBA1D9893F2B3D77BA29E
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user1 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 
@@ -81,6 +82,7 @@ $BINARY tx liquidity withdraw 2 500pool4718822520A46E7F657C051A7A18A9E8857D2FB47
 --home $CHAIN_DIR/$CHAIN_ID \
 --chain-id $CHAIN_ID \
 --from user2 \
+--gas 300000 \
 --keyring-backend test \
 --yes
 

@@ -36,7 +36,7 @@ For details, see the [Liquidity Module Light Paper](doc/LiquidityModuleLightPape
 Requirement | Notes
 ----------- | -----------------
 Go version  | Go1.18 or higher
-Cosmos SDK  | v0.45.6 or higher
+Cosmos SDK  | v0.46.x or higher
 
 ### Get Liquidity Module source code
 
@@ -159,17 +159,17 @@ $BINARY start
 
 ```bash
 # An example of creating liquidity pool 1
-$BINARY tx liquidity create-pool 1 1000000000uatom,50000000000uusd --from user1 --keyring-backend test --chain-id testing -b block -o json -y
+$BINARY tx liquidity create-pool 1 1000000000uatom,50000000000uusd --from user1 --gas 300000 --keyring-backend test --chain-id testing -b block -o json -y
 
 # An example of creating liquidity pool 2
-$BINARY tx liquidity create-pool 1 10000000stake,10000000uusd --from validator --keyring-backend test --chain-id testing -b block -o json -y
+$BINARY tx liquidity create-pool 1 10000000stake,10000000uusd --from validator --gas 300000 --keyring-backend test --chain-id testing -b block -o json -y
 
 # An example of requesting swap
-$BINARY tx liquidity swap 1 1 50000000uusd uatom 0.019 0.003 --from validator --chain-id testing --keyring-backend test -b block -o json -y
+$BINARY tx liquidity swap 1 1 50000000uusd uatom 0.019 0.003 --from validator --gas 300000 --chain-id testing --keyring-backend test -b block -o json -y
 
 # An example of generating unsigned tx
 validator=$($BINARY keys show validator --keyring-backend test -a)
-$BINARY tx liquidity swap 1 1 50000000uusd uatom 0.019 0.003 --from $validator --chain-id testing --generate-only &> tx_swap.json
+$BINARY tx liquidity swap 1 1 50000000uusd uatom 0.019 0.003 --from $validator --gas 300000 --chain-id testing --generate-only &> tx_swap.json
 cat tx_swap.json
 
 # Sign the unsigned tx
