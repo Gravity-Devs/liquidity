@@ -7,10 +7,8 @@ linters:
   disable-all: true
   enable:
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
-    # - errcheck
     - goconst
     - gocritic
     - gofmt
@@ -31,7 +29,6 @@ linters:
     - unused
     - unparam
     - misspell
-    # - wsl
     - nolintlint
 
 issues:
