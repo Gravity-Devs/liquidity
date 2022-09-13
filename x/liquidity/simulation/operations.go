@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -16,6 +17,8 @@ import (
 )
 
 // Simulation operation weights constants.
+//
+//nolint:gosec
 const (
 	OpWeightMsgCreatePool          = "op_weight_msg_create_pool"
 	OpWeightMsgDepositWithinBatch  = "op_weight_msg_deposit_to_pool"
@@ -150,6 +153,7 @@ func SimulateMsgCreatePool(ak types.AccountKeeper, bk types.BankKeeper, k keeper
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
 		tx, err := helpers.GenTx(
+			rand.New(rand.NewSource(time.Now().UnixNano())),
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
@@ -226,6 +230,7 @@ func SimulateMsgDepositWithinBatch(ak types.AccountKeeper, bk types.BankKeeper, 
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
 		tx, err := helpers.GenTx(
+			rand.New(rand.NewSource(time.Now().UnixNano())),
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
@@ -293,6 +298,7 @@ func SimulateMsgWithdrawWithinBatch(ak types.AccountKeeper, bk types.BankKeeper,
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
 		tx, err := helpers.GenTx(
+			rand.New(rand.NewSource(time.Now().UnixNano())),
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
@@ -363,6 +369,7 @@ func SimulateMsgSwapWithinBatch(ak types.AccountKeeper, bk types.BankKeeper, k k
 
 		txGen := liquidityparams.MakeTestEncodingConfig().TxConfig
 		tx, err := helpers.GenTx(
+			rand.New(rand.NewSource(time.Now().UnixNano())),
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
