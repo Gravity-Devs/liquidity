@@ -34,17 +34,17 @@ func GenLiquidityPoolTypes(r *rand.Rand) (liquidityPoolTypes []types.PoolType) {
 }
 
 // GenMinInitDepositAmount randomized MinInitDepositAmount
-func GenMinInitDepositAmount(r *rand.Rand) sdk.Int {
+func GenMinInitDepositAmount(r *rand.Rand) sdk.Int { //nolint:staticcheck
 	return sdk.NewInt(int64(simulation.RandIntBetween(r, int(types.DefaultMinInitDepositAmount.Int64()), 1e7)))
 }
 
 // GenInitPoolCoinMintAmount randomized InitPoolCoinMintAmount
-func GenInitPoolCoinMintAmount(r *rand.Rand) sdk.Int {
+func GenInitPoolCoinMintAmount(r *rand.Rand) sdk.Int { //nolint:staticcheck
 	return sdk.NewInt(int64(simulation.RandIntBetween(r, int(types.DefaultInitPoolCoinMintAmount.Int64()), 1e8)))
 }
 
 // GenMaxReserveCoinAmount randomized MaxReserveCoinAmount
-func GenMaxReserveCoinAmount(r *rand.Rand) sdk.Int {
+func GenMaxReserveCoinAmount(r *rand.Rand) sdk.Int { //nolint:staticcheck
 	return sdk.NewInt(int64(simulation.RandIntBetween(r, int(types.DefaultMaxReserveCoinAmount.Int64()), 1e13)))
 }
 
@@ -98,19 +98,19 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { liquidityPoolTypes = GenLiquidityPoolTypes(r) },
 	)
 
-	var minInitDepositAmount sdk.Int
+	var minInitDepositAmount sdk.Int //nolint:staticcheck
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, MinInitDepositAmount, &minInitDepositAmount, simState.Rand,
 		func(r *rand.Rand) { minInitDepositAmount = GenMinInitDepositAmount(r) },
 	)
 
-	var initPoolCoinMintAmount sdk.Int
+	var initPoolCoinMintAmount sdk.Int //nolint:staticcheck
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, InitPoolCoinMintAmount, &initPoolCoinMintAmount, simState.Rand,
 		func(r *rand.Rand) { initPoolCoinMintAmount = GenInitPoolCoinMintAmount(r) },
 	)
 
-	var maxReserveCoinAmount sdk.Int
+	var maxReserveCoinAmount sdk.Int //nolint:staticcheck
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, MaxReserveCoinAmount, &maxReserveCoinAmount, simState.Rand,
 		func(r *rand.Rand) { maxReserveCoinAmount = GenMaxReserveCoinAmount(r) },

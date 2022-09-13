@@ -10,8 +10,8 @@ const (
 	EventTypeWithdrawFromPool    = "withdraw_from_pool"
 	EventTypeSwapTransacted      = "swap_transacted"
 
-	AttributeValuePoolId         = "pool_id"      //nolint:golint
-	AttributeValuePoolTypeId     = "pool_type_id" //nolint:golint
+	AttributeValuePoolId         = "pool_id"      //nolint:revive
+	AttributeValuePoolTypeId     = "pool_type_id" //nolint:revive
 	AttributeValuePoolName       = "pool_name"
 	AttributeValueReserveAccount = "reserve_account"
 	AttributeValuePoolCoinDenom  = "pool_coin_denom"
@@ -36,7 +36,7 @@ const (
 	AttributeValueWithdrawCoins    = "withdraw_coins"
 	AttributeValueWithdrawFeeCoins = "withdraw_fee_coins"
 	AttributeValueSwapRequester    = "swap_requester"
-	AttributeValueSwapTypeId       = "swap_type_id" //nolint:golint
+	AttributeValueSwapTypeId       = "swap_type_id" //nolint:revive
 	AttributeValueSwapPrice        = "swap_price"
 
 	AttributeValueTransactedCoinAmount       = "transacted_coin_amount"

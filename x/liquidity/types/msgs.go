@@ -12,6 +12,8 @@ var (
 )
 
 // Message types for the liquidity module
+//
+//nolint:gosec
 const (
 	TypeMsgCreatePool          = "create_pool"
 	TypeMsgDepositWithinBatch  = "deposit_within_batch"

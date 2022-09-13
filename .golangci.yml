@@ -7,15 +7,12 @@ linters:
   disable-all: true
   enable:
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
-    # - errcheck
     - goconst
     - gocritic
     - gofmt
     - goimports
-    - golint
     - gosec
     - gosimple
     - govet
@@ -25,14 +22,13 @@ linters:
     - prealloc
     - exportloopref
     - staticcheck
-    - structcheck
     - stylecheck
+    - revive
     - typecheck
     - unconvert
     - unused
     - unparam
     - misspell
-    # - wsl
     - nolintlint
 
 issues:
