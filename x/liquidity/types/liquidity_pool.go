@@ -97,7 +97,7 @@ func (pool Pool) GetReserveAccount() sdk.AccAddress {
 func (pool Pool) GetPoolCoinDenom() string { return pool.PoolCoinDenom }
 
 // GetId returns id of the pool.
-func (pool Pool) GetId() uint64 { return pool.Id } //nolint:golint
+func (pool Pool) GetId() uint64 { return pool.Id } //nolint:revive
 
 // Pools is a collection of pools.
 type Pools []Pool

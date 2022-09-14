@@ -17,6 +17,8 @@ import (
 )
 
 // Simulation operation weights constants.
+//
+//nolint:gosec
 const (
 	OpWeightMsgCreatePool          = "op_weight_msg_create_pool"
 	OpWeightMsgDepositWithinBatch  = "op_weight_msg_deposit_to_pool"

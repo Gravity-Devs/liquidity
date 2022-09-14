@@ -62,6 +62,8 @@ func GetReserveAcc(poolCoinDenom string, len32 bool) (sdk.AccAddress, error) {
 }
 
 // GetCoinsTotalAmount returns total amount of all coins in sdk.Coins.
+//
+//nolint:staticcheck
 func GetCoinsTotalAmount(coins sdk.Coins) sdk.Int {
 	totalAmount := sdk.ZeroInt()
 	for _, coin := range coins {
@@ -71,6 +73,8 @@ func GetCoinsTotalAmount(coins sdk.Coins) sdk.Int {
 }
 
 // ValidateReserveCoinLimit checks if total amounts of depositCoins exceed maxReserveCoinAmount.
+//
+//nolint:staticcheck
 func ValidateReserveCoinLimit(maxReserveCoinAmount sdk.Int, depositCoins sdk.Coins) error {
 	totalAmount := GetCoinsTotalAmount(depositCoins)
 	if maxReserveCoinAmount.IsZero() {
@@ -99,6 +103,7 @@ func MustParseCoinsNormalized(coinStr string) sdk.Coins {
 	return coins
 }
 
+//nolint:staticcheck
 func CheckOverflow(a, b sdk.Int) (err error) {
 	defer func() {
 		if r := recover(); r != nil {

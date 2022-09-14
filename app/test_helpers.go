@@ -286,10 +286,13 @@ func FundAccount(app *LiquidityApp, ctx sdk.Context, addr sdk.AccAddress, amount
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
+//
+//nolint:staticcheck
 func AddTestAddrsIncremental(app *LiquidityApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, createIncrementalAccounts)
 }
 
+//nolint:staticcheck
 func addTestAddrs(app *LiquidityApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
@@ -371,28 +374,32 @@ func CreateTestInput() (*LiquidityApp, sdk.Context) {
 	return app, ctx
 }
 
+//nolint:staticcheck
 func GetRandPoolAmt(r *rand.Rand, minInitDepositAmt sdk.Int) (x, y sdk.Int) {
 	x = GetRandRange(r, int(minInitDepositAmt.Int64()), 100000000000000).MulRaw(int64(math.Pow10(r.Intn(10))))
 	y = GetRandRange(r, int(minInitDepositAmt.Int64()), 100000000000000).MulRaw(int64(math.Pow10(r.Intn(10))))
 	return
 }
 
+//nolint:staticcheck
 func GetRandRange(r *rand.Rand, min, max int) sdk.Int {
 	return sdk.NewInt(int64(r.Intn(max-min) + min))
 }
 
+//nolint:staticcheck
 func GetRandomSizeOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY, sizeYToX int32) (xToY, yToX []*types.MsgSwapWithinBatch) {
 	randomSizeXtoY := int(r.Int31n(sizeXToY))
 	randomSizeYtoX := int(r.Int31n(sizeYToX))
 	return GetRandomOrders(denomX, denomY, x, y, r, randomSizeXtoY, randomSizeYtoX)
 }
 
+//nolint:staticcheck
 func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY, sizeYToX int) (xToY, yToX []*types.MsgSwapWithinBatch) {
 	currentPrice := sdk.NewDecFromInt(x).Quo(sdk.NewDecFromInt(y))
 
 	for len(xToY) < sizeXToY {
 		orderPrice := currentPrice.Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 991, 1009), 3))
-		orderAmt := sdk.ZeroDec()
+		orderAmt := sdk.ZeroDec() //nolint:staticcheck
 		if r.Intn(2) == 1 {
 			orderAmt = sdk.NewDecFromInt(x).Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 1, 100), 4))
 		} else {
@@ -412,7 +419,7 @@ func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY
 
 	for len(yToX) < sizeYToX {
 		orderPrice := currentPrice.Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 991, 1009), 3))
-		orderAmt := sdk.ZeroDec()
+		orderAmt := sdk.ZeroDec() //nolint:staticcheck
 		if r.Intn(2) == 1 {
 			orderAmt = sdk.NewDecFromInt(y).Mul(sdk.NewDecFromIntWithPrec(GetRandRange(r, 1, 100), 4))
 		} else {
@@ -432,6 +439,7 @@ func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY
 	return xToY, yToX
 }
 
+//nolint:staticcheck
 func TestCreatePool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sdk.Int, denomX, denomY string, addr sdk.AccAddress) uint64 {
 	deposit := sdk.NewCoins(sdk.NewCoin(denomX, x), sdk.NewCoin(denomY, y))
 	params := simapp.LiquidityKeeper.GetParams(ctx)
@@ -463,6 +471,7 @@ func TestCreatePool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sd
 	return poolID
 }
 
+//nolint:staticcheck
 func TestDepositPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sdk.Int, addrs []sdk.AccAddress, poolID uint64, withEndblock bool) {
 	pool, found := simapp.LiquidityKeeper.GetPool(ctx, poolID)
 	require.True(t, found)
@@ -520,6 +529,7 @@ func TestDepositPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y s
 	}
 }
 
+//nolint:staticcheck
 func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolCoinAmt sdk.Int, addrs []sdk.AccAddress, poolID uint64, withEndblock bool) {
 	pool, found := simapp.LiquidityKeeper.GetPool(ctx, poolID)
 	require.True(t, found)

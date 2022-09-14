@@ -79,6 +79,8 @@ func errorRate(expected, actual sdk.Dec) sdk.Dec {
 }
 
 // MintingPoolCoinsInvariant checks the correct ratio of minting amount of pool coins.
+//
+//nolint:staticcheck
 func MintingPoolCoinsInvariant(poolCoinTotalSupply, mintPoolCoin, depositCoinA, depositCoinB, lastReserveCoinA, lastReserveCoinB, refundedCoinA, refundedCoinB sdk.Int) {
 	if !refundedCoinA.IsZero() {
 		depositCoinA = depositCoinA.Sub(refundedCoinA)
@@ -113,6 +115,8 @@ func MintingPoolCoinsInvariant(poolCoinTotalSupply, mintPoolCoin, depositCoinA, 
 }
 
 // DepositInvariant checks after deposit amounts.
+//
+//nolint:staticcheck
 func DepositInvariant(lastReserveCoinA, lastReserveCoinB, depositCoinA, depositCoinB, afterReserveCoinA, afterReserveCoinB, refundedCoinA, refundedCoinB sdk.Int) {
 	depositCoinA = depositCoinA.Sub(refundedCoinA)
 	depositCoinB = depositCoinB.Sub(refundedCoinB)
@@ -142,6 +146,8 @@ func DepositInvariant(lastReserveCoinA, lastReserveCoinB, depositCoinA, depositC
 }
 
 // BurningPoolCoinsInvariant checks the correct burning amount of pool coins.
+//
+//nolint:staticcheck
 func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, lastPoolCoinSupply sdk.Int, withdrawFeeCoins sdk.Coins) {
 	burningPoolCoinRatio := sdk.NewDecFromInt(burnedPoolCoin).Quo(sdk.NewDecFromInt(lastPoolCoinSupply))
 	if burningPoolCoinRatio.Equal(sdk.OneDec()) {
@@ -168,6 +174,8 @@ func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, res
 }
 
 // WithdrawReserveCoinsInvariant checks the after withdraw amounts.
+//
+//nolint:staticcheck
 func WithdrawReserveCoinsInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB,
 	afterReserveCoinA, afterReserveCoinB, afterPoolCoinTotalSupply, lastPoolCoinSupply, burnedPoolCoin sdk.Int) {
 	// AfterWithdrawReserveCoinA = LastReserveCoinA - WithdrawCoinA
@@ -187,6 +195,8 @@ func WithdrawReserveCoinsInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, r
 }
 
 // WithdrawAmountInvariant checks the correct ratio of withdraw coin amounts.
+//
+//nolint:staticcheck
 func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, burnedPoolCoin, poolCoinSupply sdk.Int, withdrawFeeRate sdk.Dec) {
 	ratio := sdk.NewDecFromInt(burnedPoolCoin).Quo(sdk.NewDecFromInt(poolCoinSupply)).Mul(sdk.OneDec().Sub(withdrawFeeRate))
 	idealWithdrawCoinA := sdk.NewDecFromInt(reserveCoinA).Mul(ratio)
@@ -204,6 +214,8 @@ func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserve
 }
 
 // ImmutablePoolPriceAfterWithdrawInvariant checks the immutable pool price after withdrawing coins.
+//
+//nolint:staticcheck
 func ImmutablePoolPriceAfterWithdrawInvariant(reserveCoinA, reserveCoinB, withdrawCoinA, withdrawCoinB, afterReserveCoinA, afterReserveCoinB sdk.Int) {
 	// TestReinitializePool tests a scenario where after reserve coins are zero
 	if !afterReserveCoinA.IsZero() && !afterReserveCoinB.IsZero() {
