@@ -24,8 +24,8 @@ This module can be used in the [Cosmos Hub](https://hub.cosmos.network/main/hub-
 - The liquidity module redefines the concept of a “swap order” in AMM as a “limit order with a short lifetime” in an order book-based exchange. By combining these concepts from two different models as one united model, the function supports both ways to participate in trading and liquidity-providing activities.
 - Limit order options are not supported in the first version of the liquidity module, but the base structure of the codebase anticipates and supports feature expansion.
 - Advantages of the combined model
-    - More freedom on ways to provide liquidity, planned expansion for limit orders
-    - The combination of pool liquidity and limit order liquidity provide users with a more enriched trading environment
+  - More freedom on ways to provide liquidity, planned expansion for limit orders
+  - The combination of pool liquidity and limit order liquidity provide users with a more enriched trading environment
 
 For details, see the [Liquidity Module Light Paper](doc/LiquidityModuleLightPaper_EN.pdf).
 
@@ -41,9 +41,9 @@ Cosmos SDK  | v0.46.x or higher
 ### Get Liquidity Module source code
 
 ```bash
-$ git clone https://github.com/tendermint/liquidity.git
-$ cd liquidity
-$ go mod tidy
+git clone https://github.com/tendermint/liquidity.git
+cd liquidity
+go mod tidy
 ```
 
 ### Build
@@ -56,7 +56,7 @@ $ make build
 ### Install
 
 ```bash
-$ make install
+make install
 ```
 
 ## Usage of CLI Commands
@@ -112,7 +112,7 @@ Available Commands:
 ### Test
 
 ```bash
-$ make test-all
+make test-all
 ```
 
 ### 1\. Setup local testnet using script
@@ -364,14 +364,13 @@ $ make proto-swagger-gen
 
 To learn more about the liquidity module, check out the following resources:
 
- - [Liquidity Module Spec](x/liquidity/spec)
- - [Liquidity Module Lite Paper (English)](doc/LiquidityModuleLightPaper_EN.pdf)
- - [Liquidity Module Lite Paper (Korean)](doc/LiquidityModuleLightPaper_KO.pdf)
- - [Liquidity Module Lite Paper (Chinese)](doc/LiquidityModuleLightPaper_ZH.pdf)
- - [Liquidity Module Security Audit Report of Least Authority](doc/Least_Authority_Liquidity_Module_Security_Audit_Report.pdf)
- - [Proposal and milestone](https://github.com/b-harvest/Liquidity-Module-For-the-Hub)
- - [Swagger HTTP API doc](https://app.swaggerhub.com/apis-docs/bharvest/cosmos-sdk_liquidity_module_rest_and_g_rpc_gateway_docs)
- - [godoc](https://pkg.go.dev/github.com/tendermint/liquidity)
- - [Client doc](doc/client.md)
- - [Performance Testing](doc/Performance%20Testing%20for%20Liquidity%20Module.pdf)
- 
+- [Liquidity Module Spec](x/liquidity/spec)
+- [Liquidity Module Lite Paper (English)](doc/LiquidityModuleLightPaper_EN.pdf)
+- [Liquidity Module Lite Paper (Korean)](doc/LiquidityModuleLightPaper_KO.pdf)
+- [Liquidity Module Lite Paper (Chinese)](doc/LiquidityModuleLightPaper_ZH.pdf)
+- [Liquidity Module Security Audit Report of Least Authority](doc/Least_Authority_Liquidity_Module_Security_Audit_Report.pdf)
+- [Proposal and milestone](https://github.com/b-harvest/Liquidity-Module-For-the-Hub)
+- [Swagger HTTP API doc](https://app.swaggerhub.com/apis-docs/bharvest/cosmos-sdk_liquidity_module_rest_and_g_rpc_gateway_docs)
+- [godoc](https://pkg.go.dev/github.com/tendermint/liquidity)
+- [Client doc](doc/client.md)
+- [Performance Testing](doc/Performance%20Testing%20for%20Liquidity%20Module.pdf)

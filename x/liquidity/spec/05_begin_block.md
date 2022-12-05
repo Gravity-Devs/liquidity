@@ -1,6 +1,6 @@
 <!-- order: 5 -->
 
- # Begin-Block
+# Begin-Block
 
 Begin block operations for the liquidity module reinitialize batch messages that were not executed in the previous batch and delete batch messages that were executed or ready to be deleted.
 

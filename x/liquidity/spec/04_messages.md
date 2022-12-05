@@ -1,6 +1,6 @@
 <!-- order: 4 -->
 
- # Messages
+# Messages
 
 Messages (Msg) are objects that trigger state transitions. Msgs are wrapped in transactions (Txs) that clients submit to the network. The Cosmos SDK wraps and unwraps liquidity module messages from transactions.
 
@@ -100,5 +100,5 @@ The MsgSwapWithinBatch message performs validity checks. The transaction that is
 - Denoms of `OfferCoin` or `DemandCoin` do not exist in `bank` module
 - The balance of `SwapRequester` does not have enough coins for `OfferCoin`
 - `OrderPrice` <= zero
-- `OfferCoinFee` equals `OfferCoin` * `params.SwapFeeRate` * `0.5` with ceiling
+- `OfferCoinFee` equals `OfferCoin` *`params.SwapFeeRate`* `0.5` with ceiling
 - Has sufficient balance `OfferCoinFee` to reserve offer coin fee

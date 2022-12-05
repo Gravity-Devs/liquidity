@@ -1,8 +1,9 @@
 <!-- order: 2 -->
 
- # State
+# State
 
 The liquidity module `x/liquidity` keeps track of the Pool and PoolBatch states. The state represents your app at a given moment.
+
 ## Pool
 
 Pool stores information about the liquidity pool.
@@ -30,6 +31,7 @@ The parameters of the Pool state are:
 - ModuleName, RouterKey, StoreKey, QuerierRoute: `liquidity`
 
 - PoolCoinDenomPrefix: `pool`
+
 ## PoolBatch
 
 PoolBatch stores information about the liquidity pool batch states.
@@ -50,7 +52,7 @@ type PoolBatch struct {
 
 ## Batch Messages
 
-Deposit, withdrawal, or swap orders are accumulated in a liquidity pool for a pre-defined period, which can be one or more blocks in length. Orders are then added to the pool and executed at the end of the batch. The following messages are executed in batch-style. 
+Deposit, withdrawal, or swap orders are accumulated in a liquidity pool for a pre-defined period, which can be one or more blocks in length. Orders are then added to the pool and executed at the end of the batch. The following messages are executed in batch-style.
 
 ### DepositMsgState
 
@@ -68,6 +70,7 @@ type DepositMsgState struct {
     Msg        MsgDepositWithinBatch
 }
 ```
+
 ### WithdrawMsgState
 
 `WithdrawMsgState` defines the state of the withdraw message as it is processed in the next batch or batches.
@@ -88,6 +91,7 @@ type WithdrawMsgState struct {
     Msg        MsgWithdrawWithinBatch
 }
 ```
+
 ### SwapMsgState
 
 `SwapMsgState` defines the state of swap message as it is processed in the next batch or batches.
