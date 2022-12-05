@@ -2,7 +2,7 @@
 title: Liquidityd 
 description: A high-level overview of how the command line (CLI) and REST API interfaces work for the liquidity module.
 ---
-# Liquidityd 
+# Liquidityd
 
 This document provides a high-level overview of how the command line (CLI) and REST API interfaces work for the liquidity module.
 
@@ -50,7 +50,7 @@ A node exposes the REST server default port of `1317`. Configure the port in `[a
 
 The POST endpoints of the new gGPC-gateway REST are not available. The [Migrating to New REST Endpoints](https://docs.cosmos.network/master/migrations/rest.html#migrating-to-new-rest-endpoints) Cosmos SDK guide suggests to use Protobuf directly. You can use the command line interface or use the temporarily available REST API at `localhost:1317/cosmos/tx/v1beta1/txs`.
 
-For example, to broadcast a transaction by using the [New gRPC-gateway REST Endpoint](https://github.com/cosmos/cosmos-sdk/blob/master/docs/migrations/rest.md#migrating-to-new-rest-endpoints): 
+For example, to broadcast a transaction by using the [New gRPC-gateway REST Endpoint](https://github.com/cosmos/cosmos-sdk/blob/master/docs/migrations/rest.md#migrating-to-new-rest-endpoints):
 
 ```bash
 curl --header "Content-Type: application/json" --request POST --data '{"tx_bytes":"CoMBCoABCh0vdGVuZGVybWludC5saXF1aWRpdHkuTXNnU3dhcBJfCi1jb3Ntb3MxN3dncHpyNGd2YzN1aHBmcnUyNmVhYTJsc203NzJlMnEydjBtZXgQAhgBIAEqDQoFc3Rha2USBDEwMDAyBGF0b206EzExNTAwMDAwMDAwMDAwMDAwMDASWApQCkYKHy9jb3Ntb3MuY3J5cHRvLnNlY3AyNTZrMS5QdWJLZXkSIwohAqzfoAEi0cFg0zqwBuGNvHml4XJNS3EQuVti8/yGH88NEgQKAgh/GAgSBBDAmgwaQGTRN67x2WYF/L5DsRD3ZY1Kt9cVpg3rW+YbXtihxcB6bJWhMxuFr0u9SnGkCuAgOuLH9YU8ROFUo1gGS1RpTz0=","mode":1}' localhost:1317/cosmos/tx/v1beta1/txs
@@ -221,7 +221,7 @@ Result
 
 ## MsgDepositWithinBatch
 
-Example `deposit` tx command: 
+Example `deposit` tx command:
 
 ```bash
 liquidityd tx liquidity deposit 1 100000000uatom,5000000000uusd --from validator --keyring-backend test --chain-id testing -y -b block
@@ -526,6 +526,7 @@ Result:
   "timestamp": ""
 }
 ```
+
 ## MsgSwapWithinBatch
 
 Example `swap` tx command:
@@ -701,12 +702,13 @@ Result:
   "timestamp": ""
 }
 ```
+
 ## Params
 
 Example `params` query command:
 
 ```bash
-$ liquidityd query liquidity params
+liquidityd query liquidity params
 ```
 
 Result:
@@ -737,7 +739,7 @@ withdraw_fee_rate: "0.000000000000000000"
 Example `pool` query command using `pool-id` argument:
 
 ```bash
-$ liquidityd query liquidity pool 1
+liquidityd query liquidity pool 1
 ```
 
 Result:
@@ -756,7 +758,7 @@ pool:
 Example `pool` query command using `--pool-coin-denom` flag:
 
 ```bash
-$ liquidityd query liquidity pool --pool-coin-denom=pool96EF6EA6E5AC828ED87E8D07E7AE2A8180570ADD212117B2DA6F0B75D17A6295
+liquidityd query liquidity pool --pool-coin-denom=pool96EF6EA6E5AC828ED87E8D07E7AE2A8180570ADD212117B2DA6F0B75D17A6295
 ```
 
 Result:
@@ -775,7 +777,7 @@ pool:
 Example `pool` query command using `--reserve-acc` flag:
 
 ```bash
-$ liquidityd query liquidity pool --reserve-acc=cosmos1jmhkafh94jpgakr735r70t32sxq9wzkayzs9we
+liquidityd query liquidity pool --reserve-acc=cosmos1jmhkafh94jpgakr735r70t32sxq9wzkayzs9we
 ```
 
 Result:
@@ -794,7 +796,7 @@ pool:
 Query reserve coins of the pool:
 
 ```bash
-$ liquidityd query bank balances cosmos1jmhkafh94jpgakr735r70t32sxq9wzkayzs9we
+liquidityd query bank balances cosmos1jmhkafh94jpgakr735r70t32sxq9wzkayzs9we
 ```
 
 Result:
@@ -826,7 +828,7 @@ denom: pool96EF6EA6E5AC828ED87E8D07E7AE2A8180570ADD212117B2DA6F0B75D17A6295
 Example `pools` query command:
 
 ```bash
-$ liquidityd query liquidity pools
+liquidityd query liquidity pools
 ```
 
 Result:
@@ -857,7 +859,7 @@ pools:
 Example `batch` query command:
 
 ```bash
-$ liquidityd query liquidity batch 1
+liquidityd query liquidity batch 1
 ```
 
 Result:
@@ -878,7 +880,7 @@ batch:
 Example `deposit` query command:
 
 ```bash
-$ liquidityd query liquidity deposit 1 1
+liquidityd query liquidity deposit 1 1
 ```
 
 Result:
@@ -905,7 +907,7 @@ deposit:
 Example `deposits` query command:
 
 ```bash
-$ liquidityd query liquidity deposits 1
+liquidityd query liquidity deposits 1
 ```
 
 Result:
@@ -935,7 +937,7 @@ pagination:
 Example `withdraw` query command:
 
 ```bash
-$ liquidityd query liquidity withdraws 1 2
+liquidityd query liquidity withdraws 1 2
 ```
 
 Result:
@@ -960,10 +962,10 @@ withdraws:
 
 ## Withdraws
 
-Example `withdraws` query command 
+Example `withdraws` query command
 
 ```bash
-$ liquidityd query liquidity withdraws 1
+liquidityd query liquidity withdraws 1
 ```
 
 Result:
@@ -985,12 +987,13 @@ withdraws:
   succeeded: true
   to_be_deleted: true
 ```
+
 ## Swap
 
 Example `swap` query command:
 
 ```bash
-$ liquidityd query liquidity swaps 1 2
+liquidityd query liquidity swaps 1 2
 ```
 
 Result:
@@ -1028,12 +1031,13 @@ swaps:
   succeeded: true
   to_be_deleted: true
 ```
+
 ## Swaps
 
 Example `swaps` query command:
 
 ```bash
-$ liquidityd query liquidity swaps 1
+liquidityd query liquidity swaps 1
 ```
 
 Result:
@@ -1071,7 +1075,3 @@ swaps:
   succeeded: true
   to_be_deleted: true
 ```
-
-
-
-

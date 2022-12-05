@@ -1,6 +1,6 @@
 <!-- order: 7 -->
 
- # Events
+# Events
 
 The liquidity module emits the following events.
 

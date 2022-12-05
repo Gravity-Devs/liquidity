@@ -1,6 +1,6 @@
 <!-- order: 8 -->
 
- # Parameters
+# Parameters
 
 The liquidity module contains the following parameters:
 
@@ -41,28 +41,28 @@ Initial mint amount of pool coin on pool creation.
 
 ## MaxReserveCoinAmount
 
-Limit the size of each liquidity pool. The deposit transaction fails if the total reserve coin amount after the deposit is larger than the reserve coin amount. 
+Limit the size of each liquidity pool. The deposit transaction fails if the total reserve coin amount after the deposit is larger than the reserve coin amount.
 
-The default value of zero means no limit. 
+The default value of zero means no limit.
 
 **Note:** Especially in the early phases of liquidity module adoption, set `MaxReserveCoinAmount` to a non-zero value to minimize risk on error or exploitation.
 
 ## PoolCreationFee
 
-Fee paid for to create a LiquidityPool creation. This fee prevents spamming and is collected in in the community pool of the distribution module. 
+Fee paid for to create a LiquidityPool creation. This fee prevents spamming and is collected in in the community pool of the distribution module.
 
 ## SwapFeeRate
 
-Swap fee rate for every executed swap. When a swap is requested, the swap fee is reserved: 
+Swap fee rate for every executed swap. When a swap is requested, the swap fee is reserved:
 
 - Half reserved as `OfferCoinFee`
 - Half reserved as `ExchangedCoinFee`
 
-The swap fee is collected when a batch is executed. 
+The swap fee is collected when a batch is executed.
 
 ## WithdrawFeeRate
 
-Reserve coin withdrawal with less proportion by `WithdrawFeeRate`. This fee prevents attack vectors from repeated deposit/withdraw transactions. 
+Reserve coin withdrawal with less proportion by `WithdrawFeeRate`. This fee prevents attack vectors from repeated deposit/withdraw transactions.
 
 ## MaxOrderAmountRatio
 
@@ -75,6 +75,7 @@ The smallest unit batch size for every liquidity pool.
 ## CircuitBreakerEnabled
 
 The intention of circuit breaker is to have a contingency plan for a running network which maintains network liveness. This parameter enables or disables `MsgCreatePool`, `MsgDepositWithinBatch` and `MsgSwapWithinBatch` message types in liquidity module.
+
 # Constant Variables
 
 Key                 | Type   | Constant Value

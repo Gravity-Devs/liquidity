@@ -1,6 +1,6 @@
 <!-- order: 6 -->
 
- # Before-End-Block
+# Before-End-Block
 
 These operations occur before the end-block operations for the liquidity module.
 
