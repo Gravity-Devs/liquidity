@@ -9,9 +9,9 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 func TestBadMsg(t *testing.T) {
@@ -179,7 +179,6 @@ func TestMsgServerExecuteWithdrawal(t *testing.T) {
 	withdrawerDenomBBalance := simapp.BankKeeper.GetBalance(ctx, addrs[0], pool.ReserveCoinDenoms[1])
 	require.Equal(t, deposit.AmountOf(pool.ReserveCoinDenoms[0]), withdrawerDenomABalance.Amount)
 	require.Equal(t, deposit.AmountOf(pool.ReserveCoinDenoms[1]), withdrawerDenomBBalance.Amount)
-
 }
 
 func TestMsgServerGetLiquidityPoolMetadata(t *testing.T) {
@@ -267,9 +266,11 @@ func TestMsgServerSwap(t *testing.T) {
 	// Create swap msg for test purposes and put it in the batch.
 	price, _ := sdk.NewDecFromStr("1.1")
 	priceY, _ := sdk.NewDecFromStr("1.2")
-	xOfferCoins := []sdk.Coin{sdk.NewCoin(denomX, sdk.NewInt(10000)),
+	xOfferCoins := []sdk.Coin{
 		sdk.NewCoin(denomX, sdk.NewInt(10000)),
-		sdk.NewCoin(denomX, sdk.NewInt(10000))}
+		sdk.NewCoin(denomX, sdk.NewInt(10000)),
+		sdk.NewCoin(denomX, sdk.NewInt(10000)),
+	}
 	yOfferCoins := []sdk.Coin{sdk.NewCoin(denomY, sdk.NewInt(5000))}
 	xOrderPrices := []sdk.Dec{price, price, price}
 	yOrderPrices := []sdk.Dec{priceY}

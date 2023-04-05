@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // Simulation parameter constants

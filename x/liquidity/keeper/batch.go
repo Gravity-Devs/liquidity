@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // DeleteAndInitPoolBatches resets batch msg states that were previously executed
@@ -135,7 +135,8 @@ func (k Keeper) ReleaseEscrow(ctx sdk.Context, withdrawer sdk.AccAddress, withdr
 
 // Generate inputs and outputs to treat escrow refunds atomically.
 func (k Keeper) ReleaseEscrowForMultiSend(withdrawer sdk.AccAddress, withdrawCoins sdk.Coins) (
-	banktypes.Input, banktypes.Output, error) {
+	banktypes.Input, banktypes.Output, error,
+) {
 	var input banktypes.Input
 	var output banktypes.Output
 

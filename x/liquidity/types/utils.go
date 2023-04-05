@@ -6,9 +6,9 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/tendermint/tendermint/crypto"
 )
 
 // AlphabeticalDenomPair returns denom pairs that are alphabetically sorted.

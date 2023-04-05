@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // RegisterInvariants registers all liquidity invariants.
@@ -177,7 +177,8 @@ func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, res
 //
 //nolint:staticcheck
 func WithdrawReserveCoinsInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB,
-	afterReserveCoinA, afterReserveCoinB, afterPoolCoinTotalSupply, lastPoolCoinSupply, burnedPoolCoin sdk.Int) {
+	afterReserveCoinA, afterReserveCoinB, afterPoolCoinTotalSupply, lastPoolCoinSupply, burnedPoolCoin sdk.Int,
+) {
 	// AfterWithdrawReserveCoinA = LastReserveCoinA - WithdrawCoinA
 	if !afterReserveCoinA.Equal(reserveCoinA.Sub(withdrawCoinA)) {
 		panic("invariant check fails due to incorrect withdraw coin A amount")

@@ -5,9 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // createTestInput Returns a simapp with custom LiquidityKeeper
@@ -18,7 +18,8 @@ func createTestInput() (*app.LiquidityApp, sdk.Context) {
 
 func createLiquidity(t *testing.T, ctx sdk.Context, simapp *app.LiquidityApp) (
 	[]sdk.AccAddress, []types.Pool, []types.PoolBatch,
-	[]types.DepositMsgState, []types.WithdrawMsgState) {
+	[]types.DepositMsgState, []types.WithdrawMsgState,
+) {
 	simapp.LiquidityKeeper.SetParams(ctx, types.DefaultParams())
 
 	// define test denom X, Y for Liquidity Pool

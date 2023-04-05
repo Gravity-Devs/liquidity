@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 
@@ -32,17 +32,17 @@ import (
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	paramscutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 
-	lapp "github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/client/cli"
-	liquiditytestutil "github.com/gravity-devs/liquidity/v2/x/liquidity/client/testutil"
-	liquiditytypes "github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	lapp "github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/client/cli"
+	liquiditytestutil "github.com/gravity-devs/liquidity/v3/x/liquidity/client/testutil"
+	liquiditytypes "github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 
-	tmcli "github.com/tendermint/tendermint/libs/cli"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	tmlog "github.com/tendermint/tendermint/libs/log"
-	tmtypes "github.com/tendermint/tendermint/types"
-	tmdb "github.com/tendermint/tm-db"
+	tmdb "github.com/cometbft/cometbft-db"
+	tmcli "github.com/cometbft/cometbft/libs/cli"
+	tmjson "github.com/cometbft/cometbft/libs/json"
+	tmlog "github.com/cometbft/cometbft/libs/log"
+	tmtypes "github.com/cometbft/cometbft/types"
 )
 
 type IntegrationTestSuite struct {
@@ -1141,11 +1141,12 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 	paramChange := paramscutils.ParamChangeProposalJSON{
 		Title:       "enable-circuit-breaker",
 		Description: "enable circuit breaker",
-		Changes: []paramscutils.ParamChangeJSON{{
-			Subspace: liquiditytypes.ModuleName,
-			Key:      "CircuitBreakerEnabled",
-			Value:    circuitBreakerEnabledStr,
-		},
+		Changes: []paramscutils.ParamChangeJSON{
+			{
+				Subspace: liquiditytypes.ModuleName,
+				Key:      "CircuitBreakerEnabled",
+				Value:    circuitBreakerEnabledStr,
+			},
 		},
 		Deposit: sdk.NewCoin(s.cfg.BondDenom, govv1.DefaultMinDepositTokens).String(),
 	}
@@ -1154,7 +1155,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		panic(err)
 	}
 
-	//create a param change proposal with deposit
+	// create a param change proposal with deposit
 	_, err = liquiditytestutil.MsgParamChangeProposalExec(
 		val.ClientCtx,
 		val.Address.String(),
@@ -1354,8 +1355,8 @@ func (s *IntegrationTestSuite) TestExportGenesis() {
 
 	cmd := server.ExportCmd(
 		func(_ tmlog.Logger, _ tmdb.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
-			appOpts servertypes.AppOptions) (servertypes.ExportedApp, error) {
-
+			appOpts servertypes.AppOptions,
+		) (servertypes.ExportedApp, error) {
 			encCfg := lapp.MakeTestEncodingConfig()
 			encCfg.Codec = codec.NewProtoCodec(encCfg.InterfaceRegistry)
 

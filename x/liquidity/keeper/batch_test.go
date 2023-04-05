@@ -8,9 +8,9 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 const (
@@ -171,7 +171,7 @@ func TestCreateDepositWithdrawWithinBatch(t *testing.T) {
 	pools := simapp.LiquidityKeeper.GetAllPools(ctx)
 	poolID := pools[0].Id
 	require.Equal(t, 2, len(pools))
-	//require.Equal(t, uint64(1), poolID)
+	// require.Equal(t, uint64(1), poolID)
 	require.Equal(t, denomX, pools[0].ReserveCoinDenoms[0])
 	require.Equal(t, denomY, pools[0].ReserveCoinDenoms[1])
 
@@ -952,7 +952,6 @@ func TestInitNextBatch(t *testing.T) {
 	require.True(t, found)
 	require.False(t, batch.Executed)
 	require.Equal(t, uint64(2), batch.Index)
-
 }
 
 func TestDeleteAndInitPoolBatchDeposit(t *testing.T) {

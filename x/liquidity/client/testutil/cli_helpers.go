@@ -3,13 +3,13 @@ package testutil
 import (
 	"fmt"
 
+	"cosmossdk.io/simapp"
+	"cosmossdk.io/simapp/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	pruningtypes "github.com/cosmos/cosmos-sdk/pruning/types"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/simapp/params"
+	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
@@ -17,10 +17,10 @@ import (
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	paramscli "github.com/cosmos/cosmos-sdk/x/params/client/cli"
 
-	liquidityapp "github.com/gravity-devs/liquidity/v2/app"
-	liquiditycli "github.com/gravity-devs/liquidity/v2/x/liquidity/client/cli"
+	liquidityapp "github.com/gravity-devs/liquidity/v3/app"
+	liquiditycli "github.com/gravity-devs/liquidity/v3/x/liquidity/client/cli"
 
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/cometbft/cometbft-db"
 )
 
 // NewConfig returns config that defines the necessary testing requirements
@@ -55,8 +55,8 @@ var commonArgs = []string{
 
 // MsgCreatePoolExec creates a transaction for creating liquidity pool.
 func MsgCreatePoolExec(clientCtx client.Context, from, poolID, depositCoins string,
-	extraArgs ...string) (testutil.BufferWriter, error) {
-
+	extraArgs ...string,
+) (testutil.BufferWriter, error) {
 	args := append([]string{
 		poolID,
 		depositCoins,
@@ -71,8 +71,8 @@ func MsgCreatePoolExec(clientCtx client.Context, from, poolID, depositCoins stri
 
 // MsgDepositWithinBatchExec creates a transaction to deposit new amounts to the pool.
 func MsgDepositWithinBatchExec(clientCtx client.Context, from, poolID, depositCoins string,
-	extraArgs ...string) (testutil.BufferWriter, error) {
-
+	extraArgs ...string,
+) (testutil.BufferWriter, error) {
 	args := append([]string{
 		poolID,
 		depositCoins,
@@ -87,8 +87,8 @@ func MsgDepositWithinBatchExec(clientCtx client.Context, from, poolID, depositCo
 
 // MsgWithdrawWithinBatchExec creates a transaction to withraw pool coin amount from the pool.
 func MsgWithdrawWithinBatchExec(clientCtx client.Context, from, poolID, poolCoin string,
-	extraArgs ...string) (testutil.BufferWriter, error) {
-
+	extraArgs ...string,
+) (testutil.BufferWriter, error) {
 	args := append([]string{
 		poolID,
 		poolCoin,
@@ -103,8 +103,8 @@ func MsgWithdrawWithinBatchExec(clientCtx client.Context, from, poolID, poolCoin
 
 // MsgSwapWithinBatchExec creates a transaction to swap coins in the pool.
 func MsgSwapWithinBatchExec(clientCtx client.Context, from, poolID, swapTypeID,
-	offerCoin, demandCoinDenom, orderPrice, swapFeeRate string, extraArgs ...string) (testutil.BufferWriter, error) {
-
+	offerCoin, demandCoinDenom, orderPrice, swapFeeRate string, extraArgs ...string,
+) (testutil.BufferWriter, error) {
 	args := append([]string{
 		poolID,
 		swapTypeID,
@@ -123,7 +123,6 @@ func MsgSwapWithinBatchExec(clientCtx client.Context, from, poolID, swapTypeID,
 
 // MsgParamChangeProposalExec creates a transaction for submitting param change proposal
 func MsgParamChangeProposalExec(clientCtx client.Context, from string, file string) (testutil.BufferWriter, error) {
-
 	args := append([]string{
 		file,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),

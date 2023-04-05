@@ -6,7 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/query"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCLiquidityPool() {
@@ -165,7 +165,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryLiquidityPools() {
 			"empty request",
 			func() {
 				req = &types.QueryLiquidityPoolsRequest{
-					Pagination: &query.PageRequest{}}
+					Pagination: &query.PageRequest{},
+				}
 			},
 			true,
 			2,
@@ -175,7 +176,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryLiquidityPools() {
 			"valid request",
 			func() {
 				req = &types.QueryLiquidityPoolsRequest{
-					Pagination: &query.PageRequest{Limit: 1, CountTotal: true}}
+					Pagination: &query.PageRequest{Limit: 1, CountTotal: true},
+				}
 			},
 			true,
 			1,
@@ -185,7 +187,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryLiquidityPools() {
 			"valid request",
 			func() {
 				req = &types.QueryLiquidityPoolsRequest{
-					Pagination: &query.PageRequest{Limit: 10, CountTotal: true}}
+					Pagination: &query.PageRequest{Limit: 10, CountTotal: true},
+				}
 			},
 			true,
 			2,
@@ -293,7 +296,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryBatchDepositMsgs() {
 			func() {
 				req = &types.QueryPoolBatchDepositMsgsRequest{
 					PoolId:     suite.batches[0].PoolId,
-					Pagination: &query.PageRequest{Limit: 1, CountTotal: true}}
+					Pagination: &query.PageRequest{Limit: 1, CountTotal: true},
+				}
 			},
 			true,
 			1,
@@ -304,7 +308,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryBatchDepositMsgs() {
 			func() {
 				req = &types.QueryPoolBatchDepositMsgsRequest{
 					PoolId:     suite.batches[0].PoolId,
-					Pagination: &query.PageRequest{Limit: 10, CountTotal: true}}
+					Pagination: &query.PageRequest{Limit: 10, CountTotal: true},
+				}
 			},
 			true,
 			len(msgs),
@@ -370,7 +375,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryBatchWithdrawMsgs() {
 			func() {
 				req = &types.QueryPoolBatchWithdrawMsgsRequest{
 					PoolId:     suite.batches[0].PoolId,
-					Pagination: &query.PageRequest{Limit: 1, CountTotal: true}}
+					Pagination: &query.PageRequest{Limit: 1, CountTotal: true},
+				}
 			},
 			true,
 			1,
@@ -381,7 +387,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryBatchWithdrawMsgs() {
 			func() {
 				req = &types.QueryPoolBatchWithdrawMsgsRequest{
 					PoolId:     suite.batches[0].PoolId,
-					Pagination: &query.PageRequest{Limit: 10, CountTotal: true}}
+					Pagination: &query.PageRequest{Limit: 10, CountTotal: true},
+				}
 			},
 			true,
 			len(msgs),
@@ -447,7 +454,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryBatchSwapMsgs() {
 			func() {
 				req = &types.QueryPoolBatchSwapMsgsRequest{
 					PoolId:     suite.batches[0].PoolId,
-					Pagination: &query.PageRequest{Limit: 10, CountTotal: true}}
+					Pagination: &query.PageRequest{Limit: 10, CountTotal: true},
+				}
 			},
 			true,
 			len(msgs),

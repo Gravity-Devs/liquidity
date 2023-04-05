@@ -9,15 +9,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
-var (
-	// create simulated accounts due to gas usage overflow issue.
-	// Read this issue: https://github.com/tendermint/liquidity/issues/349
-	randomAccounts []simtypes.Account
-)
+// create simulated accounts due to gas usage overflow issue.
+// Read this issue: https://github.com/tendermint/liquidity/issues/349
+var randomAccounts []simtypes.Account
 
 // mintCoins mints and send coins to the simulated account.
 func mintCoins(ctx sdk.Context, r *rand.Rand, bk types.BankKeeper, acc simtypes.Account, denoms []string) error {

@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // Querier is used as Keeper will have duplicate methods if used directly, and gRPC names take precedence over keeper.
@@ -111,7 +111,6 @@ func (k Querier) LiquidityPools(c context.Context, req *types.QueryLiquidityPool
 		pools = append(pools, pool)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -174,7 +173,6 @@ func (k Querier) PoolBatchSwapMsgs(c context.Context, req *types.QueryPoolBatchS
 
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -232,7 +230,6 @@ func (k Querier) PoolBatchDepositMsgs(c context.Context, req *types.QueryPoolBat
 
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -290,7 +287,6 @@ func (k Querier) PoolBatchWithdrawMsgs(c context.Context, req *types.QueryPoolBa
 
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

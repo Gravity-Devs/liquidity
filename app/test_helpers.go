@@ -12,6 +12,12 @@ import (
 	"testing"
 	"time"
 
+	dbm "github.com/cometbft/cometbft-db"
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmjson "github.com/cometbft/cometbft/libs/json"
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -25,17 +31,11 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtypes "github.com/tendermint/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
 
-	"github.com/gravity-devs/liquidity/v2/app/params"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app/params"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
@@ -103,7 +103,6 @@ func Setup(isCheckTx bool) *LiquidityApp {
 // of one consensus engine unit in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
 func SetupWithGenesisValSet(valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *LiquidityApp {
-
 	app, genesisState := setup(true, 5)
 	genesisState = genesisStateWithValSet(app, genesisState, valSet, genAccs, balances...)
 
@@ -133,7 +132,8 @@ func SetupWithGenesisValSet(valSet *tmtypes.ValidatorSet, genAccs []authtypes.Ge
 func genesisStateWithValSet(
 	app *LiquidityApp, genesisState GenesisState,
 	valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount,
-	balances ...banktypes.Balance) GenesisState {
+	balances ...banktypes.Balance,
+) GenesisState {
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
@@ -552,7 +552,6 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 
 		balancePoolCoinAfter := simapp.BankKeeper.GetBalance(ctx, addrs[i], pool.PoolCoinDenom)
 		if balancePoolCoin.Amount.Equal(withdrawCoin.Amount) {
-
 		} else {
 			require.Equal(t, balancePoolCoin.Sub(withdrawCoin).Amount, balancePoolCoinAfter.Amount)
 		}
@@ -588,7 +587,8 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 }
 
 func GetSwapMsg(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, offerCoins []sdk.Coin, orderPrices []sdk.Dec,
-	addrs []sdk.AccAddress, poolID uint64) []*types.MsgSwapWithinBatch {
+	addrs []sdk.AccAddress, poolID uint64,
+) []*types.MsgSwapWithinBatch {
 	if len(offerCoins) != len(orderPrices) || len(orderPrices) != len(addrs) {
 		require.True(t, false)
 	}

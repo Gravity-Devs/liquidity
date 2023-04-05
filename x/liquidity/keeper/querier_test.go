@@ -5,15 +5,15 @@ import (
 	"strings"
 	"testing"
 
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 const custom = "custom"
@@ -92,7 +92,7 @@ func TestQueries(t *testing.T) {
 
 	// define test denom X, Y for Liquidity Pool
 	denomX, denomY := types.AlphabeticalDenomPair(DenomX, DenomY)
-	//denoms := []string{denomX, denomY}
+	// denoms := []string{denomX, denomY}
 
 	X := sdk.NewInt(1000000000)
 	Y := sdk.NewInt(1000000000)
@@ -125,5 +125,4 @@ func TestQueries(t *testing.T) {
 	poolsRes, err := getQueriedLiquidityPools(t, ctx, cdc, querier)
 	require.NoError(t, err)
 	require.Equal(t, 2, len(poolsRes))
-
 }

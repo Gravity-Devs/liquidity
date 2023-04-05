@@ -8,10 +8,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 func TestLiquidityPool(t *testing.T) {
@@ -863,7 +863,7 @@ func TestGetPoolByReserveAccIndex(t *testing.T) {
 	require.Equal(t, pool.PoolCoinDenom, poolCoinDenom)
 	require.True(t, simapp.LiquidityKeeper.IsPoolCoinDenom(ctx, pool.PoolCoinDenom))
 	require.False(t, simapp.LiquidityKeeper.IsPoolCoinDenom(ctx, pool.Name()))
-	//SetPoolByReserveAccIndex
+	// SetPoolByReserveAccIndex
 }
 
 func TestDepositWithdrawEdgecase(t *testing.T) {
@@ -1108,7 +1108,8 @@ func TestCreatePoolEqualDenom(t *testing.T) {
 	msg := types.NewMsgCreatePool(addrs[0], types.DefaultPoolTypeID,
 		sdk.Coins{
 			sdk.NewCoin(DenomA, sdk.NewInt(1000000)),
-			sdk.NewCoin(DenomA, sdk.NewInt(1000000))})
+			sdk.NewCoin(DenomA, sdk.NewInt(1000000)),
+		})
 	_, err := simapp.LiquidityKeeper.CreatePool(ctx, msg)
 	require.ErrorIs(t, err, types.ErrEqualDenom)
 }
