@@ -27,6 +27,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
 	"cosmossdk.io/simapp"
+	simappparams "cosmossdk.io/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
