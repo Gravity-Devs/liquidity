@@ -112,7 +112,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 
 	for _, coin := range msg.DepositCoins {
 		if coin.Amount.LT(params.MinInitDepositAmount) {
-			return types.Pool{}, errorsmod.Warpf(
+			return types.Pool{}, errorsmod.Wrapf(
 				types.ErrLessThanMinInitDeposit, "deposit coin %s is smaller than %s", coin, params.MinInitDepositAmount)
 		}
 	}
@@ -120,7 +120,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	for _, coin := range msg.DepositCoins {
 		balance := k.bankKeeper.GetBalance(ctx, poolCreator, coin.Denom)
 		if balance.IsLT(coin) {
-			return types.Pool{}, errorsmod.Warpf(
+			return types.Pool{}, errorsmod.Wrapf(
 				types.ErrInsufficientBalance, "%s is smaller than %s", balance, coin)
 		}
 	}
@@ -130,7 +130,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 		neededAmt := coin.Amount.Add(msg.DepositCoins.AmountOf(coin.Denom))
 		neededCoin := sdk.NewCoin(coin.Denom, neededAmt)
 		if balance.IsLT(neededCoin) {
-			return types.Pool{}, errorsmod.Warpf(
+			return types.Pool{}, errorsmod.Wrapf(
 				types.ErrInsufficientPoolCreationFee, "%s is smaller than %s", balance, neededCoin)
 		}
 	}

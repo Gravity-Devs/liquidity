@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"cosmossdk.io/simapp"
-	"cosmossdk.io/simapp/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -16,6 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	paramscli "github.com/cosmos/cosmos-sdk/x/params/client/cli"
+	"github.com/gravity-devs/liquidity/v3/app/params"
 
 	liquidityapp "github.com/gravity-devs/liquidity/v3/app"
 	liquiditycli "github.com/gravity-devs/liquidity/v3/x/liquidity/client/cli"
@@ -26,7 +26,7 @@ import (
 // NewConfig returns config that defines the necessary testing requirements
 // used to bootstrap and start an in-process local testing network.
 func NewConfig(dbm *dbm.MemDB) network.Config {
-	encCfg := simapp.MakeTestEncodingConfig()
+	encCfg := params.MakeTestEncodingConfig()
 
 	cfg := network.DefaultConfig()
 	cfg.AppConstructor = NewAppConstructor(encCfg, dbm)                    // the ABCI application constructor
@@ -38,8 +38,7 @@ func NewConfig(dbm *dbm.MemDB) network.Config {
 func NewAppConstructor(encodingCfg params.EncodingConfig, db *dbm.MemDB) network.AppConstructor {
 	return func(val network.Validator) servertypes.Application {
 		return liquidityapp.NewLiquidityApp(
-			val.Ctx.Logger, db, nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
-			liquidityapp.MakeTestEncodingConfig(),
+			val.Ctx.Logger, db, nil, true,
 			simapp.EmptyAppOptions{},
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),

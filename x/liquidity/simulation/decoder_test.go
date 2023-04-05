@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gravity-devs/liquidity/v3/app/params"
 	"github.com/stretchr/testify/require"
 
-	"cosmossdk.io/simapp"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/kv"
@@ -24,7 +24,7 @@ var (
 )
 
 func TestDecodeLiquidityStore(t *testing.T) {
-	cdc := simapp.MakeTestEncodingConfig().Codec
+	cdc := params.MakeTestEncodingConfig().Codec
 	dec := simulation.NewDecodeStore(cdc)
 
 	pool := types.Pool{
