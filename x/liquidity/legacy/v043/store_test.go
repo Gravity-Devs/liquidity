@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"cosmossdk.io/simapp"
+	simapp "cosmossdk.io/simapp/params"
 	gogotypes "github.com/cosmos/gogoproto/types"
 
 	"github.com/stretchr/testify/require"
