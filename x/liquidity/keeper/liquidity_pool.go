@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -481,10 +482,10 @@ func (k Keeper) ExecuteWithdrawal(ctx sdk.Context, msg types.WithdrawMsgState, b
 	return nil
 }
 
-// GetPoolCoinTotalSupply returns total supply of pool coin of the pool in form of sdk.Int
+// GetPoolCoinTotalSupply returns total supply of pool coin of the pool in form of math.Int
 //
 //nolint:staticcheck
-func (k Keeper) GetPoolCoinTotalSupply(ctx sdk.Context, pool types.Pool) sdk.Int {
+func (k Keeper) GetPoolCoinTotalSupply(ctx sdk.Context, pool types.Pool) math.Int {
 	return k.bankKeeper.GetSupply(ctx, pool.PoolCoinDenom).Amount
 }
 

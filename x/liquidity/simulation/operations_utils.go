@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
@@ -57,13 +58,13 @@ func randomLiquidity(r *rand.Rand, k keeper.Keeper, ctx sdk.Context) (pool types
 }
 
 // randomDepositCoin returns deposit amount between more than minimum deposit amount and less than 1e9.
-func randomDepositCoin(r *rand.Rand, minInitDepositAmount sdk.Int, denom string) sdk.Coin { //nolint:staticcheck
+func randomDepositCoin(r *rand.Rand, minInitDepositAmount math.Int, denom string) sdk.Coin {
 	amount := int64(simtypes.RandIntBetween(r, int(minInitDepositAmount.Int64()+1), 1e8))
 	return sdk.NewInt64Coin(denom, amount)
 }
 
 // randomWithdrawCoin returns random withdraw amount.
-func randomWithdrawCoin(r *rand.Rand, denom string, balance sdk.Int) sdk.Coin { //nolint:staticcheck
+func randomWithdrawCoin(r *rand.Rand, denom string, balance math.Int) sdk.Coin {
 	// prevent panic from RandIntBetween
 	if balance.Quo(sdk.NewInt(10)).Int64() <= 1 {
 		return sdk.NewInt64Coin(denom, 1)

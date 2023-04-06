@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/stretchr/testify/require"
@@ -75,7 +76,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"NilMinInitDepositAmount",
 			func(params *types.Params) {
-				params.MinInitDepositAmount = sdk.Int{}
+				params.MinInitDepositAmount = math.Int{}
 			},
 			"minimum initial deposit amount must not be nil",
 		},
@@ -89,7 +90,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"NilInitPoolCoinMintAmount",
 			func(params *types.Params) {
-				params.InitPoolCoinMintAmount = sdk.Int{}
+				params.InitPoolCoinMintAmount = math.Int{}
 			},
 			"initial pool coin mint amount must not be nil",
 		},
@@ -110,7 +111,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"NilMaxReserveCoinAmount",
 			func(params *types.Params) {
-				params.MaxReserveCoinAmount = sdk.Int{}
+				params.MaxReserveCoinAmount = math.Int{}
 			},
 			"max reserve coin amount must not be nil",
 		},

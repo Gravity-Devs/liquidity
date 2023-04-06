@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
@@ -621,8 +622,8 @@ func TestDepositRefundTooSmallDepositAmount(t *testing.T) {
 
 	balanceXRefunded := simapp.BankKeeper.GetBalance(ctx, addrs[1], denomX)
 	balanceYRefunded := simapp.BankKeeper.GetBalance(ctx, addrs[1], denomY)
-	require.True(sdk.IntEq(t, sdk.OneInt(), balanceXRefunded.Amount))
-	require.True(sdk.IntEq(t, sdk.OneInt(), balanceYRefunded.Amount))
+	require.True(math.IntEq(t, sdk.OneInt(), balanceXRefunded.Amount))
+	require.True(math.IntEq(t, sdk.OneInt(), balanceYRefunded.Amount))
 
 	// next block
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
@@ -666,8 +667,8 @@ func TestDepositRefundDeletedPool(t *testing.T) {
 
 	balanceXRefunded := simapp.BankKeeper.GetBalance(ctx, addrs[1], denomX)
 	balanceYRefunded := simapp.BankKeeper.GetBalance(ctx, addrs[1], denomY)
-	require.True(sdk.IntEq(t, X, balanceXRefunded.Amount))
-	require.True(sdk.IntEq(t, Y, balanceYRefunded.Amount))
+	require.True(math.IntEq(t, X, balanceXRefunded.Amount))
+	require.True(math.IntEq(t, Y, balanceYRefunded.Amount))
 
 	// next block
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)

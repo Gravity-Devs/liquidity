@@ -1360,7 +1360,7 @@ func (s *IntegrationTestSuite) TestExportGenesis() {
 				app = lapp.NewLiquidityApp(logger, db, traceStore, true, appOpts)
 			}
 
-			return app.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+			return app.ExportAppStateAndValidators(forZeroHeight, jailWhiteList, modulesToExport)
 		},
 		home,
 	)

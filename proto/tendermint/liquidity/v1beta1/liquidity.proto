@@ -64,7 +64,7 @@ message Params {
         (gogoproto.nullable)   = false,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
             example: "\"1000000\"",
-            format: "sdk.Int"
+            format: "math.Int"
         }];
 
     // Initial mint amount of pool coins upon pool creation.
@@ -74,7 +74,7 @@ message Params {
         (gogoproto.nullable)   = false,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
             example: "\"1000000\"",
-            format: "sdk.Int"
+            format: "math.Int"
         }];
 
     // Limit the size of each liquidity pool to minimize risk. In development, set to 0 for no limit. In production, set a limit.
@@ -84,7 +84,7 @@ message Params {
         (gogoproto.nullable)   = false,
         (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
             example: "\"1000000000000\"",
-            format: "sdk.Int"
+            format: "math.Int"
         }];
 
     // Fee paid to create a Liquidity Pool. Set a fee to prevent spamming.
