@@ -551,7 +551,7 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 		require.Equal(t, moduleAccEscrowAmtPool, moduleAccEscrowAmtPoolAfter)
 
 		balancePoolCoinAfter := simapp.BankKeeper.GetBalance(ctx, addrs[i], pool.PoolCoinDenom)
-		if balancePoolCoin.Amount.Equal(withdrawCoin.Amount) { // TODO: this is highly ambiguous
+		if balancePoolCoin.Amount.Equal(withdrawCoin.Amount) { //nolint:revive // TODO: this is highly ambiguous we need to be careful with it.  I'm choosing not to fix the linter issue.
 		} else {
 			require.Equal(t, balancePoolCoin.Sub(withdrawCoin).Amount, balancePoolCoinAfter.Amount)
 		}
