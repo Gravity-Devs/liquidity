@@ -75,10 +75,15 @@ func (s *IntegrationTestSuite) SetupTest() {
 
 	genesisStateGov := govv1.DefaultGenesisState()
 	duration := time.Duration(15) * time.Second
-	*genesisStateGov.DepositParams = govv1.NewDepositParams(sdk.NewCoins(sdk.NewCoin(cfg.BondDenom, govv1.DefaultMinDepositTokens)), &duration)
+	depositParams := govv1.NewDepositParams(sdk.NewCoins(sdk.NewCoin(cfg.BondDenom, govv1.DefaultMinDepositTokens)), &duration)
+	genesisStateGov.DepositParams = &depositParams
 	duration = time.Duration(3) * time.Second
-	*genesisStateGov.VotingParams = govv1.NewVotingParams(&duration)
-	genesisStateGov.TallyParams.Quorum = "0.01"
+	votingParams := govv1.NewVotingParams(&duration)
+	genesisStateGov.VotingParams = &votingParams
+	tallyParams := &govv1.TallyParams{
+		Quorum: "0.01",
+	}
+	genesisStateGov.TallyParams = tallyParams
 	bz, err := cfg.Codec.MarshalJSON(genesisStateGov)
 	s.Require().NoError(err)
 	cfg.GenesisState["gov"] = bz
