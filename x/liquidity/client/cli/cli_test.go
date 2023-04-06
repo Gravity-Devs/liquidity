@@ -74,8 +74,10 @@ func (s *IntegrationTestSuite) SetupTest() {
 	cfg.StakingTokens = sdk.NewInt(100_000_000_000) // stake denom
 
 	genesisStateGov := govv1.DefaultGenesisState()
-	*genesisStateGov.DepositParams = govv1.NewDepositParams(sdk.NewCoins(sdk.NewCoin(cfg.BondDenom, govv1.DefaultMinDepositTokens)), time.Duration(15)*time.Second)
-	*genesisStateGov.VotingParams = govv1.NewVotingParams(time.Duration(3) * time.Second)
+	duration := time.Duration(15) * time.Second
+	*genesisStateGov.DepositParams = govv1.NewDepositParams(sdk.NewCoins(sdk.NewCoin(cfg.BondDenom, govv1.DefaultMinDepositTokens)), &duration)
+	duration = time.Duration(3) * time.Second
+	*genesisStateGov.VotingParams = govv1.NewVotingParams(&duration)
 	genesisStateGov.TallyParams.Quorum = "0.01"
 	bz, err := cfg.Codec.MarshalJSON(genesisStateGov)
 	s.Require().NoError(err)
@@ -1340,7 +1342,7 @@ func (s *IntegrationTestSuite) TestExportGenesis() {
 
 	cmd := server.ExportCmd(
 		func(_ tmlog.Logger, _ tmdb.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
-			appOpts servertypes.AppOptions,
+			appOpts servertypes.AppOptions, modulesToExport []string,
 		) (servertypes.ExportedApp, error) {
 			encCfg := lapp.MakeTestEncodingConfig()
 			encCfg.Codec = codec.NewProtoCodec(encCfg.InterfaceRegistry)
