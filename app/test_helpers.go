@@ -78,7 +78,7 @@ func setup(withGenesis bool, _ uint) (*LiquidityApp, GenesisState) {
 }
 
 // Setup initializes a new LiquidityApp. A Nop logger is set in LiquidityApp.
-func Setup(isCheckTx bool) *LiquidityApp {
+func Setup(_ bool) *LiquidityApp {
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
 	// create validator set with single validator
@@ -502,8 +502,8 @@ func TestDepositPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y s
 		require.Equal(t, moduleAccEscrowAmtX, moduleAccEscrowAmtXAfter)
 		require.Equal(t, moduleAccEscrowAmtY, moduleAccEscrowAmtYAfter)
 	}
-	batch, bool := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
-	require.True(t, bool)
+	batch, found := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
+	require.True(t, found)
 
 	// endblock
 	if withEndblock {
