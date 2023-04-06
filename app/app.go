@@ -352,6 +352,12 @@ func NewLiquidityApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	// register the staking hooks
+	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
+	app.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
+	)
+
 	// create evidence keeper with router
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec, keys[evidencetypes.StoreKey], app.StakingKeeper, app.SlashingKeeper,
@@ -446,7 +452,7 @@ func NewLiquidityApp(
 
 	// create the simulation manager and define the order of the modules for deterministic simulations	app.sm = module.NewSimulationManagerFromAppModules(app.ModuleManager.Modules, overrideModules)
 	app.sm = module.NewSimulationManagerFromAppModules(app.mm.Modules, overrideModules)
-	
+
 	// register the store decoders for simulation tests
 	app.sm.RegisterStoreDecoders()
 

@@ -26,11 +26,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdkserver "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/gravity-devs/liquidity/v3/app/params"
@@ -105,7 +107,7 @@ func Setup(_ bool) *LiquidityApp {
 // account. A Nop logger is set in SimApp.
 func SetupWithGenesisValSet(valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *LiquidityApp {
 	app, genesisState := setup(true, 5)
-	genesisState = genesisStateWithValSet(app, genesisState, valSet, genAccs, balances...)
+	genesisState, _ = simtestutil.GenesisStateWithValSet(app.AppCodec(), genesisState, valSet, genAccs, balances...)
 
 	stateBytes, _ := json.MarshalIndent(genesisState, "", " ")
 
@@ -214,7 +216,8 @@ func NewSimappWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOptio
 	encCdc := MakeTestEncodingConfig()
 	app := NewLiquidityApp(options.Logger, options.DB, nil, true, options.AppOpts)
 	genesisState := NewDefaultGenesisState(encCdc.Codec)
-	genesisState = genesisStateWithValSet(app, genesisState, valSet, []authtypes.GenesisAccount{acc}, balance)
+	genesisState, err = simtestutil.GenesisStateWithValSet(app.AppCodec(), genesisState, valSet, []authtypes.GenesisAccount{acc}, balance)
+	assert.NoError(t, err)
 
 	if !isCheckTx {
 		// init chain must be called to stop deliverState from being nil
