@@ -3,16 +3,15 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"testing"
 
-	"cosmossdk.io/core/appmodule"
-	log "cosmossdk.io/log"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/libs/log"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/golang/mock/gomock"
@@ -42,7 +41,7 @@ import (
 
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	db := dbm.NewMemDB()
-	logger := log.NewTestLogger(t)
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimappWithCustomOptions(t, false, SetupOptions{
 		Logger:  logger.With("instance", "first"),
 		DB:      db,
@@ -75,7 +74,7 @@ func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 
 func TestRunMigrations(t *testing.T) {
 	db := dbm.NewMemDB()
-	logger := log.NewTestLogger(t)
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewLiquidityApp(logger.With("instance", "simapp"), db, nil, true, simtestutil.NewAppOptionsWithFlagHome(t.TempDir()))
 
 	// Create a new baseapp and configurator for the purpose of this test.
@@ -98,12 +97,6 @@ func TestRunMigrations(t *testing.T) {
 		if mod, ok := mod.(module.HasServices); ok {
 			mod.RegisterServices(configurator)
 		}
-
-		if mod, ok := mod.(appmodule.HasServices); ok {
-			err := mod.RegisterServices(configurator)
-			require.NoError(t, err)
-		}
-
 	}
 
 	// Initialize the chain
@@ -213,7 +206,9 @@ func TestRunMigrations(t *testing.T) {
 
 func TestInitGenesisOnMigration(t *testing.T) {
 	db := dbm.NewMemDB()
-	app := app.NewLiqudityApp(log.NewTestLogger(t), db, nil, true, simtestutil.NewAppOptionsWithFlagHome(t.TempDir()))
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
+
+	app := NewLiquidityApp(logger, db, nil, true, simtestutil.NewAppOptionsWithFlagHome(t.TempDir()))
 	ctx := app.NewContext(true, cmtproto.Header{Height: app.LastBlockHeight()})
 
 	// Create a mock module. This module will serve as the new module we're
@@ -226,11 +221,11 @@ func TestInitGenesisOnMigration(t *testing.T) {
 	mockModule.EXPECT().InitGenesis(gomock.Eq(ctx), gomock.Eq(app.appCodec), gomock.Eq(mockDefaultGenesis)).Times(1).Return(nil)
 	mockModule.EXPECT().ConsensusVersion().Times(1).Return(uint64(0))
 
-	app.ModuleManager.Modules["mock"] = mockModule
+	app.mm.Modules["mock"] = mockModule
 
 	// Run migrations only for "mock" module. We exclude it from
 	// the VersionMap to simulate upgrading with a new module.
-	_, err := app.ModuleManager.RunMigrations(ctx, app.Configurator(),
+	_, err := app.mm.RunMigrations(ctx, app.Configurator(),
 		module.VersionMap{
 			"bank":         bank.AppModule{}.ConsensusVersion(),
 			"auth":         auth.AppModule{}.ConsensusVersion(),
@@ -255,8 +250,9 @@ func TestInitGenesisOnMigration(t *testing.T) {
 
 func TestUpgradeStateOnGenesis(t *testing.T) {
 	db := dbm.NewMemDB()
+	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimappWithCustomOptions(t, false, SetupOptions{
-		Logger:  log.NewTestLogger(t),
+		Logger:  logger,
 		DB:      db,
 		AppOpts: simtestutil.NewAppOptionsWithFlagHome(t.TempDir()),
 	})
@@ -279,11 +275,4 @@ func TestMergedRegistry(t *testing.T) {
 	r, err := proto.MergedRegistry()
 	require.NoError(t, err)
 	require.Greater(t, r.NumFiles(), 0)
-}
-
-func TestProtoAnnotations(t *testing.T) {
-	r, err := proto.MergedRegistry()
-	require.NoError(t, err)
-	err = msgservice.ValidateProtoAnnotations(r)
-	require.NoError(t, err)
 }

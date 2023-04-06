@@ -678,6 +678,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	return paramsKeeper
 }
 
+func (app *LiquidityApp) Configurator() module.Configurator {
+	return app.configurator
+}
+
 // BlockedAddresses returns all the app's blocked account addresses.
 func BlockedAddresses() map[string]bool {
 	modAccAddrs := make(map[string]bool)
