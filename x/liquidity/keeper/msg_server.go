@@ -127,7 +127,7 @@ func (k msgServer) WithdrawWithinBatch(goCtx context.Context, msg *types.MsgWith
 }
 
 // Deprecated: Message server, handler for MsgSwapWithinBatch
-func (k msgServer) Swap(goCtx context.Context, msg *types.MsgSwapWithinBatch) (*types.MsgSwapWithinBatchResponse, error) {
+func (k msgServer) Swap(goCtx context.Context, _ *types.MsgSwapWithinBatch) (*types.MsgSwapWithinBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.GetCircuitBreakerEnabled(ctx) {

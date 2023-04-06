@@ -551,7 +551,7 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 		require.Equal(t, moduleAccEscrowAmtPool, moduleAccEscrowAmtPoolAfter)
 
 		balancePoolCoinAfter := simapp.BankKeeper.GetBalance(ctx, addrs[i], pool.PoolCoinDenom)
-		if balancePoolCoin.Amount.Equal(withdrawCoin.Amount) {
+		if balancePoolCoin.Amount.Equal(withdrawCoin.Amount) { // TODO: this is highly ambiguous
 		} else {
 			require.Equal(t, balancePoolCoin.Sub(withdrawCoin).Amount, balancePoolCoinAfter.Amount)
 		}
@@ -564,8 +564,8 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 		// endblock
 		liquidity.EndBlocker(ctx, simapp.LiquidityKeeper)
 
-		batch, bool := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
-		require.True(t, bool)
+		batch, found := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
+		require.True(t, found)
 
 		// verify burned pool coin
 		poolCoinAfter := simapp.LiquidityKeeper.GetPoolCoinTotalSupply(ctx, pool)
@@ -623,6 +623,6 @@ func GetSwapMsg(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, offerCoins 
 type EmptyAppOptions struct{}
 
 // Get implements AppOptions
-func (ao EmptyAppOptions) Get(o string) interface{} {
+func (ao EmptyAppOptions) Get(_ string) interface{} {
 	return nil
 }
