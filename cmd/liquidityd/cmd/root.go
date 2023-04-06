@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"cosmossdk.io/simapp"
+	rosettaCmd "cosmossdk.io/tools/rosetta/cmd"
 	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/spf13/cobra"
@@ -22,10 +23,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
@@ -164,7 +165,6 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
-		NewTestnetCmd(app.ModuleBasics, banktypes.GenesisBalancesIterator{}),
 		debug.Cmd(),
 		config.Cmd(),
 		pruning.PruningCmd(newApp),
@@ -193,8 +193,8 @@ func addModuleInitFlags(startCmd *cobra.Command) {
 func genesisCommand(encodingConfig params.EncodingConfig, cmds ...*cobra.Command) *cobra.Command {
 	cmd := genutilcli.GenesisCoreCommand(encodingConfig.TxConfig, simapp.ModuleBasics, simapp.DefaultNodeHome)
 
-	for _, sub_cmd := range cmds {
-		cmd.AddCommand(sub_cmd)
+	for _, subCmd := range cmds {
+		cmd.AddCommand(subCmd)
 	}
 	return cmd
 }

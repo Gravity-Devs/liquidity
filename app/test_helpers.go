@@ -40,8 +40,8 @@ import (
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
 // LiquidityApp testing.
-var DefaultConsensusParams = &abci.ConsensusParams{
-	Block: &abci.BlockParams{
+var DefaultConsensusParams = &tmproto.ConsensusParams{
+	Block: &tmproto.BlockParams{
 		MaxBytes: 200000,
 		MaxGas:   2000000,
 	},
@@ -67,10 +67,10 @@ type SetupOptions struct {
 	AppOpts            sdkserver.AppOptions
 }
 
-func setup(withGenesis bool, invCheckPeriod uint) (*LiquidityApp, GenesisState) {
+func setup(withGenesis bool, _ uint) (*LiquidityApp, GenesisState) {
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
-	app := NewLiquidityApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{})
+	app := NewLiquidityApp(log.NewNopLogger(), db, nil, true, EmptyAppOptions{})
 	if withGenesis {
 		return app, NewDefaultGenesisState(encCdc.Codec)
 	}
@@ -185,7 +185,7 @@ func genesisStateWithValSet(
 	})
 
 	// update total supply
-	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{})
+	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{}, []banktypes.SendEnabled{})
 	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
 
 	return genesisState
@@ -211,7 +211,7 @@ func NewSimappWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOptio
 	}
 
 	encCdc := MakeTestEncodingConfig()
-	app := NewLiquidityApp(options.Logger, options.DB, nil, true, options.SkipUpgradeHeights, options.HomePath, options.InvCheckPeriod, options.EncConfig, options.AppOpts)
+	app := NewLiquidityApp(options.Logger, options.DB, nil, true, options.AppOpts)
 	genesisState := NewDefaultGenesisState(encCdc.Codec)
 	genesisState = genesisStateWithValSet(app, genesisState, valSet, []authtypes.GenesisAccount{acc}, balance)
 

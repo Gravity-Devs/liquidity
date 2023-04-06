@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	rootCmd, _ := cmd.NewRootCmd()
+	rootCmd := cmd.NewRootCmd()
 
 	if err := svrcmd.Execute(rootCmd, "", liquidity.DefaultNodeHome); err != nil {
 		switch e := err.(type) {

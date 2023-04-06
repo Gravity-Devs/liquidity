@@ -15,9 +15,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	paramscli "github.com/cosmos/cosmos-sdk/x/params/client/cli"
+	"github.com/gravity-devs/liquidity/v3/app"
 	"github.com/gravity-devs/liquidity/v3/app/params"
 
-	liquidityapp "github.com/gravity-devs/liquidity/v3/app"
 	liquiditycli "github.com/gravity-devs/liquidity/v3/x/liquidity/client/cli"
 
 	dbm "github.com/cometbft/cometbft-db"
@@ -28,27 +28,26 @@ import (
 func NewConfig(dbm *dbm.MemDB) network.Config {
 	encCfg := params.MakeTestEncodingConfig()
 
-	cfg := network.DefaultConfig()
-	cfg.AppConstructor = NewAppConstructor(encCfg, dbm)                    // the ABCI application constructor
-	cfg.GenesisState = liquidityapp.ModuleBasics.DefaultGenesis(cfg.Codec) // liquidity genesis state to provide
+	cfg := network.DefaultConfig(simapp.NewTestNetworkFixture)
+	cfg.AppConstructor = NewAppConstructor(encCfg, dbm)           // the ABCI application constructor
+	cfg.GenesisState = app.ModuleBasics.DefaultGenesis(cfg.Codec) // liquidity genesis state to provide
 	return cfg
 }
 
 // NewAppConstructor returns a new network AppConstructor.
 func NewAppConstructor(encodingCfg params.EncodingConfig, db *dbm.MemDB) network.AppConstructor {
-	return func(val network.Validator) servertypes.Application {
-		return liquidityapp.NewLiquidityApp(
-			val.Ctx.Logger, db, nil, true,
-			simapp.EmptyAppOptions{},
-			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
-			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+	return func(val network.ValidatorI) servertypes.Application {
+		return app.NewLiquidityApp(
+			val.GetCtx().Logger, db, nil, true,
+			app.EmptyAppOptions{},
+			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
+			baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
 		)
 	}
 }
 
 var commonArgs = []string{
 	fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-	fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))).String()),
 }
 

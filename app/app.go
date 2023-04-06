@@ -17,7 +17,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -156,8 +155,8 @@ var (
 )
 
 var (
-	_ runtime.AppI            = (*SimApp)(nil)
-	_ servertypes.Application = (*SimApp)(nil)
+	_ runtime.AppI            = (*LiquidityApp)(nil)
+	_ servertypes.Application = (*LiquidityApp)(nil)
 )
 
 // LiquidityApp extends an ABCI application, but with most of its parameters exported.
@@ -241,10 +240,10 @@ func NewLiquidityApp(
 	// not include this key.
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testingkey")
 
-	// configure state listening capabilities using AppOptions
-	// we are doing nothing with the returned streamingServices and waitGroup in this case
-	if _, _, err := streaming.LoadStreamingServices(bApp, appOpts, appCodec, keys); err != nil {
-		tmos.Exit(err.Error())
+	// load state streaming if enabled
+	if _, _, err := streaming.LoadStreamingServices(bApp, appOpts, appCodec, logger, keys); err != nil {
+		logger.Error("failed to load state streaming", "err", err)
+		os.Exit(1)
 	}
 
 	app := &LiquidityApp{
@@ -637,6 +636,11 @@ func (app *LiquidityApp) RegisterNodeService(clientCtx client.Context) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter())
 }
 
+// TxConfig returns SimApp's TxConfig
+func (app *LiquidityApp) TxConfig() client.TxConfig {
+	return app.txConfig
+}
+
 // RegisterSwaggerAPI registers swagger route with API Server
 func RegisterSwaggerAPI(rtr *mux.Router) {
 	statikFS, err := fs.New()
@@ -667,7 +671,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(minttypes.ModuleName)
 	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
-	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())
+	paramsKeeper.Subspace(govtypes.ModuleName)
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 
