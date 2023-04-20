@@ -220,16 +220,28 @@ format:
 ###                                Protobuf                                 ###
 ###############################################################################
 
-proto-all: proto-gen proto-swagger-gen update-swagger-docs
+protoVer=0.11.6
+protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+
+proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
-	docker run --rm -v $(CURDIR):/workspace --workdir /workspace bharvest/liquidity-proto-gen sh ./scripts/protocgen.sh
-	go mod tidy
+	@echo "Generating Protobuf files"
+	@$(protoImage) sh ./scripts/protocgen.sh
 
-proto-swagger-gen:
-	docker run --rm -v $(CURDIR):/workspace --workdir /workspace bharvest/liquidity-proto-gen sh ./scripts/protoc-swagger-gen.sh
 
-proto-js-gen:
-	starport build --rebuild-proto-once
+proto-format:
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
-.PHONY: proto-all proto-gen proto-swagger-gen proto-js-gen
+proto-lint:
+	@$(protoImage) buf lint --error-format=json
+
+proto-check-breaking:
+	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
+
+proto-update-deps:
+	@echo "Updating Protobuf dependencies"
+	$(DOCKER) run --rm -v $(CURDIR)/proto:/workspace --workdir /workspace $(protoImageName) buf mod update
+
+.PHONY: proto-all proto-gen proto-gen-any proto-swagger-gen proto-format proto-lint proto-check-breaking proto-update-deps
