@@ -9,7 +9,8 @@ import (
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
+	grpc1 "github.com/cosmos/gogoproto/grpc"
+	proto "github.com/cosmos/gogoproto/proto"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -38,7 +39,7 @@ type MsgCreatePool struct {
 	// id of the target pool type, must match the value in the pool. Only pool-type-id 1 is supported.
 	PoolTypeId uint32 `protobuf:"varint,2,opt,name=pool_type_id,json=poolTypeId,proto3" json:"pool_type_id,omitempty" yaml:"pool_type_id"`
 	// reserve coin pair of the pool to deposit.
-	DepositCoins []types.Coin `protobuf:"bytes,4,rep,name=deposit_coins,json=depositCoins,proto3" json:"deposit_coins" yaml:"deposit_coins"`
+	DepositCoins github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,4,rep,name=deposit_coins,json=depositCoins,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"deposit_coins" yaml:"deposit_coins"`
 }
 
 func (m *MsgCreatePool) Reset()         { *m = MsgCreatePool{} }
@@ -124,7 +125,7 @@ type MsgDepositWithinBatch struct {
 	// id of the target pool
 	PoolId uint64 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id" yaml:"pool_id"`
 	// reserve coin pair of the pool to deposit
-	DepositCoins []types.Coin `protobuf:"bytes,3,rep,name=deposit_coins,json=depositCoins,proto3" json:"deposit_coins" yaml:"deposit_coins"`
+	DepositCoins github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,3,rep,name=deposit_coins,json=depositCoins,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"deposit_coins" yaml:"deposit_coins"`
 }
 
 func (m *MsgDepositWithinBatch) Reset()         { *m = MsgDepositWithinBatch{} }
@@ -497,10 +498,10 @@ type MsgClient interface {
 }
 
 type msgClient struct {
-	cc *grpc.ClientConn
+	cc grpc1.ClientConn
 }
 
-func NewMsgClient(cc *grpc.ClientConn) MsgClient {
+func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
@@ -569,7 +570,7 @@ func (*UnimplementedMsgServer) Swap(ctx context.Context, req *MsgSwapWithinBatch
 	return nil, status.Errorf(codes.Unimplemented, "method Swap not implemented")
 }
 
-func RegisterMsgServer(s *grpc.Server, srv MsgServer) {
+func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
@@ -902,13 +903,16 @@ func (m *MsgSwapWithinBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.OrderPrice) > 0 {
-		i -= len(m.OrderPrice)
-		copy(dAtA[i:], m.OrderPrice)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.OrderPrice)))
-		i--
-		dAtA[i] = 0x3a
+	{
+		size := m.OrderPrice.Size()
+		i -= size
+		if _, err := m.OrderPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x3a
 	{
 		size, err := m.OfferCoinFee.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -1103,10 +1107,8 @@ func (m *MsgSwapWithinBatch) Size() (n int) {
 	}
 	l = m.OfferCoinFee.Size()
 	n += 1 + l + sovTx(uint64(l))
-	l = len(m.OrderPrice)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
+	l = m.OrderPrice.Size()
+	n += 1 + l + sovTx(uint64(l))
 	return n
 }
 
@@ -1906,7 +1908,9 @@ func (m *MsgSwapWithinBatch) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.OrderPrice = github_com_cosmos_cosmos_sdk_types.Dec(dAtA[iNdEx:postIndex])
+			if err := m.OrderPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
