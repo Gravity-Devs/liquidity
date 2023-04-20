@@ -16,7 +16,6 @@ import (
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	paramscli "github.com/cosmos/cosmos-sdk/x/params/client/cli"
 	"github.com/gravity-devs/liquidity/v3/app"
-	"github.com/gravity-devs/liquidity/v3/app/params"
 
 	liquiditycli "github.com/gravity-devs/liquidity/v3/x/liquidity/client/cli"
 
@@ -26,24 +25,20 @@ import (
 // NewConfig returns config that defines the necessary testing requirements
 // used to bootstrap and start an in-process local testing network.
 func NewConfig(dbm *dbm.MemDB) network.Config {
-	encCfg := params.MakeTestEncodingConfig()
-
 	cfg := network.DefaultConfig(simapp.NewTestNetworkFixture)
-	cfg.AppConstructor = NewAppConstructor(encCfg, dbm)           // the ABCI application constructor
-	cfg.GenesisState = app.ModuleBasics.DefaultGenesis(cfg.Codec) // liquidity genesis state to provide
-	return cfg
-}
-
-// NewAppConstructor returns a new network AppConstructor.
-func NewAppConstructor(_ params.EncodingConfig, db *dbm.MemDB) network.AppConstructor {
-	return func(val network.ValidatorI) servertypes.Application {
-		return app.NewLiquidityApp(
-			val.GetCtx().Logger, db, nil, true,
+	cfg.AppConstructor = func(val network.ValidatorI) servertypes.Application {
+		// we build a unique app instance for every validator here
+		app := app.NewLiquidityApp(
+			val.GetCtx().Logger, dbm, nil, true,
 			app.EmptyAppOptions{},
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 			baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
+			baseapp.SetChainID(cfg.ChainID),
 		)
-	}
+		return app
+	}           // the ABCI application constructor
+	cfg.GenesisState = app.ModuleBasics.DefaultGenesis(cfg.Codec) // liquidity genesis state to provide
+	return cfg
 }
 
 var commonArgs = []string{
