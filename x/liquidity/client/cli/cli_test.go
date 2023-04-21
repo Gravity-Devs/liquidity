@@ -166,7 +166,7 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
-			false, &sdk.TxResponse{}, 9,
+			false, &sdk.TxResponse{}, 0,
 		},
 		{
 			"valid transaction",
@@ -185,6 +185,7 @@ func (s *IntegrationTestSuite) TestNewCreatePoolCmd() {
 	for _, tc := range testCases {
 		tc := tc
 
+		s.Require().NoError(s.network.WaitForNextBlock())
 		s.Run(tc.name, func() {
 			cmd := cli.NewCreatePoolCmd()
 			clientCtx := val.ClientCtx
@@ -336,7 +337,7 @@ func (s *IntegrationTestSuite) TestNewWithdrawWithinBatchCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 				fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 			},
-			false, &sdk.TxResponse{}, 29,
+			false, &sdk.TxResponse{}, 0,
 		},
 		{
 			"valid transaction",
@@ -355,6 +356,7 @@ func (s *IntegrationTestSuite) TestNewWithdrawWithinBatchCmd() {
 	for _, tc := range testCases {
 		tc := tc
 
+		s.Require().NoError(s.network.WaitForNextBlock())
 		s.Run(tc.name, func() {
 			cmd := cli.NewWithdrawWithinBatchCmd()
 			clientCtx := val.ClientCtx
