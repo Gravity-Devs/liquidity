@@ -36,7 +36,7 @@ func NewConfig(dbm *dbm.MemDB) network.Config {
 			baseapp.SetChainID(cfg.ChainID),
 		)
 		return app
-	}           // the ABCI application constructor
+	} // the ABCI application constructor
 	cfg.GenesisState = app.ModuleBasics.DefaultGenesis(cfg.Codec) // liquidity genesis state to provide
 	return cfg
 }

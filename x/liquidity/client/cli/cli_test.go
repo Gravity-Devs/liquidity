@@ -26,6 +26,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltest "github.com/cosmos/cosmos-sdk/x/genutil/client/testutil"
+	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	paramscutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 
@@ -74,7 +75,7 @@ func (s *IntegrationTestSuite) SetupTest() {
 	cfg.StakingTokens = sdk.NewInt(100_000_000_000) // stake denom
 
 	genesisStateGov := govv1.DefaultGenesisState()
-	duration := time.Duration(15) * time.Second
+	duration := time.Duration(5) * time.Second
 	depositParams := govv1.NewDepositParams(sdk.NewCoins(sdk.NewCoin(cfg.BondDenom, govv1.DefaultMinDepositTokens)), &duration)
 	genesisStateGov.DepositParams = &depositParams
 	duration = time.Duration(3) * time.Second
@@ -1177,10 +1178,26 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
-	_, err = liquiditytestutil.MsgVote(val.ClientCtx, val.Address.String(), "1", "yes")
+	_, err = liquiditytestutil.MsgVote(val.ClientCtx, val.Address.String(), "1", "yes",
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+	)
 	s.Require().NoError(err)
+
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
+
+	cmd := govcli.GetCmdQueryProposal()
+	output, err = clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, []string{
+		"1",
+		fmt.Sprintf("--%s=json", flags.FlagOutput),
+	})
+	s.Require().NoError(err)
+
+	var proposal govv1.Proposal
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &proposal), output.String())
+	fmt.Println(proposal)
+	s.Require().Equal(proposal.Status, govv1.StatusPassed)
+	s.Require().Equal(proposal.FinalTallyResult.YesCount, 1)
 
 	// check if circuit breaker is enabled
 	expectedOutput := `{"pool_types":[{"id":1,"name":"StandardLiquidityPool","min_reserve_coin_num":2,"max_reserve_coin_num":2,"description":"Standard liquidity pool with pool price function X/Y, ESPM constraint, and two kinds of reserve coins"}],"min_init_deposit_amount":"1000000","init_pool_coin_mint_amount":"1000000","max_reserve_coin_amount":"0","pool_creation_fee":[{"denom":"stake","amount":"40000000"}],"swap_fee_rate":"0.003000000000000000","withdraw_fee_rate":"0.000000000000000000","max_order_amount_ratio":"0.100000000000000000","unit_batch_height":1,"circuit_breaker_enabled":true}`
