@@ -688,6 +688,9 @@ func (s *IntegrationTestSuite) TestGetCmdQueryLiquidityPoolBatch() {
 	)
 	s.Require().NoError(err)
 
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
 	testCases := []struct {
 		name      string
 		args      []string
@@ -767,6 +770,9 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchDepositMsg() {
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(10_000_000)), sdk.NewCoin(denomY, sdk.NewInt(10_000_000))).String(),
 	)
+	s.Require().NoError(err)
+
+	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
 	testCases := []struct {
@@ -853,6 +859,9 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchDepositMsgs() {
 		fmt.Sprintf("%d", liquiditytypes.DefaultPoolTypeID),
 		sdk.NewCoins(sdk.NewCoin(denomX, sdk.NewInt(10_000_000)), sdk.NewCoin(denomY, sdk.NewInt(10_000_000))).String(),
 	)
+	s.Require().NoError(err)
+
+	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
 	testCases := []struct {
@@ -942,6 +951,9 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchWithdrawMsg() {
 	)
 	s.Require().NoError(err)
 
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
 	testCases := []struct {
 		name      string
 		args      []string
@@ -1027,6 +1039,9 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPoolBatchWithdrawMsgs() {
 		fmt.Sprintf("%d", uint32(1)),
 		sdk.NewCoins(sdk.NewCoin("poolC33A77E752C183913636A37FE1388ACA22FE7BED792BEB2E72EF2DA857703D8D", sdk.NewInt(10_000))).String(),
 	)
+	s.Require().NoError(err)
+
+	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
 	testCases := []struct {
@@ -1121,6 +1136,10 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("%.3f", 0.003),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
+
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
 	var txRes sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(0))
@@ -1182,6 +1201,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(40))
 	s.Require().Equal(txRes.RawLog, "failed to execute message; message index: 0: circuit breaker is triggered")
@@ -1195,6 +1215,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(40))
 	s.Require().Equal(txRes.RawLog, "failed to execute message; message index: 0: circuit breaker is triggered")
@@ -1208,6 +1229,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(40))
 	s.Require().Equal(txRes.RawLog, "failed to execute message; message index: 0: circuit breaker is triggered")
@@ -1222,6 +1244,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(0))
 
@@ -1233,6 +1256,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(0))
 
@@ -1245,6 +1269,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(0))
 
@@ -1257,6 +1282,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
 	)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 	s.Require().Equal(txRes.Code, uint32(39))
 	s.Require().Equal(txRes.RawLog, "failed to execute message; message index: 0: the pool is depleted of reserve coin, reinitializing is required by deposit")
