@@ -1180,6 +1180,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 	)
 	s.Require().NoError(err)
 
+	time.Sleep(1 * time.Second)
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
