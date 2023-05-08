@@ -75,16 +75,13 @@ func (s *IntegrationTestSuite) SetupTest() {
 	cfg.StakingTokens = sdk.NewInt(100_000_000_000) // stake denom
 
 	genesisStateGov := govv1.DefaultGenesisState()
+	params := genesisStateGov.Params
 	duration := time.Duration(5) * time.Second
-	depositParams := govv1.NewDepositParams(sdk.NewCoins(sdk.NewCoin(cfg.BondDenom, govv1.DefaultMinDepositTokens)), &duration)
-	genesisStateGov.DepositParams = &depositParams
+	params.MaxDepositPeriod = &duration
+	params.MinDeposit = sdk.NewCoins(sdk.NewCoin(cfg.BondDenom, govv1.DefaultMinDepositTokens))
 	duration = time.Duration(3) * time.Second
-	votingParams := govv1.NewVotingParams(&duration)
-	genesisStateGov.VotingParams = &votingParams
-	tallyParams := &govv1.TallyParams{
-		Quorum: "0.01",
-	}
-	genesisStateGov.TallyParams = tallyParams
+	params.VotingPeriod = &duration
+	params.Quorum = "0.01"
 	bz, err := cfg.Codec.MarshalJSON(genesisStateGov)
 	s.Require().NoError(err)
 	cfg.GenesisState["gov"] = bz
@@ -1197,7 +1194,7 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &proposal), output.String())
 	fmt.Println(proposal)
 	s.Require().Equal(proposal.Status, govv1.StatusPassed)
-	s.Require().Equal(proposal.FinalTallyResult.YesCount, 1)
+	s.Require().Equal(proposal.FinalTallyResult.YesCount, "100000000")
 
 	// check if circuit breaker is enabled
 	expectedOutput := `{"pool_types":[{"id":1,"name":"StandardLiquidityPool","min_reserve_coin_num":2,"max_reserve_coin_num":2,"description":"Standard liquidity pool with pool price function X/Y, ESPM constraint, and two kinds of reserve coins"}],"min_init_deposit_amount":"1000000","init_pool_coin_mint_amount":"1000000","max_reserve_coin_amount":"0","pool_creation_fee":[{"denom":"stake","amount":"40000000"}],"swap_fee_rate":"0.003000000000000000","withdraw_fee_rate":"0.000000000000000000","max_order_amount_ratio":"0.100000000000000000","unit_batch_height":1,"circuit_breaker_enabled":true}`
