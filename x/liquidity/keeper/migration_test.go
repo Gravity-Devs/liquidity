@@ -106,9 +106,6 @@ func TestMigration(t *testing.T) {
 
 	err = keeper.SafeForceWithdrawal(ctx, simapp.LiquidityKeeper, simapp.BankKeeper, simapp.AccountKeeper)
 	require.NoError(t, err)
-
-	// TODO: add set invariant, and panic case
-	// TODO: test coverage case
 }
 
 func TestMigrationFailCase(t *testing.T) {

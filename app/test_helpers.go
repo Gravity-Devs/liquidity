@@ -15,7 +15,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -171,7 +170,7 @@ func GenAccount(app *LiquidityApp, ctx sdk.Context, sequence uint64, pubkeyExist
 	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 	acc.SetSequence(sequence)
 	if pubkeyExist {
-		acc.SetPubKey(privKey.PubKey().(cryptotypes.PubKey))
+		acc.SetPubKey(privKey.PubKey())
 	}
 	app.AccountKeeper.SetAccount(ctx, acc)
 	if initCoins != nil && initCoins.IsAllPositive() {

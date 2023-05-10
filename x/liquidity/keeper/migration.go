@@ -110,7 +110,6 @@ func ForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.B
 						PoolId:            poolByPoolCoinDenom[coin.Denom].GetId(),
 						PoolCoin:          coin,
 					}); err != nil {
-						logger := keeper.Logger(ctx)
 						logger.Debug(
 							"failed force withdrawal",
 							"withdrawer", address,
@@ -130,6 +129,5 @@ func ForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.B
 	keeper.DeleteAndInitPoolBatches(ctx)
 
 	// TODO: Need to decide whether fund remaining reserve balance to community pool or not
-	// TODO: delete pool or not
 	return nil
 }
