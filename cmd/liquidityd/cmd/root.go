@@ -32,6 +32,7 @@ import (
 
 	"github.com/gravity-devs/liquidity/v3/app"
 	"github.com/gravity-devs/liquidity/v3/app/params"
+	liquiditycli "github.com/gravity-devs/liquidity/v3/x/liquidity/client/cli"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -242,6 +243,8 @@ func txCommand() *cobra.Command {
 		authcmd.GetDecodeCommand(),
 		authcmd.GetAuxToFeeCommand(),
 	)
+
+	cmd.AddCommand(liquiditycli.GetTxCmd())
 
 	simapp.ModuleBasics.AddTxCommands(cmd)
 

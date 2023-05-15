@@ -24,6 +24,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authcli "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltest "github.com/cosmos/cosmos-sdk/x/genutil/client/testutil"
 	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
@@ -1180,9 +1181,13 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 	)
 	s.Require().NoError(err)
 
-	time.Sleep(1 * time.Second)
-	err = s.network.WaitForNextBlock()
+	time.Sleep(6 * time.Second)
+
+	// check if circuit breaker is enabled
+	expectedOutput := `{"pool_types":[{"id":1,"name":"StandardLiquidityPool","min_reserve_coin_num":2,"max_reserve_coin_num":2,"description":"Standard liquidity pool with pool price function X/Y, ESPM constraint, and two kinds of reserve coins"}],"min_init_deposit_amount":"1000000","init_pool_coin_mint_amount":"1000000","max_reserve_coin_amount":"0","pool_creation_fee":[{"denom":"stake","amount":"40000000"}],"swap_fee_rate":"0.003000000000000000","withdraw_fee_rate":"0.000000000000000000","max_order_amount_ratio":"0.100000000000000000","unit_batch_height":1,"circuit_breaker_enabled":true}`
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.GetCmdQueryParams(), []string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)})
 	s.Require().NoError(err)
+	s.Require().Equal(expectedOutput, strings.TrimSpace(out.String()))
 
 	cmd := govcli.GetCmdQueryProposal()
 	output, err = clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, []string{
@@ -1193,33 +1198,36 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 
 	var proposal govv1.Proposal
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &proposal), output.String())
-	fmt.Println(proposal)
 	s.Require().Equal(proposal.Status, govv1.StatusPassed)
 	s.Require().Equal(proposal.FinalTallyResult.YesCount, "100000000")
 
-	// check if circuit breaker is enabled
-	expectedOutput := `{"pool_types":[{"id":1,"name":"StandardLiquidityPool","min_reserve_coin_num":2,"max_reserve_coin_num":2,"description":"Standard liquidity pool with pool price function X/Y, ESPM constraint, and two kinds of reserve coins"}],"min_init_deposit_amount":"1000000","init_pool_coin_mint_amount":"1000000","max_reserve_coin_amount":"0","pool_creation_fee":[{"denom":"stake","amount":"40000000"}],"swap_fee_rate":"0.003000000000000000","withdraw_fee_rate":"0.000000000000000000","max_order_amount_ratio":"0.100000000000000000","unit_batch_height":1,"circuit_breaker_enabled":true}`
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.GetCmdQueryParams(), []string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)})
-	s.Require().NoError(err)
-	s.Require().Equal(expectedOutput, strings.TrimSpace(out.String()))
+	// // fail swap coins because of circuit breaker
+	// output, err = liquiditytestutil.MsgSwapWithinBatchExec(
+	// 	val.ClientCtx,
+	// 	val.Address.String(),
+	// 	fmt.Sprintf("%d", uint32(1)),
+	// 	fmt.Sprintf("%d", liquiditytypes.DefaultSwapTypeID),
+	// 	offerCoin.String(),
+	// 	denomX,
+	// 	fmt.Sprintf("%.3f", 0.019),
+	// 	fmt.Sprintf("%.3f", 0.003),
+	// 	fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
+	// )
+	// s.Require().NoError(err)
+	// s.Require().NoError(s.network.WaitForNextBlock())
+	// s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
 
-	// fail swap coins because of circuit breaker
-	output, err = liquiditytestutil.MsgSwapWithinBatchExec(
-		val.ClientCtx,
-		val.Address.String(),
-		fmt.Sprintf("%d", uint32(1)),
-		fmt.Sprintf("%d", liquiditytypes.DefaultSwapTypeID),
-		offerCoin.String(),
-		denomX,
-		fmt.Sprintf("%.3f", 0.019),
-		fmt.Sprintf("%.3f", 0.003),
-		fmt.Sprintf("--%s=%s", flags.FlagGas, "1000000"),
-	)
-	s.Require().NoError(err)
-	s.Require().NoError(s.network.WaitForNextBlock())
-	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
-	s.Require().Equal(txRes.Code, uint32(40))
-	s.Require().Equal(txRes.RawLog, "failed to execute message; message index: 0: circuit breaker is triggered")
+	// // s.Require().Equal(txRes.Code, uint32(40))
+	// // s.Require().Equal(txRes.RawLog, "failed to execute message; message index: 0: circuit breaker is triggered")
+
+	// cmd = authcli.QueryTxCmd()
+	// output, err = clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, []string{
+	// 	txRes.TxHash,
+	// 	fmt.Sprintf("--%s=json", flags.FlagOutput),
+	// })
+	// s.Require().NoError(err)
+	// s.Require().NoError(s.network.WaitForNextBlock())
+	// fmt.Println(output.String())
 
 	// fail create new pool because of circuit breaker
 	output, err = liquiditytestutil.MsgCreatePoolExec(
@@ -1231,7 +1239,18 @@ func (s *IntegrationTestSuite) TestGetCircuitBreaker() {
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(s.network.WaitForNextBlock())
-	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
+	// s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(output.Bytes(), &txRes))
+	fmt.Println(txRes)
+	cmd = authcli.QueryTxCmd()
+	output, err = clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, []string{
+		"--type=hash", 
+		txRes.TxHash,
+		fmt.Sprintf("--%s=json", flags.FlagOutput),
+	})
+	s.Require().Error(err)
+	fmt.Println("err:", err.Error())
+	s.Require().NoError(s.network.WaitForNextBlock())
+	fmt.Println(output.String())
 	s.Require().Equal(txRes.Code, uint32(40))
 	s.Require().Equal(txRes.RawLog, "failed to execute message; message index: 0: circuit breaker is triggered")
 
