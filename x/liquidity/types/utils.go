@@ -6,9 +6,10 @@ import (
 	"sort"
 	"strings"
 
+	"cosmossdk.io/math"
+	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/tendermint/tendermint/crypto"
 )
 
 // AlphabeticalDenomPair returns denom pairs that are alphabetically sorted.
@@ -62,9 +63,7 @@ func GetReserveAcc(poolCoinDenom string, len32 bool) (sdk.AccAddress, error) {
 }
 
 // GetCoinsTotalAmount returns total amount of all coins in sdk.Coins.
-//
-//nolint:staticcheck
-func GetCoinsTotalAmount(coins sdk.Coins) sdk.Int {
+func GetCoinsTotalAmount(coins sdk.Coins) math.Int {
 	totalAmount := sdk.ZeroInt()
 	for _, coin := range coins {
 		totalAmount = totalAmount.Add(coin.Amount)
@@ -73,9 +72,7 @@ func GetCoinsTotalAmount(coins sdk.Coins) sdk.Int {
 }
 
 // ValidateReserveCoinLimit checks if total amounts of depositCoins exceed maxReserveCoinAmount.
-//
-//nolint:staticcheck
-func ValidateReserveCoinLimit(maxReserveCoinAmount sdk.Int, depositCoins sdk.Coins) error {
+func ValidateReserveCoinLimit(maxReserveCoinAmount math.Int, depositCoins sdk.Coins) error {
 	totalAmount := GetCoinsTotalAmount(depositCoins)
 	if maxReserveCoinAmount.IsZero() {
 		return nil
@@ -104,7 +101,7 @@ func MustParseCoinsNormalized(coinStr string) sdk.Coins {
 }
 
 //nolint:staticcheck
-func CheckOverflow(a, b sdk.Int) (err error) {
+func CheckOverflow(a, b math.Int) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = ErrOverflowAmount

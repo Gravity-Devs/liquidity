@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	lapp "github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	lapp "github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 type KeeperTestSuite struct {
@@ -40,7 +40,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.ctx = ctx
 	suite.app = app
 
-	//types.RegisterQueryServer(queryHelper, app.LiquidityKeeper)
+	// types.RegisterQueryServer(queryHelper, app.LiquidityKeeper)
 	suite.queryClient = types.NewQueryClient(queryHelper)
 }
 

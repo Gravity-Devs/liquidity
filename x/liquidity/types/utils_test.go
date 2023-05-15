@@ -3,10 +3,11 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 func TestAlphabeticalDenomPair(t *testing.T) {
@@ -148,7 +149,7 @@ func TestGetPoolInformation(t *testing.T) {
 func TestGetCoinsTotalAmount(t *testing.T) {
 	testCases := []struct {
 		coins        sdk.Coins
-		expectResult sdk.Int
+		expectResult math.Int
 	}{
 		{
 			coins:        sdk.NewCoins(sdk.NewCoin("uCoinA", sdk.NewInt(100)), sdk.NewCoin("uCoinB", sdk.NewInt(100))),
@@ -173,7 +174,7 @@ func TestGetCoinsTotalAmount(t *testing.T) {
 func TestValidateReserveCoinLimit(t *testing.T) {
 	testCases := []struct {
 		name                 string
-		maxReserveCoinAmount sdk.Int
+		maxReserveCoinAmount math.Int
 		depositCoins         sdk.Coins
 		expectErr            bool
 	}{
@@ -284,8 +285,8 @@ func TestGetOfferCoinFee(t *testing.T) {
 func TestCheckOverflow(t *testing.T) {
 	testCases := []struct {
 		name      string
-		a         sdk.Int
-		b         sdk.Int
+		a         math.Int
+		b         math.Int
 		expectErr error
 	}{
 		{

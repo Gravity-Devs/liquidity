@@ -12,7 +12,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 type msgServer struct {
@@ -127,7 +127,7 @@ func (k msgServer) WithdrawWithinBatch(goCtx context.Context, msg *types.MsgWith
 }
 
 // Deprecated: Message server, handler for MsgSwapWithinBatch
-func (k msgServer) Swap(goCtx context.Context, msg *types.MsgSwapWithinBatch) (*types.MsgSwapWithinBatchResponse, error) {
+func (k msgServer) Swap(goCtx context.Context, _ *types.MsgSwapWithinBatch) (*types.MsgSwapWithinBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if k.GetCircuitBreakerEnabled(ctx) {

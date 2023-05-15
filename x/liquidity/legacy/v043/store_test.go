@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	gogotypes "github.com/gogo/protobuf/types"
+	simapp "cosmossdk.io/simapp/params"
+	gogotypes "github.com/cosmos/gogoproto/types"
 
 	"github.com/stretchr/testify/require"
 
@@ -13,9 +13,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	v042liquidity "github.com/gravity-devs/liquidity/v2/x/liquidity/legacy/v042"
-	v043liquidity "github.com/gravity-devs/liquidity/v2/x/liquidity/legacy/v043"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	v042liquidity "github.com/gravity-devs/liquidity/v3/x/liquidity/legacy/v042"
+	v043liquidity "github.com/gravity-devs/liquidity/v3/x/liquidity/legacy/v043"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 func TestStoreMigration(t *testing.T) {

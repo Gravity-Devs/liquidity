@@ -3,9 +3,10 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // RegisterInvariants registers all liquidity invariants.
@@ -79,9 +80,7 @@ func errorRate(expected, actual sdk.Dec) sdk.Dec {
 }
 
 // MintingPoolCoinsInvariant checks the correct ratio of minting amount of pool coins.
-//
-//nolint:staticcheck
-func MintingPoolCoinsInvariant(poolCoinTotalSupply, mintPoolCoin, depositCoinA, depositCoinB, lastReserveCoinA, lastReserveCoinB, refundedCoinA, refundedCoinB sdk.Int) {
+func MintingPoolCoinsInvariant(poolCoinTotalSupply, mintPoolCoin, depositCoinA, depositCoinB, lastReserveCoinA, lastReserveCoinB, refundedCoinA, refundedCoinB math.Int) {
 	if !refundedCoinA.IsZero() {
 		depositCoinA = depositCoinA.Sub(refundedCoinA)
 	}
@@ -117,7 +116,7 @@ func MintingPoolCoinsInvariant(poolCoinTotalSupply, mintPoolCoin, depositCoinA, 
 // DepositInvariant checks after deposit amounts.
 //
 //nolint:staticcheck
-func DepositInvariant(lastReserveCoinA, lastReserveCoinB, depositCoinA, depositCoinB, afterReserveCoinA, afterReserveCoinB, refundedCoinA, refundedCoinB sdk.Int) {
+func DepositInvariant(lastReserveCoinA, lastReserveCoinB, depositCoinA, depositCoinB, afterReserveCoinA, afterReserveCoinB, refundedCoinA, refundedCoinB math.Int) {
 	depositCoinA = depositCoinA.Sub(refundedCoinA)
 	depositCoinB = depositCoinB.Sub(refundedCoinB)
 
@@ -148,7 +147,7 @@ func DepositInvariant(lastReserveCoinA, lastReserveCoinB, depositCoinA, depositC
 // BurningPoolCoinsInvariant checks the correct burning amount of pool coins.
 //
 //nolint:staticcheck
-func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, lastPoolCoinSupply sdk.Int, withdrawFeeCoins sdk.Coins) {
+func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, lastPoolCoinSupply math.Int, withdrawFeeCoins sdk.Coins) {
 	burningPoolCoinRatio := sdk.NewDecFromInt(burnedPoolCoin).Quo(sdk.NewDecFromInt(lastPoolCoinSupply))
 	if burningPoolCoinRatio.Equal(sdk.OneDec()) {
 		return
@@ -177,7 +176,8 @@ func BurningPoolCoinsInvariant(burnedPoolCoin, withdrawCoinA, withdrawCoinB, res
 //
 //nolint:staticcheck
 func WithdrawReserveCoinsInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB,
-	afterReserveCoinA, afterReserveCoinB, afterPoolCoinTotalSupply, lastPoolCoinSupply, burnedPoolCoin sdk.Int) {
+	afterReserveCoinA, afterReserveCoinB, afterPoolCoinTotalSupply, lastPoolCoinSupply, burnedPoolCoin math.Int,
+) {
 	// AfterWithdrawReserveCoinA = LastReserveCoinA - WithdrawCoinA
 	if !afterReserveCoinA.Equal(reserveCoinA.Sub(withdrawCoinA)) {
 		panic("invariant check fails due to incorrect withdraw coin A amount")
@@ -197,7 +197,7 @@ func WithdrawReserveCoinsInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, r
 // WithdrawAmountInvariant checks the correct ratio of withdraw coin amounts.
 //
 //nolint:staticcheck
-func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, burnedPoolCoin, poolCoinSupply sdk.Int, withdrawFeeRate sdk.Dec) {
+func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserveCoinB, burnedPoolCoin, poolCoinSupply math.Int, withdrawFeeRate sdk.Dec) {
 	ratio := sdk.NewDecFromInt(burnedPoolCoin).Quo(sdk.NewDecFromInt(poolCoinSupply)).Mul(sdk.OneDec().Sub(withdrawFeeRate))
 	idealWithdrawCoinA := sdk.NewDecFromInt(reserveCoinA).Mul(ratio)
 	idealWithdrawCoinB := sdk.NewDecFromInt(reserveCoinB).Mul(ratio)
@@ -216,7 +216,7 @@ func WithdrawAmountInvariant(withdrawCoinA, withdrawCoinB, reserveCoinA, reserve
 // ImmutablePoolPriceAfterWithdrawInvariant checks the immutable pool price after withdrawing coins.
 //
 //nolint:staticcheck
-func ImmutablePoolPriceAfterWithdrawInvariant(reserveCoinA, reserveCoinB, withdrawCoinA, withdrawCoinB, afterReserveCoinA, afterReserveCoinB sdk.Int) {
+func ImmutablePoolPriceAfterWithdrawInvariant(reserveCoinA, reserveCoinB, withdrawCoinA, withdrawCoinB, afterReserveCoinA, afterReserveCoinB math.Int) {
 	// TestReinitializePool tests a scenario where after reserve coins are zero
 	if !afterReserveCoinA.IsZero() && !afterReserveCoinB.IsZero() {
 		reserveCoinA = reserveCoinA.Sub(withdrawCoinA)

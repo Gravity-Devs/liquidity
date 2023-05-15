@@ -5,13 +5,14 @@ import (
 	"math/rand"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gravity-devs/liquidity/v2/app"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 func TestLiquidityPool(t *testing.T) {
@@ -286,7 +287,7 @@ func TestDepositDecimalTruncation(t *testing.T) {
 	require.Len(t, depositMsgStates, 0)
 
 	depositorPoolCoin := simapp.BankKeeper.GetBalance(ctx, depositor, pool.PoolCoinDenom)
-	require.True(sdk.IntEq(t, sdk.OneInt(), depositorPoolCoin.Amount))
+	require.True(math.IntEq(t, sdk.OneInt(), depositorPoolCoin.Amount))
 	require.True(t, simapp.BankKeeper.GetBalance(ctx, depositor, denomA).Amount.IsPositive())
 	require.True(t, simapp.BankKeeper.GetBalance(ctx, depositor, denomB).Amount.IsPositive())
 
@@ -330,7 +331,7 @@ func TestDepositDecimalTruncation2(t *testing.T) {
 	liquidity.EndBlocker(ctx, simapp.LiquidityKeeper)
 
 	depositorPoolCoin := simapp.BankKeeper.GetBalance(ctx, depositor, pool.PoolCoinDenom)
-	require.True(sdk.IntEq(t, sdk.ZeroInt(), depositorPoolCoin.Amount))
+	require.True(math.IntEq(t, sdk.ZeroInt(), depositorPoolCoin.Amount))
 	require.True(t, simapp.BankKeeper.GetAllBalances(ctx, depositor).IsEqual(depositCoins))
 	depositMsgStates := simapp.LiquidityKeeper.GetAllDepositMsgStates(ctx)
 	require.Len(t, depositMsgStates, 1)
@@ -863,7 +864,7 @@ func TestGetPoolByReserveAccIndex(t *testing.T) {
 	require.Equal(t, pool.PoolCoinDenom, poolCoinDenom)
 	require.True(t, simapp.LiquidityKeeper.IsPoolCoinDenom(ctx, pool.PoolCoinDenom))
 	require.False(t, simapp.LiquidityKeeper.IsPoolCoinDenom(ctx, pool.Name()))
-	//SetPoolByReserveAccIndex
+	// SetPoolByReserveAccIndex
 }
 
 func TestDepositWithdrawEdgecase(t *testing.T) {
@@ -1078,8 +1079,8 @@ func TestDepositWithCoinsSent(t *testing.T) {
 	require.NoError(t, err)
 	reserveCoins := simapp.LiquidityKeeper.GetReserveCoins(ctx, pool)
 	require.Len(t, reserveCoins, 2) // denomZ coins are ignored
-	require.True(sdk.IntEq(t, sdk.NewInt(2000000), reserveCoins.AmountOf(DenomX)))
-	require.True(sdk.IntEq(t, sdk.NewInt(3000000), reserveCoins.AmountOf(DenomY)))
+	require.True(math.IntEq(t, sdk.NewInt(2000000), reserveCoins.AmountOf(DenomX)))
+	require.True(math.IntEq(t, sdk.NewInt(3000000), reserveCoins.AmountOf(DenomY)))
 
 	// Add more coins to deposit.
 	depositCoins := sdk.NewCoins(sdk.NewInt64Coin(DenomX, 3000000), sdk.NewInt64Coin(DenomY, 3000000))
@@ -1091,12 +1092,12 @@ func TestDepositWithCoinsSent(t *testing.T) {
 	liquidity.EndBlocker(ctx, simapp.LiquidityKeeper)
 
 	reserveCoins = simapp.LiquidityKeeper.GetReserveCoins(ctx, pool)
-	require.True(sdk.IntEq(t, sdk.NewInt(4000000), reserveCoins.AmountOf(DenomX)))
-	require.True(sdk.IntEq(t, sdk.NewInt(6000000), reserveCoins.AmountOf(DenomY)))
+	require.True(math.IntEq(t, sdk.NewInt(4000000), reserveCoins.AmountOf(DenomX)))
+	require.True(math.IntEq(t, sdk.NewInt(6000000), reserveCoins.AmountOf(DenomY)))
 	balances := simapp.BankKeeper.GetAllBalances(ctx, addr)
-	require.True(sdk.IntEq(t, sdk.NewInt(1000000), balances.AmountOf(DenomX)))
-	require.True(sdk.IntEq(t, sdk.NewInt(0), balances.AmountOf(DenomY)))
-	require.True(sdk.IntEq(t, sdk.NewInt(1000000), balances.AmountOf(pool.PoolCoinDenom)))
+	require.True(math.IntEq(t, sdk.NewInt(1000000), balances.AmountOf(DenomX)))
+	require.True(math.IntEq(t, sdk.NewInt(0), balances.AmountOf(DenomY)))
+	require.True(math.IntEq(t, sdk.NewInt(1000000), balances.AmountOf(pool.PoolCoinDenom)))
 }
 
 func TestCreatePoolEqualDenom(t *testing.T) {
@@ -1108,7 +1109,8 @@ func TestCreatePoolEqualDenom(t *testing.T) {
 	msg := types.NewMsgCreatePool(addrs[0], types.DefaultPoolTypeID,
 		sdk.Coins{
 			sdk.NewCoin(DenomA, sdk.NewInt(1000000)),
-			sdk.NewCoin(DenomA, sdk.NewInt(1000000))})
+			sdk.NewCoin(DenomA, sdk.NewInt(1000000)),
+		})
 	_, err := simapp.LiquidityKeeper.CreatePool(ctx, msg)
 	require.ErrorIs(t, err, types.ErrEqualDenom)
 }

@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	v043 "github.com/gravity-devs/liquidity/v2/x/liquidity/legacy/v043"
+	v043 "github.com/gravity-devs/liquidity/v3/x/liquidity/legacy/v043"
 )
 
 // Migrator is a struct for handling in-place store migrations.

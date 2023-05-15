@@ -12,6 +12,13 @@ import (
 	"testing"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
+	dbm "github.com/cometbft/cometbft-db"
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmjson "github.com/cometbft/cometbft/libs/json"
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -19,29 +26,25 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdkserver "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtypes "github.com/tendermint/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
 
-	"github.com/gravity-devs/liquidity/v2/app/params"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/keeper"
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/app/params"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/keeper"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
 // LiquidityApp testing.
-var DefaultConsensusParams = &abci.ConsensusParams{
-	Block: &abci.BlockParams{
+var DefaultConsensusParams = &tmproto.ConsensusParams{
+	Block: &tmproto.BlockParams{
 		MaxBytes: 200000,
 		MaxGas:   2000000,
 	},
@@ -67,10 +70,10 @@ type SetupOptions struct {
 	AppOpts            sdkserver.AppOptions
 }
 
-func setup(withGenesis bool, invCheckPeriod uint) (*LiquidityApp, GenesisState) {
+func setup(withGenesis bool, _ uint) (*LiquidityApp, GenesisState) {
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
-	app := NewLiquidityApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{})
+	app := NewLiquidityApp(log.NewNopLogger(), db, nil, true, EmptyAppOptions{})
 	if withGenesis {
 		return app, NewDefaultGenesisState(encCdc.Codec)
 	}
@@ -78,7 +81,7 @@ func setup(withGenesis bool, invCheckPeriod uint) (*LiquidityApp, GenesisState) 
 }
 
 // Setup initializes a new LiquidityApp. A Nop logger is set in LiquidityApp.
-func Setup(isCheckTx bool) *LiquidityApp {
+func Setup(_ bool) *LiquidityApp {
 	privVal := mock.NewPV()
 	pubKey, _ := privVal.GetPubKey()
 	// create validator set with single validator
@@ -103,9 +106,8 @@ func Setup(isCheckTx bool) *LiquidityApp {
 // of one consensus engine unit in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
 func SetupWithGenesisValSet(valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *LiquidityApp {
-
 	app, genesisState := setup(true, 5)
-	genesisState = genesisStateWithValSet(app, genesisState, valSet, genAccs, balances...)
+	genesisState, _ = simtestutil.GenesisStateWithValSet(app.AppCodec(), genesisState, valSet, genAccs, balances...)
 
 	stateBytes, _ := json.MarshalIndent(genesisState, "", " ")
 
@@ -133,7 +135,8 @@ func SetupWithGenesisValSet(valSet *tmtypes.ValidatorSet, genAccs []authtypes.Ge
 func genesisStateWithValSet(
 	app *LiquidityApp, genesisState GenesisState,
 	valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount,
-	balances ...banktypes.Balance) GenesisState {
+	balances ...banktypes.Balance,
+) GenesisState {
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
@@ -185,7 +188,7 @@ func genesisStateWithValSet(
 	})
 
 	// update total supply
-	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{})
+	bankGenesis := banktypes.NewGenesisState(banktypes.DefaultGenesisState().Params, balances, totalSupply, []banktypes.Metadata{}, []banktypes.SendEnabled{})
 	genesisState[banktypes.ModuleName] = app.AppCodec().MustMarshalJSON(bankGenesis)
 
 	return genesisState
@@ -211,9 +214,10 @@ func NewSimappWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOptio
 	}
 
 	encCdc := MakeTestEncodingConfig()
-	app := NewLiquidityApp(options.Logger, options.DB, nil, true, options.SkipUpgradeHeights, options.HomePath, options.InvCheckPeriod, options.EncConfig, options.AppOpts)
+	app := NewLiquidityApp(options.Logger, options.DB, nil, true, options.AppOpts)
 	genesisState := NewDefaultGenesisState(encCdc.Codec)
-	genesisState = genesisStateWithValSet(app, genesisState, valSet, []authtypes.GenesisAccount{acc}, balance)
+	genesisState, err = simtestutil.GenesisStateWithValSet(app.AppCodec(), genesisState, valSet, []authtypes.GenesisAccount{acc}, balance)
+	assert.NoError(t, err)
 
 	if !isCheckTx {
 		// init chain must be called to stop deliverState from being nil
@@ -286,14 +290,11 @@ func FundAccount(app *LiquidityApp, ctx sdk.Context, addr sdk.AccAddress, amount
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
-//
-//nolint:staticcheck
-func AddTestAddrsIncremental(app *LiquidityApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
+func AddTestAddrsIncremental(app *LiquidityApp, ctx sdk.Context, accNum int, accAmt sdkmath.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, createIncrementalAccounts)
 }
 
-//nolint:staticcheck
-func addTestAddrs(app *LiquidityApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
+func addTestAddrs(app *LiquidityApp, ctx sdk.Context, accNum int, accAmt sdkmath.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
 	initCoins := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt))
@@ -375,26 +376,26 @@ func CreateTestInput() (*LiquidityApp, sdk.Context) {
 }
 
 //nolint:staticcheck
-func GetRandPoolAmt(r *rand.Rand, minInitDepositAmt sdk.Int) (x, y sdk.Int) {
+func GetRandPoolAmt(r *rand.Rand, minInitDepositAmt sdkmath.Int) (x, y sdkmath.Int) {
 	x = GetRandRange(r, int(minInitDepositAmt.Int64()), 100000000000000).MulRaw(int64(math.Pow10(r.Intn(10))))
 	y = GetRandRange(r, int(minInitDepositAmt.Int64()), 100000000000000).MulRaw(int64(math.Pow10(r.Intn(10))))
 	return
 }
 
 //nolint:staticcheck
-func GetRandRange(r *rand.Rand, min, max int) sdk.Int {
+func GetRandRange(r *rand.Rand, min, max int) sdkmath.Int {
 	return sdk.NewInt(int64(r.Intn(max-min) + min))
 }
 
 //nolint:staticcheck
-func GetRandomSizeOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY, sizeYToX int32) (xToY, yToX []*types.MsgSwapWithinBatch) {
+func GetRandomSizeOrders(denomX, denomY string, x, y sdkmath.Int, r *rand.Rand, sizeXToY, sizeYToX int32) (xToY, yToX []*types.MsgSwapWithinBatch) {
 	randomSizeXtoY := int(r.Int31n(sizeXToY))
 	randomSizeYtoX := int(r.Int31n(sizeYToX))
 	return GetRandomOrders(denomX, denomY, x, y, r, randomSizeXtoY, randomSizeYtoX)
 }
 
 //nolint:staticcheck
-func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY, sizeYToX int) (xToY, yToX []*types.MsgSwapWithinBatch) {
+func GetRandomOrders(denomX, denomY string, x, y sdkmath.Int, r *rand.Rand, sizeXToY, sizeYToX int) (xToY, yToX []*types.MsgSwapWithinBatch) {
 	currentPrice := sdk.NewDecFromInt(x).Quo(sdk.NewDecFromInt(y))
 
 	for len(xToY) < sizeXToY {
@@ -440,7 +441,7 @@ func GetRandomOrders(denomX, denomY string, x, y sdk.Int, r *rand.Rand, sizeXToY
 }
 
 //nolint:staticcheck
-func TestCreatePool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sdk.Int, denomX, denomY string, addr sdk.AccAddress) uint64 {
+func TestCreatePool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sdkmath.Int, denomX, denomY string, addr sdk.AccAddress) uint64 {
 	deposit := sdk.NewCoins(sdk.NewCoin(denomX, x), sdk.NewCoin(denomY, y))
 	params := simapp.LiquidityKeeper.GetParams(ctx)
 	// set accounts for creator, depositor, withdrawer, balance for deposit
@@ -472,7 +473,7 @@ func TestCreatePool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sd
 }
 
 //nolint:staticcheck
-func TestDepositPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sdk.Int, addrs []sdk.AccAddress, poolID uint64, withEndblock bool) {
+func TestDepositPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y sdkmath.Int, addrs []sdk.AccAddress, poolID uint64, withEndblock bool) {
 	pool, found := simapp.LiquidityKeeper.GetPool(ctx, poolID)
 	require.True(t, found)
 	denomX, denomY := pool.ReserveCoinDenoms[0], pool.ReserveCoinDenoms[1]
@@ -502,8 +503,8 @@ func TestDepositPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y s
 		require.Equal(t, moduleAccEscrowAmtX, moduleAccEscrowAmtXAfter)
 		require.Equal(t, moduleAccEscrowAmtY, moduleAccEscrowAmtYAfter)
 	}
-	batch, bool := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
-	require.True(t, bool)
+	batch, found := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
+	require.True(t, found)
 
 	// endblock
 	if withEndblock {
@@ -530,7 +531,7 @@ func TestDepositPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, x, y s
 }
 
 //nolint:staticcheck
-func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolCoinAmt sdk.Int, addrs []sdk.AccAddress, poolID uint64, withEndblock bool) {
+func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolCoinAmt sdkmath.Int, addrs []sdk.AccAddress, poolID uint64, withEndblock bool) {
 	pool, found := simapp.LiquidityKeeper.GetPool(ctx, poolID)
 	require.True(t, found)
 	moduleAccAddress := simapp.AccountKeeper.GetModuleAddress(types.ModuleName)
@@ -551,8 +552,7 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 		require.Equal(t, moduleAccEscrowAmtPool, moduleAccEscrowAmtPoolAfter)
 
 		balancePoolCoinAfter := simapp.BankKeeper.GetBalance(ctx, addrs[i], pool.PoolCoinDenom)
-		if balancePoolCoin.Amount.Equal(withdrawCoin.Amount) {
-
+		if balancePoolCoin.Amount.Equal(withdrawCoin.Amount) { //nolint:revive // TODO: this is highly ambiguous we need to be careful with it.  I'm choosing not to fix the linter issue.
 		} else {
 			require.Equal(t, balancePoolCoin.Sub(withdrawCoin).Amount, balancePoolCoinAfter.Amount)
 		}
@@ -565,8 +565,8 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 		// endblock
 		liquidity.EndBlocker(ctx, simapp.LiquidityKeeper)
 
-		batch, bool := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
-		require.True(t, bool)
+		batch, found := simapp.LiquidityKeeper.GetPoolBatch(ctx, poolID)
+		require.True(t, found)
 
 		// verify burned pool coin
 		poolCoinAfter := simapp.LiquidityKeeper.GetPoolCoinTotalSupply(ctx, pool)
@@ -588,7 +588,8 @@ func TestWithdrawPool(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, poolC
 }
 
 func GetSwapMsg(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, offerCoins []sdk.Coin, orderPrices []sdk.Dec,
-	addrs []sdk.AccAddress, poolID uint64) []*types.MsgSwapWithinBatch {
+	addrs []sdk.AccAddress, poolID uint64,
+) []*types.MsgSwapWithinBatch {
 	if len(offerCoins) != len(orderPrices) || len(orderPrices) != len(addrs) {
 		require.True(t, false)
 	}
@@ -623,6 +624,6 @@ func GetSwapMsg(t *testing.T, simapp *LiquidityApp, ctx sdk.Context, offerCoins 
 type EmptyAppOptions struct{}
 
 // Get implements AppOptions
-func (ao EmptyAppOptions) Get(o string) interface{} {
+func (ao EmptyAppOptions) Get(_ string) interface{} {
 	return nil
 }

@@ -64,19 +64,19 @@ paths:
                     title: list of available pool types
                   min_init_deposit_amount:
                     type: string
-                    format: sdk.Int
+                    format: math.Int
                     example: '1000000'
                     description: >-
                       Minimum number of coins to be deposited to the liquidity
                       pool on pool creation.
                   init_pool_coin_mint_amount:
                     type: string
-                    format: sdk.Int
+                    format: math.Int
                     example: '1000000'
                     description: Initial mint amount of pool coins upon pool creation.
                   max_reserve_coin_amount:
                     type: string
-                    format: sdk.Int
+                    format: math.Int
                     example: '1000000000000'
                     description: >-
                       Limit the size of each liquidity pool to minimize risk. In
@@ -2612,19 +2612,19 @@ definitions:
         title: list of available pool types
       min_init_deposit_amount:
         type: string
-        format: sdk.Int
+        format: math.Int
         example: '1000000'
         description: >-
           Minimum number of coins to be deposited to the liquidity pool on pool
           creation.
       init_pool_coin_mint_amount:
         type: string
-        format: sdk.Int
+        format: math.Int
         example: '1000000'
         description: Initial mint amount of pool coins upon pool creation.
       max_reserve_coin_amount:
         type: string
-        format: sdk.Int
+        format: math.Int
         example: '1000000000000'
         description: >-
           Limit the size of each liquidity pool to minimize risk. In
@@ -2985,19 +2985,19 @@ definitions:
             title: list of available pool types
           min_init_deposit_amount:
             type: string
-            format: sdk.Int
+            format: math.Int
             example: '1000000'
             description: >-
               Minimum number of coins to be deposited to the liquidity pool on
               pool creation.
           init_pool_coin_mint_amount:
             type: string
-            format: sdk.Int
+            format: math.Int
             example: '1000000'
             description: Initial mint amount of pool coins upon pool creation.
           max_reserve_coin_amount:
             type: string
-            format: sdk.Int
+            format: math.Int
             example: '1000000000000'
             description: >-
               Limit the size of each liquidity pool to minimize risk. In

@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"strconv"
 
+	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 func (k Keeper) ValidateMsgCreatePool(ctx sdk.Context, msg *types.MsgCreatePool) error {
@@ -101,7 +102,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	poolName := types.PoolName(reserveCoinDenoms, msg.PoolTypeId)
 
 	pool := types.Pool{
-		//Id: will set on SetPoolAtomic
+		// Id: will set on SetPoolAtomic
 		TypeId:                msg.PoolTypeId,
 		ReserveCoinDenoms:     reserveCoinDenoms,
 		ReserveAccountAddress: types.GetPoolReserveAcc(poolName, false).String(),
@@ -112,7 +113,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 
 	for _, coin := range msg.DepositCoins {
 		if coin.Amount.LT(params.MinInitDepositAmount) {
-			return types.Pool{}, sdkerrors.Wrapf(
+			return types.Pool{}, errorsmod.Wrapf(
 				types.ErrLessThanMinInitDeposit, "deposit coin %s is smaller than %s", coin, params.MinInitDepositAmount)
 		}
 	}
@@ -120,7 +121,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	for _, coin := range msg.DepositCoins {
 		balance := k.bankKeeper.GetBalance(ctx, poolCreator, coin.Denom)
 		if balance.IsLT(coin) {
-			return types.Pool{}, sdkerrors.Wrapf(
+			return types.Pool{}, errorsmod.Wrapf(
 				types.ErrInsufficientBalance, "%s is smaller than %s", balance, coin)
 		}
 	}
@@ -130,7 +131,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 		neededAmt := coin.Amount.Add(msg.DepositCoins.AmountOf(coin.Denom))
 		neededCoin := sdk.NewCoin(coin.Denom, neededAmt)
 		if balance.IsLT(neededCoin) {
-			return types.Pool{}, sdkerrors.Wrapf(
+			return types.Pool{}, errorsmod.Wrapf(
 				types.ErrInsufficientPoolCreationFee, "%s is smaller than %s", balance, neededCoin)
 		}
 	}
@@ -481,10 +482,10 @@ func (k Keeper) ExecuteWithdrawal(ctx sdk.Context, msg types.WithdrawMsgState, b
 	return nil
 }
 
-// GetPoolCoinTotalSupply returns total supply of pool coin of the pool in form of sdk.Int
+// GetPoolCoinTotalSupply returns total supply of pool coin of the pool in form of math.Int
 //
 //nolint:staticcheck
-func (k Keeper) GetPoolCoinTotalSupply(ctx sdk.Context, pool types.Pool) sdk.Int {
+func (k Keeper) GetPoolCoinTotalSupply(ctx sdk.Context, pool types.Pool) math.Int {
 	return k.bankKeeper.GetSupply(ctx, pool.PoolCoinDenom).Amount
 }
 

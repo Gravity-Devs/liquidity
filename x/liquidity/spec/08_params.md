@@ -7,9 +7,9 @@ The liquidity module contains the following parameters:
 Key                    | Type             | Example
 ---------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------
 PoolTypes              | []PoolType            | [{"id":1,"name":"StandardLiquidityPool","min_reserve_coin_num":2,"max_reserve_coin_num":2,"description":"Standard liquidity pool with pool price function X/Y, ESPM constraint, and two kinds of reserve coins"}]
-MinInitDepositAmount   | string (sdk.Int)      | "1000000"
-InitPoolCoinMintAmount | string (sdk.Int)      | "1000000"
-MaxReserveCoinAmount   | string (sdk.Int)      | "0"
+MinInitDepositAmount   | string (math.Int)      | "1000000"
+InitPoolCoinMintAmount | string (math.Int)      | "1000000"
+MaxReserveCoinAmount   | string (math.Int)      | "0"
 PoolCreationFee        | sdk.Coins             | [{"denom":"stake","amount":"40000000"}]
 SwapFeeRate            | string (sdk.Dec)      | "0.003000000000000000"
 WithdrawFeeRate        | string (sdk.Dec)      | "0.000000000000000000"

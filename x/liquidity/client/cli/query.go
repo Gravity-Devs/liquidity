@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	"github.com/gravity-devs/liquidity/v2/x/liquidity/types"
+	"github.com/gravity-devs/liquidity/v3/x/liquidity/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -395,7 +395,8 @@ $ %s query %s withdraws 1
 			}
 
 			result, err := queryClient.PoolBatchWithdrawMsgs(context.Background(), &types.QueryPoolBatchWithdrawMsgsRequest{
-				PoolId: poolID, Pagination: pageReq})
+				PoolId: poolID, Pagination: pageReq,
+			})
 			if err != nil {
 				return err
 			}
