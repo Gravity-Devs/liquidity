@@ -82,6 +82,8 @@ func TestMigration(t *testing.T) {
 	simapp.BankKeeper.SendCoins(ctx, poolCreator, smallHolder2, sdk.Coins{sdk.NewCoin(pool.PoolCoinDenom, sdk.NewInt(99))})
 	simapp.BankKeeper.SendCoins(ctx, poolCreator, smallHolder3, sdk.Coins{sdk.NewCoin(pool.PoolCoinDenom, sdk.NewInt(1))})
 
+	beforeCommunityFund := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+
 	err = keeper.SafeForceWithdrawal(ctx, simapp.LiquidityKeeper, simapp.BankKeeper, simapp.AccountKeeper)
 	require.NoError(t, err)
 
@@ -92,17 +94,19 @@ func TestMigration(t *testing.T) {
 	require.Equal(t, "1000000000000000000000000denomX,1000000000000000000000000denomY", simapp.BankKeeper.GetAllBalances(ctx, depositer).String())
 	require.Equal(t, "500000poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, derivedAcc).String())
 
-	// fund remaining reserve
-	reserveAcc, err := sdk.AccAddressFromBech32(pool.ReserveAccountAddress)
-	require.NoError(t, err)
-	err = simapp.DistrKeeper.FundCommunityPool(ctx, simapp.BankKeeper.GetAllBalances(ctx, reserveAcc), reserveAcc)
-	require.NoError(t, err)
+	afterCommunityFund := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+	require.EqualValues(t, beforeCommunityFund.Add(sdk.NewDecCoins(sdk.NewDecCoin(denomX, sdk.NewInt(500000)), sdk.NewDecCoin(denomY, sdk.NewInt(500000)))...), afterCommunityFund)
 
 	withdrawMsg := types.NewMsgWithdrawWithinBatch(derivedAcc, 1, sdk.NewCoin(pool.PoolCoinDenom, sdk.NewInt(500000)))
 	_, err = simapp.LiquidityKeeper.WithdrawWithinBatch(ctx, withdrawMsg)
-	require.ErrorIs(t, err, types.ErrDepletedPool)
-
+	require.ErrorIs(t, err, types.ErrPoolNotExists)
 	require.Equal(t, "500000poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, derivedAcc).String())
+
+	require.Len(t, simapp.LiquidityKeeper.GetAllDepositMsgStates(ctx), 0)
+	require.Len(t, simapp.LiquidityKeeper.GetAllSwapMsgStates(ctx), 0)
+	require.Len(t, simapp.LiquidityKeeper.GetAllWithdrawMsgStates(ctx), 0)
+	require.Len(t, simapp.LiquidityKeeper.GetAllPoolBatches(ctx), 0)
+	require.Len(t, simapp.LiquidityKeeper.GetAllPools(ctx), 0)
 
 	err = keeper.SafeForceWithdrawal(ctx, simapp.LiquidityKeeper, simapp.BankKeeper, simapp.AccountKeeper)
 	require.NoError(t, err)

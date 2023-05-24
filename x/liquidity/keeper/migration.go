@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -93,8 +94,6 @@ func ForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.B
 
 	// Execute batch manually
 	keeper.ExecutePoolBatches(ctx)
-
-	// Delete all batches
 	keeper.DeleteAndInitPoolBatches(ctx)
 
 	// iterating and withdraw again if there is any pool coin left due to decimal error
@@ -124,10 +123,42 @@ func ForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.B
 
 	// Execute batch manually
 	keeper.ExecutePoolBatches(ctx)
-
-	// Delete all batches
 	keeper.DeleteAndInitPoolBatches(ctx)
 
-	// TODO: Need to decide whether fund remaining reserve balance to community pool or not
+	if len(keeper.GetAllDepositMsgStates(ctx)) > 0 {
+		return fmt.Errorf("deposit msg states must be empty for migration")
+	}
+	if len(keeper.GetAllSwapMsgStates(ctx)) > 0 {
+		return fmt.Errorf("swap msg states must be empty for migration")
+	}
+	if len(keeper.GetAllWithdrawMsgStates(ctx)) > 0 {
+		return fmt.Errorf("withdraw msg states must be empty for migration")
+	}
+
+	// Fund remaining reserve balance to community pool
+	for _, pool := range keeper.GetAllPools(ctx) {
+		reserveAcc := pool.GetReserveAccount()
+		balances := keeper.bankKeeper.GetAllBalances(ctx, reserveAcc)
+		if balances.IsZero() {
+			continue
+		}
+		err := keeper.distrKeeper.FundCommunityPool(ctx, balances, reserveAcc)
+		if err != nil {
+			logger.Debug(
+				"failed fund community pool",
+				"pool id", pool.Id,
+				"error", err,
+			)
+		}
+	}
+
+	// Delete pools and pool batches to remove this module
+	for _, poolBatch := range keeper.GetAllPoolBatches(ctx) {
+		keeper.DeletePoolBatch(ctx, poolBatch)
+	}
+
+	for _, pool := range keeper.GetAllPools(ctx) {
+		keeper.DeletePool(ctx, pool)
+	}
 	return nil
 }
