@@ -80,7 +80,7 @@ func randomOfferCoin(r *rand.Rand, k keeper.Keeper, ctx sdk.Context, pool types.
 	params := k.GetParams(ctx)
 	reserveCoinAmt := k.GetReserveCoins(ctx, pool).AmountOf(denom)
 	maximumOrderableAmt := reserveCoinAmt.ToDec().Mul(params.MaxOrderAmountRatio).TruncateInt()
-	amt := int64(simtypes.RandIntBetween(r, 1, int(maximumOrderableAmt.Int64())))
+	amt := int64(simtypes.RandIntBetween(r, 100, int(maximumOrderableAmt.Int64())))
 	return sdk.NewInt64Coin(denom, amt)
 }
 
