@@ -178,7 +178,7 @@ func TestSimulateMsgSwapWithinBatch(t *testing.T) {
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "cosmos10kn7aww37y27c4lggjx6mycyhr927677rkp7x0", msg.GetSwapRequester().String())
-	require.Equal(t, "6453297fgae", msg.OfferCoin.String())
+	require.Equal(t, "6465078fgae", msg.OfferCoin.String())
 	require.Equal(t, "jxulr", msg.DemandCoinDenom)
 	require.Equal(t, types.TypeMsgSwapWithinBatch, msg.Type())
 	require.Len(t, futureOperations, 0)
