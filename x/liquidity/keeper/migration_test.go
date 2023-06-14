@@ -93,6 +93,7 @@ func TestMigration(t *testing.T) {
 	require.Equal(t, "499800denomX,499800denomY", simapp.BankKeeper.GetAllBalances(ctx, poolCreator).String())
 	require.Equal(t, "1000000000000000000000000denomX,1000000000000000000000000denomY", simapp.BankKeeper.GetAllBalances(ctx, depositer).String())
 	require.Equal(t, "500000poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, derivedAcc).String())
+	require.Equal(t, "", simapp.BankKeeper.GetAllBalances(ctx, pool.GetReserveAccount()).String())
 
 	afterCommunityFund := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
 	require.EqualValues(t, beforeCommunityFund.Add(sdk.NewDecCoins(sdk.NewDecCoin(denomX, sdk.NewInt(500000)), sdk.NewDecCoin(denomY, sdk.NewInt(500000)))...), afterCommunityFund)
@@ -110,6 +111,7 @@ func TestMigration(t *testing.T) {
 
 	err = keeper.SafeForceWithdrawal(ctx, simapp.LiquidityKeeper, simapp.BankKeeper, simapp.AccountKeeper)
 	require.NoError(t, err)
+	require.Equal(t, "", simapp.BankKeeper.GetAllBalances(ctx, pool.GetReserveAccount()).String())
 }
 
 func TestMigrationFailCase(t *testing.T) {
@@ -184,9 +186,12 @@ func TestMigrationFailCase(t *testing.T) {
 	simapp.BankKeeper.SendCoins(ctx, poolCreator, smallHolder2, sdk.Coins{sdk.NewCoin(pool.PoolCoinDenom, sdk.NewInt(99))})
 	simapp.BankKeeper.SendCoins(ctx, poolCreator, smallHolder3, sdk.Coins{sdk.NewCoin(pool.PoolCoinDenom, sdk.NewInt(1))})
 
+	beforeCommunityFund := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+	beforePoolReservedCoins := simapp.BankKeeper.GetAllBalances(ctx, pool.GetReserveAccount())
+
 	// panic recovered, reverted by cached ctx
 	err = keeper.SafeForceWithdrawal(ctx, simapp.LiquidityKeeper, simapp.BankKeeper, simapp.AccountKeeper)
-	require.NoError(t, err)
+	require.Error(t, err)
 
 	require.Equal(t, "100poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, smallHolder).String())
 	require.Equal(t, "99poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, smallHolder2).String())
@@ -194,4 +199,6 @@ func TestMigrationFailCase(t *testing.T) {
 	require.Equal(t, "499800poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, poolCreator).String())
 	require.Equal(t, "100000000000000000000000000000000000poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, depositer).String())
 	require.Equal(t, "500000poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, derivedAcc).String())
+	require.Equal(t, beforeCommunityFund.String(), simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx).String())
+	require.Equal(t, beforePoolReservedCoins.String(), simapp.BankKeeper.GetAllBalances(ctx, pool.GetReserveAccount()).String())
 }

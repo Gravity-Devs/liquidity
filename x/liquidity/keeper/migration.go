@@ -30,24 +30,29 @@ func (m Migrator) Migrate1to2(ctx sdk.Context) error {
 
 // Migrate2to3 migrates from version 2 to 3.
 func (m Migrator) Migrate2to3(ctx sdk.Context) error {
-	return SafeForceWithdrawal(ctx, m.keeper, m.bankKeeper, m.accountKeeper)
+	SafeForceWithdrawal(ctx, m.keeper, m.bankKeeper, m.accountKeeper)
+	// Even if it fails, it is reverted, so return nil to prevent panic due to the force withdrawal failure
+	return nil
 }
 
 // SafeForceWithdrawal call ForceWithdrawal safely by recover, cached ctx
-func SafeForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.BankKeeper, accountKeeper liquiditytypes.AccountKeeper) error {
-	broken := false
+func SafeForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.BankKeeper, accountKeeper liquiditytypes.AccountKeeper) (err error) {
+	logger := keeper.Logger(ctx)
 	defer func() {
 		if r := recover(); r != nil {
-			broken = true
+			logger.Debug("panic recovered on force withdrawal")
+			err = fmt.Errorf("panic recovered on force withdrawal")
 		}
 	}()
 
 	cachedCtx, writeCache := ctx.CacheContext()
-	err := ForceWithdrawal(cachedCtx, keeper, bankKeeper, accountKeeper)
-	if err == nil && !broken {
+	err = ForceWithdrawal(cachedCtx, keeper, bankKeeper, accountKeeper)
+	if err == nil {
 		writeCache()
+	} else {
+		logger.Debug("error occurred on force withdrawal", "error", err)
 	}
-	return nil
+	return
 }
 
 // ForceWithdrawal Forcefully withdraw pool token holders once migration
