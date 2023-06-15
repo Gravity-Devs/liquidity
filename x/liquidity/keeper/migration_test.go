@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
 	"github.com/gravity-devs/liquidity/app"
@@ -191,7 +192,7 @@ func TestMigrationFailCase(t *testing.T) {
 
 	// panic recovered, reverted by cached ctx
 	err = keeper.SafeForceWithdrawal(ctx, simapp.LiquidityKeeper, simapp.BankKeeper, simapp.AccountKeeper)
-	require.Error(t, err)
+	require.ErrorIs(t, err, sdkerrors.ErrPanic)
 
 	require.Equal(t, "100poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, smallHolder).String())
 	require.Equal(t, "99poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, smallHolder2).String())
@@ -201,4 +202,55 @@ func TestMigrationFailCase(t *testing.T) {
 	require.Equal(t, "500000poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, derivedAcc).String())
 	require.Equal(t, beforeCommunityFund.String(), simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx).String())
 	require.Equal(t, beforePoolReservedCoins.String(), simapp.BankKeeper.GetAllBalances(ctx, pool.GetReserveAccount()).String())
+}
+
+func TestMigrationForceWithdrawalSkipZeroValuePoolCoins(t *testing.T) {
+	simapp, ctx := createTestInput()
+	simapp.LiquidityKeeper.SetParams(ctx, types.DefaultParams())
+	params := simapp.LiquidityKeeper.GetParams(ctx)
+
+	// Set huge InitPoolCoinMintAmount to reproduce decimal error
+	params.InitPoolCoinMintAmount = sdk.NewInt(1000000000000)
+	simapp.LiquidityKeeper.SetParams(ctx, params)
+
+	// off invariant checking flag for panic case
+	keeper.BatchLogicInvariantCheckFlag = false
+
+	// define test denom X, Y for Liquidity Pool
+	denomX := "denomX"
+	denomY := "denomY"
+	denomX, denomY = types.AlphabeticalDenomPair(denomX, denomY)
+
+	X, Y := sdk.NewInt(1000000), sdk.NewInt(1000000)
+	deposit := sdk.NewCoins(sdk.NewCoin(denomX, X), sdk.NewCoin(denomY, Y))
+
+	poolCreator, _ := app.GenAccount(simapp, ctx, 1, true, deposit.Add(params.PoolCreationFee...))
+	smallHolder, _ := app.GenAccount(simapp, ctx, 2, true, nil)
+	smallHolder2, _ := app.GenAccount(simapp, ctx, 3, true, nil)
+
+	// create Liquidity pool
+	poolTypeID := types.DefaultPoolTypeID
+	msg := types.NewMsgCreatePool(poolCreator, poolTypeID, deposit)
+	_, err := simapp.LiquidityKeeper.CreatePool(ctx, msg)
+	require.NoError(t, err)
+
+	pools := simapp.LiquidityKeeper.GetAllPools(ctx)
+	pool := pools[0]
+
+	// send Near-Zero value pool coins to reproduce decimal errors
+	simapp.BankKeeper.SendCoins(ctx, poolCreator, smallHolder, sdk.Coins{sdk.NewCoin(pool.PoolCoinDenom, sdk.NewInt(1))})
+	simapp.BankKeeper.SendCoins(ctx, poolCreator, smallHolder2, sdk.Coins{sdk.NewCoin(pool.PoolCoinDenom, sdk.NewInt(1))})
+	beforeCommunityFund := simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx)
+
+	// success with remaining reserve coins send to community fund
+	err = keeper.SafeForceWithdrawal(ctx, simapp.LiquidityKeeper, simapp.BankKeeper, simapp.AccountKeeper)
+	require.NoError(t, err)
+
+	poolCreatorBalance := simapp.BankKeeper.GetAllBalances(ctx, poolCreator)
+	require.Equal(t, "999999denomX,999999denomY", poolCreatorBalance.String())
+	require.Equal(t, "1poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, smallHolder).String())
+	require.Equal(t, "1poolD35A0CC16EE598F90B044CE296A405BA9C381E38837599D96F2F70C2F02A23A4", simapp.BankKeeper.GetAllBalances(ctx, smallHolder2).String())
+	require.Equal(t, "1.000000000000000000denomX,1.000000000000000000denomY,40000000.000000000000000000stake", simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx).String())
+	require.Equal(t, beforeCommunityFund.Add(sdk.NewDecCoin(denomX, sdk.NewInt(1)), sdk.NewDecCoin(denomY, sdk.NewInt(1))), simapp.DistrKeeper.GetFeePoolCommunityCoins(ctx))
+	require.True(t, simapp.BankKeeper.GetAllBalances(ctx, pool.GetReserveAccount()).IsZero())
 }

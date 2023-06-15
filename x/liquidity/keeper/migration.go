@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	v043 "github.com/gravity-devs/liquidity/x/liquidity/legacy/v043"
@@ -40,8 +41,8 @@ func SafeForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytyp
 	logger := keeper.Logger(ctx)
 	defer func() {
 		if r := recover(); r != nil {
-			logger.Debug("panic recovered on force withdrawal")
-			err = fmt.Errorf("panic recovered on force withdrawal")
+			err = sdkerrors.Wrapf(sdkerrors.ErrPanic, "panic recovered on force withdrawal, %v", r)
+			logger.Error(err.Error())
 		}
 	}()
 
@@ -50,7 +51,7 @@ func SafeForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytyp
 	if err == nil {
 		writeCache()
 	} else {
-		logger.Debug("error occurred on force withdrawal", "error", err)
+		logger.Error("error occurred on force withdrawal", "error", err)
 	}
 	return
 }
@@ -69,28 +70,25 @@ func ForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.B
 	// Lastly, burn pool coins that are withdrawn.
 	accMap := map[string]authtypes.AccountI{}
 	accList := []string{}
+	errorCount := 0
 	bankKeeper.IterateAllBalances(ctx, func(address sdk.AccAddress, coin sdk.Coin) (stop bool) {
 		if strings.HasPrefix(coin.Denom, "pool") {
+			addrStr := address.String()
 			pool := poolByPoolCoinDenom[coin.Denom]
-			if _, ok := accMap[address.String()]; !ok {
-				accMap[address.String()] = accountKeeper.GetAccount(ctx, address)
-				accList = append(accList, address.String())
+			if _, ok := accMap[addrStr]; !ok {
+				accMap[addrStr] = accountKeeper.GetAccount(ctx, address)
+				accList = append(accList, addrStr)
 			}
 
 			// Skip pool reserve accounts
-			acc := accMap[address.String()]
+			acc := accMap[addrStr]
 			if acc.GetSequence() != 0 || acc.GetPubKey() != nil {
-				if _, err := keeper.WithdrawWithinBatch(ctx, &liquiditytypes.MsgWithdrawWithinBatch{
-					WithdrawerAddress: address.String(),
+				if res, err := keeper.WithdrawWithinBatch(ctx, &liquiditytypes.MsgWithdrawWithinBatch{
+					WithdrawerAddress: addrStr,
 					PoolId:            pool.GetId(),
 					PoolCoin:          coin,
-				}); err != nil {
-					logger.Debug(
-						"failed force withdrawal",
-						"withdrawer", address.String(),
-						"poolcoin", coin,
-						"error", err,
-					)
+				}); !res.Succeeded || err != nil {
+					errorCount++
 				}
 			}
 		}
@@ -101,34 +99,36 @@ func ForceWithdrawal(ctx sdk.Context, keeper Keeper, bankKeeper liquiditytypes.B
 	keeper.ExecutePoolBatches(ctx)
 	keeper.DeleteAndInitPoolBatches(ctx)
 
-	// iterating and withdraw again if there is any pool coin left due to decimal error
-	for _, address := range accList {
-		acc := accMap[address]
-		balances := keeper.bankKeeper.GetAllBalances(ctx, acc.GetAddress())
-		for _, coin := range balances {
-			if strings.HasPrefix(coin.Denom, "pool") {
-				// Skip pool reserve accounts
-				if acc.GetSequence() != 0 || acc.GetPubKey() != nil {
-					if _, err := keeper.WithdrawWithinBatch(ctx, &liquiditytypes.MsgWithdrawWithinBatch{
-						WithdrawerAddress: address,
-						PoolId:            poolByPoolCoinDenom[coin.Denom].GetId(),
-						PoolCoin:          coin,
-					}); err != nil {
-						logger.Debug(
-							"failed force withdrawal",
-							"withdrawer", address,
-							"poolcoin", coin,
-							"error", err,
-						)
+	// iterating and withdraw again if there is any pool coin left due to decimal error by too small pool coin value
+	if errorCount > 0 {
+		for _, address := range accList {
+			acc := accMap[address]
+			balances := keeper.bankKeeper.GetAllBalances(ctx, acc.GetAddress())
+			for _, coin := range balances {
+				if strings.HasPrefix(coin.Denom, "pool") {
+					// Skip pool reserve accounts
+					if acc.GetSequence() != 0 || acc.GetPubKey() != nil {
+						if _, err := keeper.WithdrawWithinBatch(ctx, &liquiditytypes.MsgWithdrawWithinBatch{
+							WithdrawerAddress: address,
+							PoolId:            poolByPoolCoinDenom[coin.Denom].GetId(),
+							PoolCoin:          coin,
+						}); err != nil {
+							logger.Debug(
+								"failed force withdrawal",
+								"withdrawer", address,
+								"poolcoin", coin,
+								"error", err,
+							)
+						}
 					}
 				}
 			}
 		}
-	}
 
-	// Execute batch manually
-	keeper.ExecutePoolBatches(ctx)
-	keeper.DeleteAndInitPoolBatches(ctx)
+		// Execute batch manually
+		keeper.ExecutePoolBatches(ctx)
+		keeper.DeleteAndInitPoolBatches(ctx)
+	}
 
 	if len(keeper.GetAllDepositMsgStates(ctx)) > 0 {
 		return fmt.Errorf("deposit msg states must be empty for migration")
