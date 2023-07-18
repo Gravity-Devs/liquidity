@@ -14,7 +14,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -160,6 +162,24 @@ func SaveAccount(app *LiquidityApp, ctx sdk.Context, addr sdk.AccAddress, initCo
 			panic(err)
 		}
 	}
+}
+
+func GenAccount(app *LiquidityApp, ctx sdk.Context, sequence uint64, pubkeyExist bool, initCoins sdk.Coins) (sdk.AccAddress, authtypes.AccountI) {
+	privKey := secp256k1.GenPrivKey()
+	addr := sdk.AccAddress(privKey.PubKey().Address())
+	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
+	acc.SetSequence(sequence)
+	if pubkeyExist {
+		acc.SetPubKey(privKey.PubKey())
+	}
+	app.AccountKeeper.SetAccount(ctx, acc)
+	if initCoins != nil && initCoins.IsAllPositive() {
+		err := FundAccount(app, ctx, addr, initCoins)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return addr, acc
 }
 
 func SaveAccountWithFee(app *LiquidityApp, ctx sdk.Context, addr sdk.AccAddress, initCoins sdk.Coins, offerCoin sdk.Coin) {
